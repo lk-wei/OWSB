@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package login;
+package gui;
 
 import javax.swing.*;
 import java.io.BufferedReader;
@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class login extends javax.swing.JFrame {
+public class LoginPage extends javax.swing.JFrame {
     private final JFrame previousFrame;
     String userUsername;
     String userPassword;
@@ -45,7 +45,7 @@ public class login extends javax.swing.JFrame {
      */
 
 
-    public login(JFrame previousFrame) {
+    public LoginPage(JFrame previousFrame) {
         this.previousFrame = previousFrame;
         initComponents();
     }
@@ -229,7 +229,7 @@ public class login extends javax.swing.JFrame {
             try {
                 loginValidation();
             } catch (IOException ex) {
-                Logger.getLogger(login.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(LoginPage.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }//GEN-LAST:event_loginButtonActionPerformed
