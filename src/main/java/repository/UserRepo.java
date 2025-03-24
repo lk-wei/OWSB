@@ -45,8 +45,4 @@ public class UserRepo {
                 user.getRole()
         );
     }
-    
-    private User stringToObject(String line){
-        return new User()
-    }
 }
