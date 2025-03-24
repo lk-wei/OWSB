@@ -4,12 +4,9 @@
  */
 package function;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import javax.swing.JOptionPane;
 import domain.*;
+import java.io.IOException;
+import repository.*;
 
 /**
  *
@@ -18,8 +15,16 @@ import domain.*;
 public class Login {
     private String username;
     private String password;
-    
-    public Login(){
+
+    public Login(String username, String password) {
+        this.username = username;
+        this.password = password;
     }
-   
+    
+    public boolean authenticate() throws IOException{
+        UserRepo userRep = new UserRepo("user.txt");
+        User u = userRep.getUserByUsername(username);
+        
+        return u.getPassword().equals(password);
+    }
 }
