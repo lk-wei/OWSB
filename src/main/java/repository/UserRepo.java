@@ -69,9 +69,36 @@ public class UserRepo {
     }
     
     // update
-    
+    public void updateUser(User user) throws IOException{
+        List<String> lines = Files.readAllLines(filePath);
+        List<String> updatedLines = new ArrayList<>();
+   
+        for(String line : lines){
+            User u = stringToObject(line);
+            
+            if(u.getUserId().equals(user.getUserId())){
+                updatedLines.add(objectToString(user));
+            }else{
+                updatedLines.add(line);
+            }
+        }
+        Files.write(filePath, updatedLines);
+    }
     
     // delete
+    public void deleteUser(User user) throws IOException{
+        List<String> lines = Files.readAllLines(filePath);
+        List<String> updatedLines = new ArrayList<>();
+   
+        for(String line : lines){
+            User u = stringToObject(line);
+            
+            if(!u.getUserId().equals(user.getUserId())){
+                updatedLines.add(line);
+            }
+        }
+        Files.write(filePath, updatedLines);
+    }
     
     // others
     
