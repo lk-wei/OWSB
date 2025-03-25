@@ -4,7 +4,7 @@
  */
 package repository;
 
-import domain.*;
+import domain.User;
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.ArrayList;
@@ -15,10 +15,11 @@ import java.util.List;
  * @author Kang Wei
  */
 public class UserRepo {
-    final private Path filePath;
+    // define the txt file that stores data
+    final private Path filePath = Path.of("user.txt");
     
-    public UserRepo(String filePath){
-        this.filePath = Path.of(filePath);
+    public UserRepo(){
+       
     }
     
     // create

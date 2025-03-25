@@ -108,13 +108,12 @@ public class LoginPage extends javax.swing.JFrame {
         
         Login login = new Login(username,password);
         
-        try {
-            if(login.authenticate()){
-                System.out.println("Loggedin");
-            }
-        } catch (IOException ex) {
-            Logger.getLogger(LoginPage.class.getName()).log(Level.SEVERE, null, ex);
+        if(login.authenticate()){
+            System.out.println("Loggedin");
+        }else{
+            System.out.println("wrong pw or username");
         }
+        
     }//GEN-LAST:event_loginButtonMouseClicked
 
     /**
