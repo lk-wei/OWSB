@@ -43,7 +43,7 @@ public class UserRepo {
         return userList;
     }
     
-    public User getUserById(String id) throws IOException{
+    public User getUserById(Long id) throws IOException{
         List<String> lines = Files.readAllLines(filePath);
    
         for(String line : lines){
@@ -62,7 +62,7 @@ public class UserRepo {
         for(String line : lines){
             User u = stringToObject(line);
             
-            if(u.getUsername().equals(username)){
+            if(u.getUserName().equals(username)){
                 return u;
             }
         }
@@ -103,23 +103,27 @@ public class UserRepo {
     
     // others
     
-    // converts to attribute ser intoder to store in text file
-    private String objectToString(User user){
+   // Converts User object to pipe-delimited string
+    private String objectToString(User user) {
         return String.join("|",
-                user.getUserId(),
-                user.getUsername(),
-                user.getPassword(),
-                user.getRole()
+            user.getUserId() != null ? user.getUserId().toString() : "null",
+            user.getUserName() != null ? user.getUserName() : "null",
+            user.getPassword() != null ? user.getPassword() : "null",
+            user.getFullName() != null ? user.getFullName() : "null",
+            user.getRole() != null ? user.getRole() : "null"
         );
     }
-    
+
+    // Converts pipe-delimited string back to User object
     private User stringToObject(String line) {
-        String[] parts = line.split("\\|");
+        String[] parts = line.split("\\|", 5);
+
         return new User(
-            parts[0], // id
-            parts[1], // username
-            parts[2], // password hash
-            parts[3] // role
+            parts[0].equals("null") ? null : Long.parseLong(parts[0]),  // userId
+            parts[1].equals("null") ? null : parts[1],                  // userName
+            parts[2].equals("null") ? null : parts[2],                  // password
+            parts[3].equals("null") ? null : parts[3],                  // fullName
+            parts[4].equals("null") ? null : parts[4]                   // role
         );
     }
 }
