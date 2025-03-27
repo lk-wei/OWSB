@@ -9,32 +9,39 @@ package domain;
  * @author Kang Wei
  */
 public class User {
-    private String userId;
-    private String username;
-    private String password;
-    private String role;
+    private Long userId;     // PK
+    private String userName;
+    private String password; // Note: In production, store only hashed passwords
+    private String fullName;
+    private String role;     // Consider using an enum for roles in production
 
-    public User(String userId, String username, String password, String role) {
+    // Constructors
+    public User() {
+    }
+
+    public User(Long userId, String userName, String password, String fullName, String role) {
         this.userId = userId;
-        this.username = username;
+        this.userName = userName;
         this.password = password;
+        this.fullName = fullName;
         this.role = role;
     }
 
-    public String getUserId() {
+    // Getters and Setters
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 
-    public String getUsername() {
-        return username;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getPassword() {
@@ -45,11 +52,31 @@ public class User {
         this.password = password;
     }
 
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
     public String getRole() {
         return role;
     }
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    // toString() method
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId=" + userId +
+                ", userName='" + userName + '\'' +
+                ", password='[PROTECTED]'" +
+                ", fullName='" + fullName + '\'' +
+                ", role='" + role + '\'' +
+                '}';
     }
 }
