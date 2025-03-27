@@ -82,13 +82,13 @@ public class PurchaseOrderRepo {
     private String objectToString(PurchaseOrder po) {
         return String.join("|",
             po.getPurchaseOrderId().toString(),
-            po.getPurchaseRequisitionId() != null ? po.getPurchaseRequisitionId().toString() : "null",
+            po.getPurchaseRequisitionId().toString(),
             po.getCreatedById().toString(),
             po.getSupplierId().toString(),
             po.getOrderDate().toString(),
             po.getExpectedDeliveryDate().toString(),
             po.getStatus(),
-            po.getApprovedById() != null ? po.getApprovedById().toString() : "null",
+            po.getApprovedById().toString(),
             po.getTotalAmount().toString()
         );
     }
@@ -100,14 +100,14 @@ public class PurchaseOrderRepo {
         String[] parts = line.split("\\|", -1); // -1 keeps empty values
 
         return new PurchaseOrder(
-            parts[0].equals("null") ? null : Long.valueOf(parts[0]), // purchaseOrderId
-            parts[1].equals("null") ? null : Long.valueOf(parts[1]), // purchaseRequisitionId
+            Long.valueOf(parts[0]), // purchaseOrderId
+            Long.valueOf(parts[1]), // purchaseRequisitionId
             Long.valueOf(parts[2]),                                 // createdById
             Long.valueOf(parts[3]),                                  // supplierId
             LocalDate.parse(parts[4]),                               // orderDate
             LocalDate.parse(parts[5]),                               // expectedDeliveryDate
             parts[6],                                                // status
-            parts[7].equals("null") ? null : Long.valueOf(parts[7]), // approvedById
+            Long.valueOf(parts[7]), // approvedById
             Double.valueOf(parts[8]),                                 // totalAmount
             itemRepo.getByPurchaseOrderId(Long.valueOf(parts[0]))     // item list                            
         );
