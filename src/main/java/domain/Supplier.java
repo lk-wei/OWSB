@@ -9,24 +9,24 @@ package domain;
  * @author zuwei
  */
 public class Supplier {
-    private String supplierId;
+    private Long supplierId;
     private String suppliername;
     private String email;
     private String phone;
 
-    public Supplier(String supplierId, String suppliername, String email, String phone) {
+    public Supplier(Long supplierId, String suppliername, String email, String phone) {
         this.supplierId = supplierId;
         this.suppliername = suppliername;
         this.email = email;
         this.phone = phone;
     }
 
-      public String getSupplierId() {
+      public Long getSupplierId() {
         return supplierId;
     }
 
 
-   public void setSupplierId(String supplierId) {
+   public void setSupplierId(Long supplierId) {
         this.supplierId = supplierId;
     }
 
@@ -50,7 +50,7 @@ public class Supplier {
         return phone;
     }
 
-    public void setPhone(String role) {
+    public void setPhone(String phone) {
         this.phone = phone;
     }
 }
