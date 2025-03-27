@@ -106,11 +106,11 @@ public class UserRepo {
    // Converts User object to pipe-delimited string
     private String objectToString(User user) {
         return String.join("|",
-            user.getUserId() != null ? user.getUserId().toString() : "null",
-            user.getUserName() != null ? user.getUserName() : "null",
-            user.getPassword() != null ? user.getPassword() : "null",
-            user.getFullName() != null ? user.getFullName() : "null",
-            user.getRole() != null ? user.getRole() : "null"
+            user.getUserId().toString(),
+            user.getUserName(),
+            user.getPassword(),
+            user.getFullName(),
+            user.getRole()
         );
     }
 
@@ -119,11 +119,11 @@ public class UserRepo {
         String[] parts = line.split("\\|", 5);
 
         return new User(
-            parts[0].equals("null") ? null : Long.parseLong(parts[0]),  // userId
-            parts[1].equals("null") ? null : parts[1],                  // userName
-            parts[2].equals("null") ? null : parts[2],                  // password
-            parts[3].equals("null") ? null : parts[3],                  // fullName
-            parts[4].equals("null") ? null : parts[4]                   // role
+            Long.valueOf(parts[0]),  // userId
+            parts[1],                  // userName
+            parts[2],                  // password
+            parts[3],                  // fullName
+            parts[4]                   // role
         );
     }
 }

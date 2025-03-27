@@ -6,7 +6,6 @@ package repository;
 
 import domain.PurchaseOrderItem;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -99,9 +98,8 @@ public class PurchaseOrderItemRepo {
             item.getPurchaseOrderItemId().toString(),
             item.getPurchaseOrderId().toString(),
             item.getItemId().toString(),
-            item.getQuantity().toString(),
-            item.getUnitCost().toString(),
-            item.getReceivedQuantity().toString()
+            Integer.toString(item.getQuantity()),
+            Double.toString(item.getUnitCost())
         );
     }
 
@@ -110,12 +108,11 @@ public class PurchaseOrderItemRepo {
         String[] parts = line.split("\\|", -1); // -1 keeps empty values
 
         return new PurchaseOrderItem(
-            parts[0].equals("null") ? null : Long.valueOf(parts[0]), // purchaseOrderItemId
-            parts[1].equals("null") ? null : Long.valueOf(parts[1]), // purchaseOrderId
-            parts[2].equals("null") ? null : Long.valueOf(parts[2]), // itemId
-            parts[3].equals("null") ? null : Integer.valueOf(parts[3]), // quantity
-            parts[4].equals("null") ? null : new BigDecimal(parts[4]), // unitCost
-            parts[5].equals("null") ? null : Integer.valueOf(parts[5])  // receivedQuantity
+            Long.valueOf(parts[0]), // purchaseOrderItemId
+            Long.valueOf(parts[1]), // purchaseOrderId
+            Long.valueOf(parts[2]), // itemId
+            Integer.parseInt(parts[3]), // quantity
+            Double.parseDouble(parts[4]) // unitCost
         );
     }
 }
