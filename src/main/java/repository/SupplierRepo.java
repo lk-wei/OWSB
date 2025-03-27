@@ -106,7 +106,7 @@ public class SupplierRepo {
     // converts to attribute ser intoder to store in text file
     private String objectToString(Supplier supplier) {
         return String.join("|",
-                supplier.getSupplierId(),
+                supplier.getSupplierId().toString(),
                 supplier.getSuppliername(),
                 supplier.getEmail(),
                 supplier.getPhone()
@@ -116,10 +116,11 @@ public class SupplierRepo {
     private Supplier stringToObject(String line) {
         String[] parts = line.split("\\|");
         return new Supplier(
-                parts[0], // id
-                parts[1], // username
-                parts[2], // email
-                parts[3] // phone no
+                Long.valueOf(parts[0]), // userId
+                parts[1], // userName
+                parts[2], // password
+                parts[3] // fullName
+
         );
     }
 

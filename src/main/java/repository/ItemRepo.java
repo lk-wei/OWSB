@@ -16,7 +16,8 @@ import java.util.List;
  * @author zuwei
  */
 public class ItemRepo {
-     // define the txt file that stores data
+    // define the txt file that stores data
+
     final private Path filePath = Path.of("item.txt");
 
     // create
@@ -97,30 +98,28 @@ public class ItemRepo {
         Files.write(filePath, updatedLines);
     }
 
- 
-  
     private String objectToString(Item item) {
         return String.join("|",
-                item.getItemId(),
+                item.getItemId().toString(),
                 item.getItemCode(),
                 item.getItemName(),
-                item.getCurrentStock(),
-                item.getMinStock(),
-                item.getUnitCost()
+                Integer.toString(item.getCurrentStock()),
+                Integer.toString(item.getMinStock()),
+                Double.toString(item.getUnitCost())
         );
+
     }
 
     private Item stringToObject(String line) {
         String[] parts = line.split("\\|");
         return new Item(
-                parts[0], // id
+                Long.valueOf(parts[0]),// id
                 parts[1], // code
                 parts[2], // name
-                parts[3], // currentStock
-                parts[4], // minStock
-                parts[5]  // unitCost
+                Integer.parseInt(parts[3]),// currentStock
+                Integer.parseInt(parts[4]),
+                Double.parseDouble(parts[5])
         );
     }
 
-    
 }
