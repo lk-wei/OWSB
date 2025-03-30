@@ -18,7 +18,7 @@ import java.util.List;
 public class ItemRepo {
     // define the txt file that stores data
 
-    final private Path filePath = Path.of("item.txt");
+    final private Path filePath = Path.of("database/item.txt");
 
     // create
     public void createItem(Item item) throws IOException {

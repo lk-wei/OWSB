@@ -18,7 +18,7 @@ import java.util.List;
 public class FinancialApprovalRepo {
     
     // define the txt file that stores data
-    final private Path filePath = Path.of("financialapproval.txt");
+    final private Path filePath = Path.of("database/financialApproval.txt");
     
     public FinancialApprovalRepo(){
        

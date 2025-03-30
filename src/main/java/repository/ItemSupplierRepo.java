@@ -19,7 +19,7 @@ import java.util.Objects;
 public class ItemSupplierRepo {
     
     // define the txt file that stores data
-    final private Path filePath = Path.of("itemSupplier.txt");
+    final private Path filePath = Path.of("database/itemSupplier.txt");
 
     public ItemSupplierRepo() {
     }

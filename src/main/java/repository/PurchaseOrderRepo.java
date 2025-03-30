@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class PurchaseOrderRepo {
     // define the txt file that stores data
-    final private Path filePath = Path.of("purchaseOrder.txt");
+    final private Path filePath = Path.of("database/purchaseOrder.txt");
     
     public PurchaseOrderRepo(){
        

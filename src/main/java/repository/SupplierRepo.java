@@ -18,7 +18,7 @@ import java.util.List;
 public class SupplierRepo {
 
     // define the txt file that stores data
-    final private Path filePath = Path.of("supplier.txt");
+    final private Path filePath = Path.of("database/supplier.txt");
 
     public SupplierRepo() {
 

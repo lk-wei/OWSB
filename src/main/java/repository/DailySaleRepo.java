@@ -20,7 +20,7 @@ import java.util.Objects;
 public class DailySaleRepo {
     
     // define the txt file that stores data
-    final private Path filePath = Path.of("dailySale.txt");
+    final private Path filePath = Path.of("database/dailySale.txt");
 
     public DailySaleRepo() {
     }
