@@ -17,7 +17,7 @@ import java.util.List;
 public class InventoryTransactionRepo {
     
     // define the txt file that stores data
-    final private Path filePath = Path.of("inventorytransaction.txt");
+    final private Path filePath = Path.of("database/inventoryTransaction.txt");
     
     public InventoryTransactionRepo(){
        

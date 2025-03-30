@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class UserRepo {
     // define the txt file that stores data
-    final private Path filePath = Path.of("user.txt");
+    final private Path filePath = Path.of("database/user.txt");
     
     public UserRepo(){
        
