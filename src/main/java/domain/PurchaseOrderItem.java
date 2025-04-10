@@ -15,7 +15,7 @@ public class PurchaseOrderItem {
     private Long purchaseOrderId;    // FK to PurchaseOrder
     private Long itemId;             // FK to Item
     private int quantity;
-    private double unitCost;
+    private double unitCost;//total unitcost
 
     // Constructors
     public PurchaseOrderItem() {
