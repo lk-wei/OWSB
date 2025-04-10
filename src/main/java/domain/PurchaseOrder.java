@@ -20,7 +20,7 @@ public class PurchaseOrder {
     private LocalDate expectedDeliveryDate;
     private String status; // Draft/PendingApproval/Approved/Rejected/Shipped/Received
     private Long approvedById; // FK to User
-    private Double totalAmount;
+    private Double totalAmount; //d
     private List<PurchaseOrderItem> item;
 
     // Constructors

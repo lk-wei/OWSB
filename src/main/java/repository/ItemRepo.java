@@ -117,7 +117,7 @@ public class ItemRepo {
                 parts[1], // code
                 parts[2], // name
                 Integer.parseInt(parts[3]),// currentStock
-                Integer.parseInt(parts[4]),
+                Integer.parseInt(parts[4]),// min
                 Double.parseDouble(parts[5])
         );
     }
