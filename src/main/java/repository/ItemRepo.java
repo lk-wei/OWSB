@@ -53,7 +53,7 @@ public class ItemRepo {
         return null;
     }
 
-    public Item getItemByItemname(String itemName) throws IOException {
+    public Item getItemByItemName(String itemName) throws IOException {
         List<String> lines = Files.readAllLines(filePath);
 
         for (String line : lines) {
@@ -103,6 +103,7 @@ public class ItemRepo {
                 item.getItemId().toString(),
                 item.getItemCode(),
                 item.getItemName(),
+                item.getSupplierName(),
                 Integer.toString(item.getCurrentStock()),
                 Integer.toString(item.getMinStock()),
                 Double.toString(item.getUnitCost())
@@ -116,6 +117,7 @@ public class ItemRepo {
                 Long.valueOf(parts[0]),// id
                 parts[1], // code
                 parts[2], // name
+                parts[3], //supplier
                 Integer.parseInt(parts[3]),// currentStock
                 Integer.parseInt(parts[4]),// min
                 Double.parseDouble(parts[5])
