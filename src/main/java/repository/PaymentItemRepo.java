@@ -4,11 +4,9 @@
  */
 package repository;
 
-import domain.Payment;
 import domain.PaymentItem;
 import java.io.IOException;
 import java.nio.file.*;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,13 +56,13 @@ public class PaymentItemRepo {
         return null;
     }
 
-    public PaymentItem getPaymentId(Long paymentID) throws IOException {
+    public PaymentItem getPaymentId(String paymentItemPO) throws IOException {
         List<String> lines = Files.readAllLines(filePath);
 
         for (String line : lines) {
             PaymentItem pi = stringToObject(line);
 
-            if (pi.getPaymentId().equals(paymentID)) {
+            if (pi.getPaymentId().equals(paymentItemPO)) {
                 return pi;
             }
         }
@@ -72,15 +70,15 @@ public class PaymentItemRepo {
     }
 
     // update
-    public void updatePayment(Payment payment) throws IOException {
+    public void updatePaymentItem(PaymentItem paymentItem) throws IOException {
         List<String> lines = Files.readAllLines(filePath);
         List<String> updatedLines = new ArrayList<>();
 
         for (String line : lines) {
-            Payment p = stringToObject(line);
+            PaymentItem pi = stringToObject(line);
 
-            if (p.getPaymentId().equals(payment.getPaymentId())) {
-                updatedLines.add(objectToString(payment));
+            if (pi.getPaymentItemId().equals(paymentItem.getPaymentItemId())) {
+                updatedLines.add(objectToString(paymentItem));
             } else {
                 updatedLines.add(line);
             }
@@ -89,14 +87,14 @@ public class PaymentItemRepo {
     }
 
     // delete
-    public void deletePayment(Payment payment) throws IOException {
+    public void deletePaymentItem(PaymentItem paymentItem) throws IOException {
         List<String> lines = Files.readAllLines(filePath);
         List<String> updatedLines = new ArrayList<>();
 
         for (String line : lines) {
-            Payment p = stringToObject(line);
+            PaymentItem pi = stringToObject(line);
 
-            if (!p.getPaymentId().equals(payment.getPaymentId())) {
+            if (!pi.getPaymentItemId().equals(paymentItem.getPaymentItemId())) {
                 updatedLines.add(line);
             }
         }
@@ -107,22 +105,26 @@ public class PaymentItemRepo {
     // Converts User object to pipe-delimited string
     private String objectToString(PaymentItem paymentItem) {
         return String.join("|",
-                payment.getPaymentId().toString(),
-                payment.getSupplierId().toString(),
-                payment.getPaymentDate().toString(),
-                Double.toString(payment.getPaymentAmount())
+                paymentItem.getPaymentItemId().toString(),
+                
+                paymentItem.getPaymentId().toString(),
+                paymentItem.getPurchaseOrderId().toString(),
+                Double.toString(paymentItem.getTotalAmount()),
+                paymentItem.getProductOrderCode()
         );
     }
 
     // Converts pipe-delimited string back to User object
     private PaymentItem stringToObject(String line) {
-        String[] parts = line.split("\\|", 4);
+        String[] parts = line.split("\\|", 5);
 
-        return new Payment(
-                Long.valueOf(parts[0]), // userId
-                Long.valueOf(parts[1]), // suppliername
-                LocalDate.parse(parts[2]), // date
-                Double.parseDouble(parts[3])
+        return new PaymentItem(
+                Long.valueOf(parts[0]), // PIId
+                
+                Long.valueOf(parts[1]),
+                Long.valueOf(parts[2]),
+                Double.parseDouble(parts[3]),
+                parts[4]
         );
     }
 }
