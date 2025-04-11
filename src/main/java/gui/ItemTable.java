@@ -52,13 +52,13 @@ public class ItemTable extends javax.swing.JFrame {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
             },
             new String [] {
-                "Item ID", "Item Code", "Item Name", "Current Stock", "Min Stock", "Unit Cost"
+                "Item ID", "Item Code", "Item Name", "Supplier", "Current Stock", "Min Stock", "Unit Cost"
             }
         ));
         jScrollPane1.setViewportView(jTable1);
