@@ -12,25 +12,25 @@ import java.util.List;
  * @author Kang Wei
  */
 public class StockReportItem {
-    private Long reportItemId;
+    private Long stockReportItemId;
     private Long stockReportId;
-    private Long paymentId;
+    private Long stockUpdateId;
     
     public StockReportItem() {
     }
 
-    public StockReportItem(Long reportItemId, Long stockReportId, Long stockUpdateId) {
-        this.reportItemId = reportItemId;
+    public StockReportItem(Long stockReportItemId, Long stockReportId, Long stockUpdateId) {
+        this.stockReportItemId = stockReportItemId;
         this.stockReportId = stockReportId;
-        this.paymentId = paymentId;
+        this.stockUpdateId = stockUpdateId;
     }
 
-    public Long getReportItemId() {
-        return reportItemId;
+    public Long getStockReportItemId() {
+        return stockReportItemId;
     }
 
-    public void setReportItemId(Long reportItemId) {
-        this.reportItemId = reportItemId;
+    public void setStockReportItemId(Long stockReportItemId) {
+        this.stockReportItemId = stockReportItemId;
     }
 
     public Long getStockReportId() {
@@ -42,11 +42,11 @@ public class StockReportItem {
     }
 
     public Long getStockUpdateId() {
-        return paymentId;
+        return stockUpdateId;
     }
 
-    public void setStockUpdateId(Long paymentId) {
-        this.paymentId = paymentId;
+    public void setStockUpdateId(Long stockUpdateId) {
+        this.stockUpdateId = stockUpdateId;
     }
    
     

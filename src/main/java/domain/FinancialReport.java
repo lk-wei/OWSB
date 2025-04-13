@@ -4,6 +4,7 @@
  */
 package domain;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -15,7 +16,7 @@ public class FinancialReport {
     private Long financialReportId;
     private String reportCode;
     private Long createdBy;
-    private Date creationDate;
+    private LocalDate creationDate;
     private String description;
     private String status;
     private List<Payment> paymentList;
@@ -23,7 +24,7 @@ public class FinancialReport {
     public FinancialReport() {
     }
 
-    public FinancialReport(Long financialReportId, String reportCode, Long createdBy, Date creationDate, String description, String status, List<Payment> paymentList) {
+    public FinancialReport(Long financialReportId, String reportCode, Long createdBy, LocalDate creationDate, String description, String status, List<Payment> paymentList) {
         this.financialReportId = financialReportId;
         this.reportCode = reportCode;
         this.createdBy = createdBy;
@@ -57,11 +58,11 @@ public class FinancialReport {
         this.createdBy = createdBy;
     }
 
-    public Date getCreationDate() {
+    public LocalDate getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(Date creationDate) {
+    public void setCreationDate(LocalDate creationDate) {
         this.creationDate = creationDate;
     }
 

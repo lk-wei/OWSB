@@ -12,25 +12,25 @@ import java.util.List;
  * @author Kang Wei
  */
 public class FinancialReportItem {
-    private Long reportItemId;
+    private Long financialReportItemId;
     private Long financialReportId;
     private Long paymentId;
     
     public FinancialReportItem() {
     }
 
-    public FinancialReportItem(Long reportItemId, Long financialReportId, Long paymentId) {
-        this.reportItemId = reportItemId;
+    public FinancialReportItem(Long financialReportItemId, Long financialReportId, Long paymentId) {
+        this.financialReportItemId = financialReportItemId;
         this.financialReportId = financialReportId;
         this.paymentId = paymentId;
     }
 
-    public Long getReportItemId() {
-        return reportItemId;
+    public Long getFinancialReportItemId() {
+        return financialReportItemId;
     }
 
-    public void setReportItemId(Long reportItemId) {
-        this.reportItemId = reportItemId;
+    public void setFinancialReportItemId(Long financialReportItemId) {
+        this.financialReportItemId = financialReportItemId;
     }
 
     public Long getFinancialReportId() {
