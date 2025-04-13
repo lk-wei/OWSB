@@ -5,6 +5,7 @@
 package repository;
 
 import domain.PurchaseOrder;
+import function.IdGenerator;
 import java.io.IOException;
 import java.nio.file.*;
 import java.time.LocalDate;
@@ -25,10 +26,13 @@ public class PurchaseOrderRepo {
     
     // create
     public void createPurchaseOrder(PurchaseOrder PurchaseOrder) throws IOException{
-         List<String> lines = Files.readAllLines(filePath);
-         lines.add(objectToString(PurchaseOrder));
-         
-         Files.write(filePath, lines);
+        IdGenerator ig = new IdGenerator(filePath);
+        PurchaseOrder.setPurchaseOrderId(ig.getId());
+        
+        List<String> lines = Files.readAllLines(filePath);
+        lines.add(objectToString(PurchaseOrder));
+
+        Files.write(filePath, lines);
     }
     
     // read
@@ -107,8 +111,9 @@ public class PurchaseOrderRepo {
             LocalDate.parse(parts[4]),                               // orderDate
             LocalDate.parse(parts[5]),                               // expectedDeliveryDate
             parts[6],                                                // status
-            Long.valueOf(parts[7]), // approvedById
-            Double.valueOf(parts[8]),                                 // totalAmount
+            LocalDate.parse(parts[7]),                              // approval 
+            Long.valueOf(parts[8]),                                 // approvedById
+            Double.valueOf(parts[9]),                                 // totalAmount
             itemRepo.getByPurchaseOrderId(Long.valueOf(parts[0]))     // item list                            
         );
     }
