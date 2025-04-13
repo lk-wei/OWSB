@@ -12,7 +12,7 @@ import java.util.List;
  * @author Kang Wei
  */
 public class FinancialReport {
-    private Long reportId;
+    private Long financialReportId;
     private String reportCode;
     private Long createdBy;
     private Date creationDate;
@@ -23,8 +23,8 @@ public class FinancialReport {
     public FinancialReport() {
     }
 
-    public FinancialReport(Long reportId, String reportCode, Long createdBy, Date creationDate, String description, String status, List<Payment> paymentList) {
-        this.reportId = reportId;
+    public FinancialReport(Long financialReportId, String reportCode, Long createdBy, Date creationDate, String description, String status, List<Payment> paymentList) {
+        this.financialReportId = financialReportId;
         this.reportCode = reportCode;
         this.createdBy = createdBy;
         this.creationDate = creationDate;
@@ -33,12 +33,12 @@ public class FinancialReport {
         this.paymentList = paymentList;
     }
     
-    public Long getReportId() {
-        return reportId;
+    public Long getFinancialReportId() {
+        return financialReportId;
     }
 
-    public void setReportId(Long reportId) {
-        this.reportId = reportId;
+    public void setFinancialReportId(Long financialReportId) {
+        this.financialReportId = financialReportId;
     }
 
     public String getReportCode() {
