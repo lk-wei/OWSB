@@ -27,7 +27,6 @@ public class FinancialReportTable extends javax.swing.JFrame {
     }
     
     // Custom Methods
-
     private void updateTable() {
         FinancialReportRepo repo = new FinancialReportRepo();
         try {
