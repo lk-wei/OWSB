@@ -19,7 +19,7 @@ import java.util.List;
  */
 public class FinancialReportItemRepo {
     
-    private final Path filePath = Path.of("purchaseRequisitionItem.txt");
+    private final Path filePath = Path.of("database/financialReportItem.txt");
 
     public FinancialReportItemRepo() {
     }
@@ -110,12 +110,13 @@ public class FinancialReportItemRepo {
 
     // Convert string to object
     private FinancialReportItem stringToObject(String line) {
-        String[] parts = line.split(",");
-        FinancialReportItem item = new FinancialReportItem();
-        item.setFinancialReportItemId(Long.parseLong(parts[0]));
-        item.setFinancialReportId(Long.parseLong(parts[1]));
-        item.setPaymentId(Long.parseLong(parts[2]));
-        return item;
+        String[] parts = line.split("\\|", 3);
+        
+        return new FinancialReportItem(
+            Long.parseLong(parts[0]),
+            Long.parseLong(parts[1]),
+            Long.parseLong(parts[2])
+        );
     }
     
     

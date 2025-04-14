@@ -13,6 +13,7 @@ import java.nio.file.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -38,7 +39,6 @@ public class FinancialReportRepo {
     }
     
     // read
-    
     public List<FinancialReport> getAllFinancialReport() throws IOException{
         List<FinancialReport> FinancialReportList = new ArrayList<>();
         List<String> lines = Files.readAllLines(filePath);
@@ -48,6 +48,42 @@ public class FinancialReportRepo {
             FinancialReportList.add(po);
         }
         return FinancialReportList;
+    }
+    
+    public List<FinancialReport> getByCreatedBy(Long id) throws IOException{
+        List<FinancialReport> financialReportList = new ArrayList<>();
+        List<String> lines = Files.readAllLines(filePath);
+        
+        for(String line : lines){
+            FinancialReport po = stringToObject(line);
+            if(po.getCreatedBy() == id){
+                financialReportList.add(po);
+            }
+        }
+        return financialReportList;
+    }
+    
+    // UI method
+    public DefaultTableModel getTableModel() throws IOException {
+        DefaultTableModel model = new DefaultTableModel(
+            new Object[][]{},
+            // These column names must match what's in your JFrame
+            new String[]{"Report Number", "Description", "Date", "Created By", ""}
+        );
+
+        List<FinancialReport> reports = getAllFinancialReport(); 
+            
+
+        for (FinancialReport report : reports) {
+            model.addRow(new Object[]{
+                report.getReportCode(),    // "Report Number"
+                report.getDescription(),   // "Description"
+                report.getCreationDate(),  // "Date"
+                report.getCreatedBy(),    // "Created By"
+                ""                        // Empty column (action buttons?)
+            });
+        }
+        return model;
     }
     
     // update
@@ -97,21 +133,21 @@ public class FinancialReportRepo {
         );
     }
 
-    // Converts pipe-delimited string back to FinancialReport object
+    // Convert string to object    
     private FinancialReport stringToObject(String line) throws IOException {
         String[] parts = line.split("\\|", -1); // -1 keeps empty values
 
         return new FinancialReport(
-            Long.valueOf(parts[0]), // fianacialReportId
-            parts[2],                                 // reportCode
-            Long.valueOf(parts[3]),                                  // createdBy
-            LocalDate.parse(parts[4]),                               // orderDate
-            parts[5],                               // descriptiuon
-            parts[6],                                                // status
-            getPaymentList(Long.valueOf(parts[0]))     // item list                            
+            Long.parseLong(parts[0]),
+            parts[1],
+            Long.parseLong(parts[2]),
+            LocalDate.parse(parts[3]),
+            parts[4],
+            parts[5],
+            getPaymentList(Long.parseLong(parts[0]))
         );
     }
-    
+
     private List<Payment> getPaymentList(Long financialReportId) throws IOException{
         FinancialReportItemRepo itemRepo = new FinancialReportItemRepo();
         List<FinancialReportItem> itemList = itemRepo.getByFinancialReportId(financialReportId);
@@ -122,7 +158,7 @@ public class FinancialReportRepo {
         for(FinancialReportItem item : itemList){
             paymentList.add(paymentRepo.getPaymentById(item.getPaymentId()));
         }
-        
+
         return paymentList;
     }
 }
