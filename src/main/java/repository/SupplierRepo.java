@@ -107,6 +107,7 @@ public class SupplierRepo {
     private String objectToString(Supplier supplier) {
         return String.join("|",
                 supplier.getSupplierId().toString(),
+                supplier.getSupplierCode(),
                 supplier.getSuppliername(),
                 supplier.getEmail(),
                 supplier.getPhone()
@@ -119,7 +120,8 @@ public class SupplierRepo {
                 Long.valueOf(parts[0]), // userId
                 parts[1], // userName
                 parts[2], // password
-                parts[3] // fullName
+                parts[3], // fullName
+                parts[4]
 
         );
     }

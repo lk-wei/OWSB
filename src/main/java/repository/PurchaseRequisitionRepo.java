@@ -19,7 +19,7 @@ import java.util.List;
  */
 public class PurchaseRequisitionRepo {
     
-     private final Path filePath = Path.of("purchaseRequisition.txt");
+     private final Path filePath = Path.of("database/purchaseRequisition.txt");
 
     public PurchaseRequisitionRepo() {
     }
