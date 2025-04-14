@@ -15,16 +15,14 @@ public class Item {
     private Long itemId;
     private String itemCode;
     private String itemName;
-    private String supplierName;
     private int currentStock;
     private int minStock;
     private double unitCost;
 
-    public Item(Long itemId, String itemCode, String itemName, String supplierName, int currentStock, int minStock, double unitCost) {
+    public Item(Long itemId, String itemCode, String itemName, int currentStock, int minStock, double unitCost) {
         this.itemId = itemId;
         this.itemCode = itemCode;
         this.itemName = itemName;
-        this.supplierName = supplierName;
         this.currentStock = currentStock;
         this.minStock = minStock;
         this.unitCost = unitCost;
@@ -54,14 +52,6 @@ public class Item {
         this.itemName = itemName;
     }
 
-    public String getSupplierName() {
-        return supplierName;
-    }
-
-    public void setSupplierName(String supplierName) {
-        this.supplierName = supplierName;
-    }
-
     public int getCurrentStock() {
         return currentStock;
     }
@@ -85,6 +75,10 @@ public class Item {
     public void setUnitCost(double unitCost) {
         this.unitCost = unitCost;
     }
+    
+    
+
+
 
 
 

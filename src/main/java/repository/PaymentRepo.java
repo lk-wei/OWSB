@@ -107,6 +107,7 @@ public class PaymentRepo {
     private String objectToString(Payment payment) {
         return String.join("|",
                 payment.getPaymentId().toString(),
+                payment.getPaymentCode(),
                 payment.getSupplierId().toString(),
                 payment.getPaymentDate().toString(),
                 Double.toString(payment.getPaymentAmount())
@@ -115,13 +116,14 @@ public class PaymentRepo {
 
     // Converts pipe-delimited string back to User object
     private Payment stringToObject(String line) {
-        String[] parts = line.split("\\|", 4);
+        String[] parts = line.split("\\|");
 
         return new Payment(
-                Long.valueOf(parts[0]), // userId
-                Long.valueOf(parts[1]), // suppliername
-                LocalDate.parse(parts[2]), // date
-                Double.parseDouble(parts[3])
+                Long.valueOf(parts[0]), // 
+                parts[1],
+                Long.valueOf(parts[2]), // suppliername
+                LocalDate.parse(parts[3]), // date
+                Double.parseDouble(parts[4])
         );
     }
 }

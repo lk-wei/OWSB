@@ -52,13 +52,13 @@ public class PaymentTable extends javax.swing.JFrame {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Payment ID", "Supplier Name", "Date", "Amount"
+                "Payment Code", "Supplier Name", "Date", "Amount", ""
             }
         ));
         jScrollPane1.setViewportView(jTable1);

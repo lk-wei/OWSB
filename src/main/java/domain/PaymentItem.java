@@ -12,14 +12,16 @@ import java.time.LocalDate;
  */
 public class PaymentItem {
     private Long paymentItemId;    
-    private Long paymentId;    
+    private Long paymentId;  
+    private String paymentCode;
     private Long purchaseOrderId;       
     private double TotalAmount;
     private String productOrderCode;
 
-    public PaymentItem(Long paymentItemId, Long paymentId, Long purchaseOrderId, double TotalAmount, String productOrderCode) {
+    public PaymentItem(Long paymentItemId, Long paymentId, String paymentCode, Long purchaseOrderId, double TotalAmount, String productOrderCode) {
         this.paymentItemId = paymentItemId;
         this.paymentId = paymentId;
+        this.paymentCode = paymentCode;
         this.purchaseOrderId = purchaseOrderId;
         this.TotalAmount = TotalAmount;
         this.productOrderCode = productOrderCode;
@@ -39,6 +41,14 @@ public class PaymentItem {
 
     public void setPaymentId(Long paymentId) {
         this.paymentId = paymentId;
+    }
+
+    public String getPaymentCode() {
+        return paymentCode;
+    }
+
+    public void setPaymentCode(String paymentCode) {
+        this.paymentCode = paymentCode;
     }
 
     public Long getPurchaseOrderId() {
@@ -64,6 +74,10 @@ public class PaymentItem {
     public void setProductOrderCode(String productOrderCode) {
         this.productOrderCode = productOrderCode;
     }
+
+
+
+
     
     
     
