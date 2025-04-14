@@ -2,21 +2,22 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package sample;
+package gui.SalesManager;
 
+import sample.*;
 import java.awt.BorderLayout;
 
 /**
  *
  * @author Kang Wei
  */
-public class DashBoardSample extends javax.swing.JFrame {
+public class SaleManagerDashBoard extends javax.swing.JFrame {
     /**
      * Creates new form DashBoardSample
      */
     private int currentPage = 1; // Track current page
     
-    public DashBoardSample() {
+    public SaleManagerDashBoard() {
         initComponents();
         this.setLocationRelativeTo(null); //this will center your frame
         
@@ -80,21 +81,19 @@ public class DashBoardSample extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setMaximumSize(new java.awt.Dimension(800, 600));
         setMinimumSize(new java.awt.Dimension(800, 600));
-        setPreferredSize(new java.awt.Dimension(800, 600));
         setResizable(false);
         setSize(new java.awt.Dimension(800, 600));
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("{Role} Dashboard");
+        jLabel1.setText("Sales Manager Dashboard");
         jLabel1.setToolTipText("");
 
         pages.setLayout(new java.awt.CardLayout());
 
         jButton1.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jButton1.setText("Button");
+        jButton1.setText("Purchase Requisition");
         jButton1.setBorderPainted(false);
         jButton1.setPreferredSize(new java.awt.Dimension(150, 100));
 
@@ -104,17 +103,17 @@ public class DashBoardSample extends javax.swing.JFrame {
         jButton2.setPreferredSize(new java.awt.Dimension(150, 100));
 
         jButton3.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jButton3.setText("Button");
+        jButton3.setText("Item");
         jButton3.setBorderPainted(false);
         jButton3.setPreferredSize(new java.awt.Dimension(150, 100));
 
         jButton4.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jButton4.setText("Button");
+        jButton4.setText("Daily Sales");
         jButton4.setBorderPainted(false);
         jButton4.setPreferredSize(new java.awt.Dimension(150, 100));
 
         jButton5.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jButton5.setText("Button");
+        jButton5.setText("Purcahse Order");
         jButton5.setBorderPainted(false);
         jButton5.setPreferredSize(new java.awt.Dimension(150, 100));
         jButton5.addActionListener(new java.awt.event.ActionListener() {
@@ -124,7 +123,7 @@ public class DashBoardSample extends javax.swing.JFrame {
         });
 
         jButton6.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jButton6.setText("Button");
+        jButton6.setText("Supplier");
         jButton6.setBorderPainted(false);
         jButton6.setPreferredSize(new java.awt.Dimension(150, 100));
 
@@ -329,20 +328,23 @@ public class DashBoardSample extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(DashBoardSample.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(SaleManagerDashBoard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(DashBoardSample.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(SaleManagerDashBoard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(DashBoardSample.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(SaleManagerDashBoard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(DashBoardSample.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(SaleManagerDashBoard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new DashBoardSample().setVisible(true);
+                new SaleManagerDashBoard().setVisible(true);
             }
         });
     }
