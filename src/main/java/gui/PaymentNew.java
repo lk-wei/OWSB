@@ -11,13 +11,13 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author Kang Wei
  */
-public class ViewPayment extends javax.swing.JFrame {
+public class PaymentNew extends javax.swing.JFrame {
     /**
      * Creates new form DashBoardSample
      */
     private DefaultTableModel tableModel;
     
-    public ViewPayment() {
+    public PaymentNew() {
         initComponents();
         this.setLocationRelativeTo(null); //this will center your frame
         
@@ -87,7 +87,7 @@ public class ViewPayment extends javax.swing.JFrame {
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("View Payment");
+        jLabel1.setText("New Payment");
         jLabel1.setToolTipText("");
         jLabel1.setMaximumSize(new java.awt.Dimension(800, 100));
         jLabel1.setMinimumSize(new java.awt.Dimension(800, 100));
@@ -210,7 +210,7 @@ public class ViewPayment extends javax.swing.JFrame {
         jButton1.setBackground(new java.awt.Color(255, 0, 51));
         jButton1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("Back");
+        jButton1.setText("Cancel");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -220,7 +220,7 @@ public class ViewPayment extends javax.swing.JFrame {
         jButton2.setBackground(new java.awt.Color(102, 204, 0));
         jButton2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jButton2.setForeground(new java.awt.Color(255, 255, 255));
-        jButton2.setText("Edit");
+        jButton2.setText("Create");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -286,13 +286,13 @@ public class ViewPayment extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ViewPayment.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PaymentNew.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ViewPayment.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PaymentNew.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ViewPayment.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PaymentNew.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ViewPayment.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PaymentNew.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
         //</editor-fold>
@@ -330,7 +330,7 @@ public class ViewPayment extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new ViewPayment().setVisible(true);
+                new PaymentNew().setVisible(true);
             }
         });
     }
