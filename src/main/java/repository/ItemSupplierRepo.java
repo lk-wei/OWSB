@@ -91,6 +91,7 @@ public class ItemSupplierRepo {
         Files.write(filePath, updatedLines);
     }
     
+    // convert object into string seperated by |
     private String objectToString(ItemSupplier is) {
         return String.join("|",
             is.getItemSupplierId().toString(),
@@ -99,6 +100,7 @@ public class ItemSupplierRepo {
         );
     }
     
+    // convert string with | into object
     private ItemSupplier stringToObject(String line) {
         String[] parts = line.split("\\|", -1);
 
