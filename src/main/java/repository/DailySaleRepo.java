@@ -92,6 +92,7 @@ public class DailySaleRepo {
         Files.write(filePath, updatedLines);
     }
     
+    // convert object into string seperated by |
     private String objectToString(DailySale ds) {
         return String.join("|",
             ds.getSaleId().toString(),
@@ -102,7 +103,7 @@ public class DailySaleRepo {
         );
     }
     
-
+    // convert string with | into object
     private DailySale stringToObject(String line) {
         String[] parts = line.split("\\|", -1); // 
 
