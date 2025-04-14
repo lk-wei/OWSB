@@ -4,11 +4,6 @@
  */
 package gui;
 
-import domain.FinancialReport;
-import java.io.IOException;
-import java.util.List;
-import javax.swing.JOptionPane;
-import repository.FinancialReportRepo;
 import sample.*;
 
 /**
@@ -22,21 +17,10 @@ public class FinancialReportTable extends javax.swing.JFrame {
     
     public FinancialReportTable() {
         initComponents();
-        updateTable();
         this.setLocationRelativeTo(null); //this will center your frame
     }
     
     // Custom Methods
-
-    private void updateTable() {
-        FinancialReportRepo repo = new FinancialReportRepo();
-        try {
-             jTable1.setModel(repo.getTableModel());
-        } catch (IOException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
-        }
-    }
 
     /**
      * This method is called from within the constructor to initialize the form.
