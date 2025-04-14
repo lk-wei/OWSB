@@ -5,6 +5,7 @@
 package domain;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -19,6 +20,7 @@ public class PurchaseOrder {
     private LocalDate orderDate;
     private LocalDate expectedDeliveryDate;
     private String status; // Draft/PendingApproval/Approved/Rejected/Shipped/Received
+    private LocalDate approvalDate;
     private Long approvedById; // FK to User
     private Double totalAmount; //d
     private List<PurchaseOrderItem> item;
@@ -27,9 +29,7 @@ public class PurchaseOrder {
     public PurchaseOrder() {
     }
 
-    public PurchaseOrder(Long purchaseOrderId, Long purchaseRequisitionId, Long createdById, 
-                        Long supplierId, LocalDate orderDate, LocalDate expectedDeliveryDate, 
-                        String status, Long approvedById, Double totalAmount, List<PurchaseOrderItem> item) {
+    public PurchaseOrder(Long purchaseOrderId, Long purchaseRequisitionId, Long createdById, Long supplierId, LocalDate orderDate, LocalDate expectedDeliveryDate, String status, LocalDate approvalDate, Long approvedById, Double totalAmount, List<PurchaseOrderItem> item) {
         this.purchaseOrderId = purchaseOrderId;
         this.purchaseRequisitionId = purchaseRequisitionId;
         this.createdById = createdById;
@@ -37,12 +37,12 @@ public class PurchaseOrder {
         this.orderDate = orderDate;
         this.expectedDeliveryDate = expectedDeliveryDate;
         this.status = status;
+        this.approvalDate = approvalDate;
         this.approvedById = approvedById;
         this.totalAmount = totalAmount;
         this.item = item;
     }
-
-    // Getters and Setters
+    
     public Long getPurchaseOrderId() {
         return purchaseOrderId;
     }
@@ -99,6 +99,14 @@ public class PurchaseOrder {
         this.status = status;
     }
 
+    public LocalDate getApprovalDate() {
+        return approvalDate;
+    }
+
+    public void setApprovalDate(LocalDate approvalDate) {
+        this.approvalDate = approvalDate;
+    }
+
     public Long getApprovedById() {
         return approvedById;
     }
@@ -134,6 +142,7 @@ public class PurchaseOrder {
                 ", orderDate=" + orderDate +
                 ", expectedDeliveryDate=" + expectedDeliveryDate +
                 ", status='" + status + '\'' +
+                ", approvalDate='" +approvalDate +
                 ", approvedById=" + approvedById +
                 ", totalAmount=" + totalAmount +
                 '}';
