@@ -18,19 +18,18 @@ public class StockReport {
     private Long createdBy;
     private LocalDate creationDate;
     private String description;
-    private String status;
-//    private List<StockUpdate> stockUpdate;
+    private List<StockUpdate> stockUpdateList;
 
     public StockReport() {
     }
 
-    public StockReport(Long stockReportId, String reportCode, Long createdBy, LocalDate creationDate, String description, String status) {
+    public StockReport(Long stockReportId, String reportCode, Long createdBy, LocalDate creationDate, String description, List<StockUpdate> stockUpdateList) {
         this.stockReportId = stockReportId;
         this.reportCode = reportCode;
         this.createdBy = createdBy;
         this.creationDate = creationDate;
         this.description = description;
-        this.status = status;
+        this.stockUpdateList = stockUpdateList;
     }
     
     public Long getStockReportId() {
@@ -73,11 +72,11 @@ public class StockReport {
         this.description = description;
     }
 
-    public String getStatus() {
-        return status;
+    public List<StockUpdate> getStockUpdateList() {
+        return stockUpdateList;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setStockUpdateList(List<StockUpdate> stockUpdateList) {
+        this.stockUpdateList = stockUpdateList;
     }
 }

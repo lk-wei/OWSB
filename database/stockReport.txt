@@ -1,0 +1,3 @@
+1|STOCK-001|101|2023-10-15|Monthly inventory report|APPROVED
+2|STOCK-002|102|2023-10-16|Urgent restock needed|PENDING
+3|STOCK-003|103|2023-10-17|Quarterly audit|COMPLETED

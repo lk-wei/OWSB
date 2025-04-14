@@ -133,15 +133,7 @@ public class FinancialReportView extends javax.swing.JFrame {
             new String [] {
                 "Payment Code", "Supplier", "Date", "Amount", ""
             }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Double.class, java.lang.Object.class
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-        });
+        ));
         jTable2.setShowGrid(true);
         jScrollPane3.setViewportView(jTable2);
         if (jTable2.getColumnModel().getColumnCount() > 0) {
