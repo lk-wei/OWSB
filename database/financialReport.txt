@@ -1,0 +1,10 @@
+1|FIN-001|101|2023-01-15|Monthly financial report for January|APPROVED
+2|FIN-002|102|2023-02-15|Monthly financial report for February|PENDING
+3|FIN-003|103|2023-03-15|Monthly financial report for March|REJECTED
+4|FIN-004|101|2023-04-15|Monthly financial report for April|APPROVED
+5|FIN-005|104|2023-05-15|Monthly financial report for May|DRAFT
+6|FIN-006|105|2023-06-15|Monthly financial report for June|APPROVED
+7|FIN-007|102|2023-07-15|Monthly financial report for July|PENDING
+8|FIN-008|103|2023-08-15|Monthly financial report for August|APPROVED
+9|FIN-009|101|2023-09-15|Monthly financial report for September|REJECTED
+10|FIN-010|104|2023-10-15|Monthly financial report for October|DRAFT
