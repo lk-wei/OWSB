@@ -41,9 +41,9 @@ public class UserEdit extends javax.swing.JFrame {
         fullNameLabel = new javax.swing.JLabel();
         editFullNameTextField = new javax.swing.JTextField();
         roleLabel = new javax.swing.JLabel();
-        editRoleTextField = new javax.swing.JTextField();
         userIdLabel = new javax.swing.JLabel();
         editUserIdTextField = new javax.swing.JTextField();
+        editRoleComboBox = new javax.swing.JComboBox<>();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
 
@@ -75,13 +75,14 @@ public class UserEdit extends javax.swing.JFrame {
         roleLabel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         roleLabel.setText("Role");
 
-        editRoleTextField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-
         userIdLabel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         userIdLabel.setText("User ID");
 
         editUserIdTextField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         editUserIdTextField.setEnabled(false);
+
+        editRoleComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Sales Manager", "Purchase Manager", "Administrator", "Inventory Manager", "Finance Manager" }));
+        editRoleComboBox.setSelectedIndex(-1);
 
         javax.swing.GroupLayout inputPanelLayout = new javax.swing.GroupLayout(inputPanel);
         inputPanel.setLayout(inputPanelLayout);
@@ -89,11 +90,10 @@ public class UserEdit extends javax.swing.JFrame {
             inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(inputPanelLayout.createSequentialGroup()
                 .addGap(75, 75, 75)
-                .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(editFullNameTextField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
-                        .addComponent(editRoleTextField, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(roleLabel, javax.swing.GroupLayout.Alignment.LEADING))
+                .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(editRoleComboBox, 0, 300, Short.MAX_VALUE)
+                    .addComponent(editFullNameTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
+                    .addComponent(roleLabel)
                     .addComponent(fullNameLabel)
                     .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addComponent(editUserNameTextField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
@@ -132,7 +132,7 @@ public class UserEdit extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(roleLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(editRoleTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(editRoleComboBox, javax.swing.GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE)
                 .addContainerGap(199, Short.MAX_VALUE))
         );
 
@@ -258,7 +258,7 @@ public class UserEdit extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField editFullNameTextField;
     private javax.swing.JTextField editPasswordTextField;
-    private javax.swing.JTextField editRoleTextField;
+    private javax.swing.JComboBox<String> editRoleComboBox;
     private javax.swing.JTextField editUserIdTextField;
     private javax.swing.JTextField editUserNameTextField;
     private javax.swing.JLabel fullNameLabel;
