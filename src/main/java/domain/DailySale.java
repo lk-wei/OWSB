@@ -12,6 +12,7 @@ import java.time.LocalDate;
  */
 public class DailySale {
     private Long saleId; //PK
+    private String saleCode;
     private Long itemId; //FK to Item
     private LocalDate saleDate;
     private int quantitySold;
@@ -21,8 +22,9 @@ public class DailySale {
     public DailySale() {
     }
 
-    public DailySale(Long saleId, Long itemId, LocalDate saleDate, int quantitySold, Long recordedById) {
+    public DailySale(Long saleId, String saleCode, Long itemId, LocalDate saleDate, int quantitySold, Long recordedById) {
         this.saleId = saleId;
+        this.saleCode = saleCode;
         this.itemId = itemId;
         this.saleDate = saleDate;
         this.quantitySold = quantitySold;
@@ -35,6 +37,14 @@ public class DailySale {
 
     public void setSaleId(Long saleId) {
         this.saleId = saleId;
+    }
+
+    public String getSaleCode() {
+        return saleCode;
+    }
+
+    public void setSaleCode(String saleCode) {
+        this.saleCode = saleCode;
     }
 
     public Long getItemId() {
@@ -67,5 +77,5 @@ public class DailySale {
 
     public void setRecordedById(Long recordedById) {
         this.recordedById = recordedById;
-    }   
+    }
 }

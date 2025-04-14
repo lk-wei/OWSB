@@ -96,6 +96,7 @@ public class DailySaleRepo {
     private String objectToString(DailySale ds) {
         return String.join("|",
             ds.getSaleId().toString(),
+            ds.getSaleCode().toString(),
             ds.getItemId().toString(),
             ds.getSaleDate().toString(),
             Integer.toString(ds.getQuantitySold()),
@@ -109,10 +110,11 @@ public class DailySaleRepo {
 
         return new DailySale(
             Long.valueOf(parts[0]), // saleId
-            Long.valueOf(parts[1]), // itemId
-            LocalDate.parse(parts[2]), //saleDate
-            Integer.parseInt(parts[3]), // quantitySold
-            Long.valueOf(parts[4])// recordedBy
+            parts[1],// saleCode
+            Long.valueOf(parts[2]), // itemId
+            LocalDate.parse(parts[3]), //saleDate
+            Integer.parseInt(parts[4]), // quantitySold
+            Long.valueOf(parts[5])// recordedBy
         );
     }
 }
