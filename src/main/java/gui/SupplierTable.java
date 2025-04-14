@@ -60,7 +60,15 @@ public class SupplierTable extends javax.swing.JFrame {
             new String [] {
                 "ID", "Name", "Email", "Phone"
             }
-        ));
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Long.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
         jScrollPane1.setViewportView(supplierTable);
 
         jButton1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N

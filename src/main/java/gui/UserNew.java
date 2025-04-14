@@ -41,7 +41,7 @@ public class UserNew extends javax.swing.JFrame {
         fullNameLabel = new javax.swing.JLabel();
         addFullNameTextField = new javax.swing.JTextField();
         roleLabel = new javax.swing.JLabel();
-        addRoleTextField = new javax.swing.JTextField();
+        addRoleComboBox = new javax.swing.JComboBox<>();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
 
@@ -73,7 +73,8 @@ public class UserNew extends javax.swing.JFrame {
         roleLabel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         roleLabel.setText("Role");
 
-        addRoleTextField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        addRoleComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Sales Manager", "Purchase Manager", "Administrator", "Inventory Manager", "Finance Manager" }));
+        addRoleComboBox.setSelectedIndex(-1);
 
         javax.swing.GroupLayout inputPanelLayout = new javax.swing.GroupLayout(inputPanel);
         inputPanel.setLayout(inputPanelLayout);
@@ -89,19 +90,20 @@ public class UserNew extends javax.swing.JFrame {
                     .addComponent(fullNameLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
                 .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(roleLabel)
                     .addComponent(passwordLabel)
                     .addComponent(addPasswordTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(inputPanelLayout.createSequentialGroup()
-                            .addComponent(roleLabel)
-                            .addGap(237, 237, 237))
-                        .addComponent(addRoleTextField)))
+                    .addComponent(addRoleComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(75, 75, 75))
         );
         inputPanelLayout.setVerticalGroup(
             inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, inputPanelLayout.createSequentialGroup()
+            .addGroup(inputPanelLayout.createSequentialGroup()
                 .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(inputPanelLayout.createSequentialGroup()
+                        .addComponent(roleLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(addRoleComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(inputPanelLayout.createSequentialGroup()
                         .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(userNameLabel)
@@ -113,11 +115,7 @@ public class UserNew extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(fullNameLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(addFullNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(inputPanelLayout.createSequentialGroup()
-                        .addComponent(roleLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(addRoleTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(addFullNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(278, Short.MAX_VALUE))
         );
 
@@ -216,7 +214,7 @@ public class UserNew extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField addFullNameTextField;
     private javax.swing.JTextField addPasswordTextField;
-    private javax.swing.JTextField addRoleTextField;
+    private javax.swing.JComboBox<String> addRoleComboBox;
     private javax.swing.JTextField addUserNameTextField;
     private javax.swing.JLabel fullNameLabel;
     private javax.swing.JPanel inputPanel;
