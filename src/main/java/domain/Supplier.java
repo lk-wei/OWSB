@@ -10,24 +10,34 @@ package domain;
  */
 public class Supplier {
     private Long supplierId;
+    private String supplierCode;
     private String suppliername;
     private String email;
     private String phone;
 
-    public Supplier(Long supplierId, String suppliername, String email, String phone) {
+    public Supplier(Long supplierId, String supplierCode, String suppliername, String email, String phone) {
         this.supplierId = supplierId;
+        this.supplierCode = supplierCode;
         this.suppliername = suppliername;
         this.email = email;
         this.phone = phone;
     }
 
-      public Long getSupplierId() {
+    public Long getSupplierId() {
         return supplierId;
     }
 
 
-   public void setSupplierId(Long supplierId) {
+    public void setSupplierId(Long supplierId) {
         this.supplierId = supplierId;
+    }
+
+    public String getSupplierCode() {
+        return supplierCode;
+    }
+
+    public void setSupplierCode(String supplierCode) {
+        this.supplierCode = supplierCode;
     }
 
     public String getSuppliername() {
