@@ -108,6 +108,7 @@ public class PaymentItemRepo {
                 paymentItem.getPaymentItemId().toString(),
                 
                 paymentItem.getPaymentId().toString(),
+                paymentItem.getPaymentCode(),
                 paymentItem.getPurchaseOrderId().toString(),
                 Double.toString(paymentItem.getTotalAmount()),
                 paymentItem.getProductOrderCode()
@@ -119,12 +120,12 @@ public class PaymentItemRepo {
         String[] parts = line.split("\\|", 5);
 
         return new PaymentItem(
-                Long.valueOf(parts[0]), // PIId
-                
+                Long.valueOf(parts[0]), // PIId                
                 Long.valueOf(parts[1]),
-                Long.valueOf(parts[2]),
-                Double.parseDouble(parts[3]),
-                parts[4]
+                parts[2],
+                Long.valueOf(parts[3]),
+                Double.parseDouble(parts[4]),
+                parts[5]
         );
     }
 }

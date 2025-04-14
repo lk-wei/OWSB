@@ -5,6 +5,7 @@
 package repository;
 
 import domain.Item;
+import function.IdGenerator;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -22,6 +23,9 @@ public class ItemRepo {
 
     // create
     public void createItem(Item item) throws IOException {
+        
+        IdGenerator ig = new IdGenerator(filePath);
+        item.setItemId(ig.getId());
         List<String> lines = Files.readAllLines(filePath);
         lines.add(objectToString(item));
 
@@ -103,7 +107,7 @@ public class ItemRepo {
                 item.getItemId().toString(),
                 item.getItemCode(),
                 item.getItemName(),
-                item.getSupplierName(),
+                
                 Integer.toString(item.getCurrentStock()),
                 Integer.toString(item.getMinStock()),
                 Double.toString(item.getUnitCost())
@@ -116,8 +120,7 @@ public class ItemRepo {
         return new Item(
                 Long.valueOf(parts[0]),// id
                 parts[1], // code
-                parts[2], // name
-                parts[3], //supplier
+                parts[2], // name               
                 Integer.parseInt(parts[3]),// currentStock
                 Integer.parseInt(parts[4]),// min
                 Double.parseDouble(parts[5])
