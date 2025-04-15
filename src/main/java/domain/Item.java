@@ -18,6 +18,9 @@ public class Item {
     private int currentStock;
     private int minStock;
     private double unitCost;
+    
+    public Item() {
+    }
 
     public Item(Long itemId, String itemCode, String itemName, int currentStock, int minStock, double unitCost) {
         this.itemId = itemId;

@@ -14,6 +14,9 @@ public class Supplier {
     private String suppliername;
     private String email;
     private String phone;
+    
+    public Supplier() {
+    }
 
     public Supplier(Long supplierId, String supplierCode, String suppliername, String email, String phone) {
         this.supplierId = supplierId;

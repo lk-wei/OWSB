@@ -17,6 +17,9 @@ public class PaymentItem {
     private Long purchaseOrderId;       
     private double TotalAmount;
     private String productOrderCode;
+    
+    public PaymentItem() {
+    }
 
     public PaymentItem(Long paymentItemId, Long paymentId, String paymentCode, Long purchaseOrderId, double TotalAmount, String productOrderCode) {
         this.paymentItemId = paymentItemId;

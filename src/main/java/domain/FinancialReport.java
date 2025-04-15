@@ -5,7 +5,6 @@
 package domain;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -18,19 +17,17 @@ public class FinancialReport {
     private Long createdBy;
     private LocalDate creationDate;
     private String description;
-    private String status;
     private List<Payment> paymentList;
     
     public FinancialReport() {
     }
 
-    public FinancialReport(Long financialReportId, String reportCode, Long createdBy, LocalDate creationDate, String description, String status, List<Payment> paymentList) {
+    public FinancialReport(Long financialReportId, String reportCode, Long createdBy, LocalDate creationDate, String description, List<Payment> paymentList) {
         this.financialReportId = financialReportId;
         this.reportCode = reportCode;
         this.createdBy = createdBy;
         this.creationDate = creationDate;
         this.description = description;
-        this.status = status;
         this.paymentList = paymentList;
     }
     
@@ -72,14 +69,6 @@ public class FinancialReport {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
     public List<Payment> getPaymentList() {

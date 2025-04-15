@@ -16,6 +16,9 @@ public class Payment {
     private Long supplierId;    
     private LocalDate paymentDate;           
     private double paymentAmount;
+    
+    public Payment() {
+    }
 
     public Payment(Long paymentId, String paymentCode, Long supplierId, LocalDate paymentDate, double paymentAmount) {
         this.paymentId = paymentId;
