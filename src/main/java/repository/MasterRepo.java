@@ -4,6 +4,7 @@
  */
 package repository;
 
+import domain.Identifiable;
 import function.IdGenerator;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -15,7 +16,16 @@ import java.util.List;
  *
  * @author Kang Wei
  */
-public abstract class MasterRepo<T> {
+public abstract class MasterRepo<T extends Identifiable<Long>> {
+    
+    // Default implementations
+    protected Long getId(T entity) {
+        return entity.getId();
+    }
+    
+    protected void setId(T entity, long id) {
+        entity.setId(id);
+    }
     protected final Path filePath;
 
     public MasterRepo(Path filePath) {
@@ -86,8 +96,6 @@ public abstract class MasterRepo<T> {
     }
 
     // to be implemented by child classes
-    protected abstract Long getId(T entity);
-    protected abstract void setId(T entity, long id);
     protected abstract String objectToString(T entity); // For Storage to TXT file
     protected abstract T stringToObject(String line);   // Convert lines form TXT files to objects
 }

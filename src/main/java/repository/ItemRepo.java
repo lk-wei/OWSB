@@ -5,11 +5,9 @@
 package repository;
 
 import domain.Item;
-import function.IdGenerator;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
 
@@ -61,19 +59,9 @@ public class ItemRepo extends MasterRepo<Item>{
     
     // Implement required abstract methods
     @Override
-    protected Long getId(Item entity) {
-        return entity.getItemId();
-    }
-    
-    @Override
-    protected void setId(Item entity, long id) {
-        entity.setItemId(id);
-    }
-
-    @Override
     protected String objectToString(Item item) {
         return String.join("|",
-                item.getItemId().toString(),
+                item.getId().toString(),
                 item.getItemCode(),
                 item.getItemName(),
                 Integer.toString(item.getCurrentStock()),

@@ -1,8 +1,6 @@
 package repository;
 
-import domain.StockReport;
 import domain.StockReportItem;
-import domain.Payment;
 import domain.StockReport;
 import domain.StockUpdate;
 import java.io.IOException;
@@ -47,19 +45,9 @@ public class StockReportRepo extends MasterRepo<StockReport> {
     
     // Implement required abstract methods
     @Override
-    protected Long getId(StockReport entity) {
-        return entity.getStockReportId();
-    }
-    
-    @Override
-    protected void setId(StockReport entity, long id) {
-        entity.setStockReportId(id);
-    }
-
-    @Override
     protected String objectToString(StockReport report) {
         return String.join("|",
-            report.getStockReportId().toString(),
+            report.getId().toString(),
             report.getReportCode(),
             report.getCreatedBy().toString(),
             report.getCreationDate().toString(),

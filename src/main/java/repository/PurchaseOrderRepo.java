@@ -5,7 +5,6 @@
 package repository;
 
 import domain.PurchaseOrder;
-import function.IdGenerator;
 import java.io.IOException;
 import java.nio.file.*;
 import java.time.LocalDate;
@@ -16,75 +15,22 @@ import java.util.List;
  *
  * @author Kang Wei
  */
-public class PurchaseOrderRepo {
+public class PurchaseOrderRepo extends MasterRepo<PurchaseOrder>{
     // define the txt file that stores data
     final private Path filePath = Path.of("database/purchaseOrder.txt");
     
     public PurchaseOrderRepo(){
-       
+       super(Path.of("database/purchaseOrder.txt"));
     }
     
-    // create
-    public void createPurchaseOrder(PurchaseOrder PurchaseOrder) throws IOException{
-        PurchaseOrder.setPurchaseOrderId(IdGenerator.getNewId(filePath));
-        
-        List<String> lines = Files.readAllLines(filePath);
-        lines.add(objectToString(PurchaseOrder));
-
-        Files.write(filePath, lines);
-    }
-    
-    // read
-    
-    public List<PurchaseOrder> getAllPurchaseOrder() throws IOException{
-        List<PurchaseOrder> PurchaseOrderList = new ArrayList<>();
-        List<String> lines = Files.readAllLines(filePath);
-        
-        for(String line : lines){
-            PurchaseOrder po = stringToObject(line);
-            PurchaseOrderList.add(po);
-        }
-        return PurchaseOrderList;
-    }
-    
-    // update
-    public void updatePurchaseOrder(PurchaseOrder PurchaseOrder) throws IOException{
-        List<String> lines = Files.readAllLines(filePath);
-        List<String> updatedLines = new ArrayList<>();
-   
-        for(String line : lines){
-            PurchaseOrder u = stringToObject(line);
-            
-            if(u.getPurchaseOrderId().equals(PurchaseOrder.getPurchaseOrderId())){
-                updatedLines.add(objectToString(PurchaseOrder));
-            }else{
-                updatedLines.add(line);
-            }
-        }
-        Files.write(filePath, updatedLines);
-    }
-    
-    // delete
-    public void deletePurchaseOrder(PurchaseOrder PurchaseOrder) throws IOException{
-        List<String> lines = Files.readAllLines(filePath);
-        List<String> updatedLines = new ArrayList<>();
-   
-        for(String line : lines){
-            PurchaseOrder u = stringToObject(line);
-            
-            if(!u.getPurchaseOrderId().equals(PurchaseOrder.getPurchaseOrderId())){
-                updatedLines.add(line);
-            }
-        }
-        Files.write(filePath, updatedLines);
-    }
+    // custom method
     public PurchaseOrder getOrderById(Long purchaseOrderId) throws IOException {
         List<String> lines = Files.readAllLines(filePath);
 
         for (String line : lines) {
             PurchaseOrder po = stringToObject(line);
 
-            if (po.getPurchaseOrderId().equals(purchaseOrderId)) {
+            if (po.getId().equals(purchaseOrderId)) {
                 return po;
             }
         }
@@ -94,9 +40,10 @@ public class PurchaseOrderRepo {
     // others
     
     // Converts PurchaseOrder object to pipe-delimited string for text file storage
-    private String objectToString(PurchaseOrder po) {
+    @Override
+    protected String objectToString(PurchaseOrder po) {
         return String.join("|",
-            po.getPurchaseOrderId().toString(),
+            po.getId().toString(),
             po.getPurchaseRequisitionId().toString(),
             po.getCreatedById().toString(),
             po.getSupplierId().toString(),
@@ -109,7 +56,8 @@ public class PurchaseOrderRepo {
     }
 
     // Converts pipe-delimited string back to PurchaseOrder object
-    private PurchaseOrder stringToObject(String line) throws IOException {
+    @Override
+    protected PurchaseOrder stringToObject(String line) {
         
         PurchaseOrderItemRepo itemRepo = new PurchaseOrderItemRepo();
         String[] parts = line.split("\\|", -1); // -1 keeps empty values
@@ -125,7 +73,7 @@ public class PurchaseOrderRepo {
             LocalDate.parse(parts[7]),                              // approval 
             Long.valueOf(parts[8]),                                 // approvedById
             Double.valueOf(parts[9]),                                 // totalAmount
-            itemRepo.getByPurchaseOrderId(Long.valueOf(parts[0]))     // item list                            
+            new ArrayList<>()                                        // empty item list                            
         );
     }
 }

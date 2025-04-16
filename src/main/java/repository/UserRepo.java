@@ -7,7 +7,6 @@ package repository;
 import domain.User;
 import java.io.IOException;
 import java.nio.file.*;
-import java.util.ArrayList;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
 
@@ -15,33 +14,9 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author Kang Wei
  */
-public class UserRepo {
-    // define the txt file that stores data
-    final private Path filePath = Path.of("database/user.txt");
-    
+public class UserRepo extends MasterRepo<User>{
     public UserRepo(){
-       
-    }
-    
-    // create
-    public void createUser(User user) throws IOException{
-         List<String> lines = Files.readAllLines(filePath);
-         lines.add(objectToString(user));
-         
-         Files.write(filePath, lines);
-    }
-    
-    // read
-    
-    public List<User> getAllUser() throws IOException{
-        List<User> userList = new ArrayList<>();
-        List<String> lines = Files.readAllLines(filePath);
-        
-        for(String line : lines){
-            User u = stringToObject(line);
-            userList.add(u);
-        }
-        return userList;
+       super(Path.of("database/user.txt"));
     }
     
     public User getUserById(Long id) throws IOException{
@@ -50,7 +25,7 @@ public class UserRepo {
         for(String line : lines){
             User u = stringToObject(line);
             
-            if(u.getUserId().equals(id)){
+            if(u.getId().equals(id)){
                 return u;
             }
         }
@@ -78,7 +53,7 @@ public class UserRepo {
             new String[]{"Username", "Full Name", "Role", ""}
         );
 
-        List<User> users = getAllUser(); 
+        List<User> users = getAll(); 
             
 
         for (User user : users) {
@@ -91,45 +66,13 @@ public class UserRepo {
         }
         return model;
     }
-    
-    // update
-    public void updateUser(User user) throws IOException{
-        List<String> lines = Files.readAllLines(filePath);
-        List<String> updatedLines = new ArrayList<>();
-   
-        for(String line : lines){
-            User u = stringToObject(line);
-            
-            if(u.getUserId().equals(user.getUserId())){
-                updatedLines.add(objectToString(user));
-            }else{
-                updatedLines.add(line);
-            }
-        }
-        Files.write(filePath, updatedLines);
-    }
-    
-    // delete
-    public void deleteUser(User user) throws IOException{
-        List<String> lines = Files.readAllLines(filePath);
-        List<String> updatedLines = new ArrayList<>();
-   
-        for(String line : lines){
-            User u = stringToObject(line);
-            
-            if(!u.getUserId().equals(user.getUserId())){
-                updatedLines.add(line);
-            }
-        }
-        Files.write(filePath, updatedLines);
-    }
-    
-    // others
+
     
    // Converts User object to pipe-delimited string
-    private String objectToString(User user) {
+    @Override
+    protected String objectToString(User user) {
         return String.join("|",
-            user.getUserId().toString(),
+            user.getId().toString(),
             user.getUserName(),
             user.getPassword(),
             user.getFullName(),
@@ -138,7 +81,8 @@ public class UserRepo {
     }
 
     // Converts pipe-delimited string back to User object
-    private User stringToObject(String line) {
+    @Override
+    protected User stringToObject(String line) {
         String[] parts = line.split("\\|", 5);
 
         return new User(

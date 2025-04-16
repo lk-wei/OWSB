@@ -16,34 +16,9 @@ import java.util.Objects;
  *
  * @author Kang Wei
  */
-public class PurchaseOrderItemRepo {
-    
-    // define the txt file that stores data
-    final private Path filePath = Path.of("database/purchaseOrderItem.txt");
-    
+public class PurchaseOrderItemRepo extends MasterRepo<PurchaseOrderItem>{
     public PurchaseOrderItemRepo(){
-       
-    }
-    
-    // create
-    public void createPurchaseOrderItem(PurchaseOrderItem PurchaseOrderItem) throws IOException{
-         List<String> lines = Files.readAllLines(filePath);
-         lines.add(objectToString(PurchaseOrderItem));
-         
-         Files.write(filePath, lines);
-    }
-    
-    // read
-    
-    public List<PurchaseOrderItem> getAllPurchaseOrderItem() throws IOException{
-        List<PurchaseOrderItem> PurchaseOrderItemList = new ArrayList<>();
-        List<String> lines = Files.readAllLines(filePath);
-        
-        for(String line : lines){
-            PurchaseOrderItem poi = stringToObject(line);
-            PurchaseOrderItemList.add(poi);
-        }
-        return PurchaseOrderItemList;
+       super(Path.of("database/purchaseOrderItem.txt"));
     }
     
     public List<PurchaseOrderItem> getByPurchaseOrderId(Long poid) throws IOException{
@@ -60,42 +35,11 @@ public class PurchaseOrderItemRepo {
         return PurchaseOrderItemList;
     }
     
-    // update
-    public void updatePurchaseOrderItem(PurchaseOrderItem PurchaseOrderItem) throws IOException{
-        List<String> lines = Files.readAllLines(filePath);
-        List<String> updatedLines = new ArrayList<>();
-   
-        for(String line : lines){
-            PurchaseOrderItem u = stringToObject(line);
-            
-            if(u.getPurchaseOrderItemId().equals(PurchaseOrderItem.getPurchaseOrderItemId())){
-                updatedLines.add(objectToString(PurchaseOrderItem));
-            }else{
-                updatedLines.add(line);
-            }
-        }
-        Files.write(filePath, updatedLines);
-    }
-    
-    // delete
-    public void deletePurchaseOrderItem(PurchaseOrderItem PurchaseOrderItem) throws IOException{
-        List<String> lines = Files.readAllLines(filePath);
-        List<String> updatedLines = new ArrayList<>();
-   
-        for(String line : lines){
-            PurchaseOrderItem u = stringToObject(line);
-            
-            if(!u.getPurchaseOrderItemId().equals(PurchaseOrderItem.getPurchaseOrderItemId())){
-                updatedLines.add(line);
-            }
-        }
-        Files.write(filePath, updatedLines);
-    }
-    
-    // Converts PurchaseOrderItem object to pipe-delimited string for text file storage
-    private String objectToString(PurchaseOrderItem item) {
+    // Converts object to string for text file storage
+    @Override
+    protected String objectToString(PurchaseOrderItem item) {
         return String.join("|",
-            item.getPurchaseOrderItemId().toString(),
+            item.getId().toString(),
             item.getPurchaseOrderId().toString(),
             item.getItemId().toString(),
             Integer.toString(item.getQuantity()),
@@ -104,7 +48,8 @@ public class PurchaseOrderItemRepo {
     }
 
     // Converts pipe-delimited string back to PurchaseOrderItem object
-    private PurchaseOrderItem stringToObject(String line) {
+    @Override
+    protected PurchaseOrderItem stringToObject(String line) {
         String[] parts = line.split("\\|", -1); // -1 keeps empty values
 
         return new PurchaseOrderItem(

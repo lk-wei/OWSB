@@ -4,14 +4,12 @@
  */
 package repository;
 
-import domain.Item;
 import domain.StockUpdate;
 import domain.User;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import javax.swing.table.DefaultTableModel;
@@ -20,31 +18,9 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author CK
  */
-public class StockUpdateRepo {
-    // define the txt file that stores data
-    final private Path filePath = Path.of("database/stockUpdate.txt");
-
+public class StockUpdateRepo extends MasterRepo<StockUpdate>{
     public StockUpdateRepo() {
-    }
-    
-    // create data and write into txt file
-    public void createStockUpdate(StockUpdate stockUpdate) throws IOException{
-         List<String> lines = Files.readAllLines(filePath);
-         lines.add(objectToString(stockUpdate));
-         
-         Files.write(filePath, lines);
-    }
-    
-    // read all lines
-    public List<StockUpdate> getAllStockUpdate() throws IOException{
-        List<StockUpdate> StockUpdateList = new ArrayList<>();
-        List<String> lines = Files.readAllLines(filePath);
-        
-        for(String line : lines){
-            StockUpdate su = stringToObject(line);
-            StockUpdateList.add(su);
-        }
-        return StockUpdateList;
+        super(Path.of("database/stockUpdate.txt"));
     }
     
     // match id get with the id stored in txt file
@@ -54,7 +30,7 @@ public class StockUpdateRepo {
         for(String line : lines){
             StockUpdate su = stringToObject(line);
             
-            if(Objects.equals(su.getStockUpdateId(), suid)){
+            if(Objects.equals(su.getId(), suid)){
                 return su;
             }
         }
@@ -69,7 +45,7 @@ public class StockUpdateRepo {
             new String[]{"Stock Update Code", "Date", "Updated By", ""}
         );
 
-        List<StockUpdate> stockupdates = getAllStockUpdate(); 
+        List<StockUpdate> stockupdates = getAll(); 
         UserRepo userRepo = new UserRepo();    
     
         for (StockUpdate stockupdate : stockupdates) {
@@ -85,42 +61,11 @@ public class StockUpdateRepo {
         return model;
     }
     
-    // updates
-    public void updateStockUpdate(StockUpdate stockUpdate) throws IOException{
-        List<String> lines = Files.readAllLines(filePath);
-        List<String> updatedLines = new ArrayList<>();
-   
-        for(String line : lines){
-            StockUpdate su = stringToObject(line);
-            
-            if(su.getStockUpdateId().equals(stockUpdate.getStockUpdateId())){
-                updatedLines.add(objectToString(stockUpdate));
-            }else{
-                updatedLines.add(line);
-            }
-        }
-        Files.write(filePath, updatedLines);
-    }
-    
-    // delete
-    public void deleteStockUpdate(StockUpdate stockUpdate) throws IOException{
-        List<String> lines = Files.readAllLines(filePath);
-        List<String> updatedLines = new ArrayList<>();
-   
-        for(String line : lines){
-            StockUpdate su = stringToObject(line);
-            
-            if(!su.getStockUpdateId().equals(stockUpdate.getStockUpdateId())){
-                updatedLines.add(line);
-            }
-        }
-        Files.write(filePath, updatedLines);
-    }
-    
     // convert object into string seperated by |
-    private String objectToString(StockUpdate su) {
+    @Override
+    protected String objectToString(StockUpdate su) {
         return String.join("|",
-            su.getStockUpdateId().toString(),
+            su.getId().toString(),
             su.getStockUpdateCode().toString(),
             su.getDescription().toString(),
             su.getItemId().toString(),
@@ -131,7 +76,8 @@ public class StockUpdateRepo {
     }
     
     // convert string with | into object
-    private StockUpdate stringToObject(String line) throws IOException {
+    @Override
+    protected StockUpdate stringToObject(String line) {
         String[] parts = line.split("\\|", -1); // 
 
         return new StockUpdate(
@@ -147,17 +93,17 @@ public class StockUpdateRepo {
         );
     }
     
-    private List<Item> getItemList(Long stockUpdateId) throws IOException{
-        StockUpdateRepo suRepo = new StockUpdateRepo();
-        List<StockUpdate> suList = suRepo.getByStockUpdateId(stockUpdateId);
-        
-        ItemRepo itemRepo = new ItemRepo();
-        List<Item> itemList = new ArrayList<>();
-        
-        for(StockUpdate su : suList){
-            itemList.add(itemRepo.getItemById(su.getItemId()));
-        }
-        
-        return itemList;
-    }
+//    private List<Item> getItemList(Long stockUpdateId) throws IOException{
+//        StockUpdateRepo suRepo = new StockUpdateRepo();
+//        List<StockUpdate> suList = suRepo.getByStockUpdateId(stockUpdateId);
+//        
+//        ItemRepo itemRepo = new ItemRepo();
+//        List<Item> itemList = new ArrayList<>();
+//        
+//        for(StockUpdate su : suList){
+//            itemList.add(itemRepo.getById(su.getItemId()));
+//        }
+//        
+//        return itemList;
+//    }
 }

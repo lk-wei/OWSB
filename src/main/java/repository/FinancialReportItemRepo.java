@@ -47,20 +47,12 @@ public class FinancialReportItemRepo extends MasterRepo<FinancialReportItem> {
     }
     
     // Implement required abstract methods
-    @Override
-    protected Long getId(FinancialReportItem entity) {
-        return entity.getFinancialReportItemId();
-    }
-    
-    @Override
-    protected void setId(FinancialReportItem entity, long id) {
-        entity.setFinancialReportItemId(id);
-    }
 
+    // Turn object to string for storage in TXT file
     @Override
     protected String objectToString(FinancialReportItem report) {
         return String.join("|",
-            report.getFinancialReportItemId().toString(),
+            report.getId().toString(),
             report.getFinancialReportId().toString(),
             report.getPaymentId().toString()
         );

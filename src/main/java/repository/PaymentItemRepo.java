@@ -4,56 +4,28 @@
  */
 package repository;
 
-import domain.Payment;
 import domain.PaymentItem;
-import domain.PurchaseOrder;
-import domain.Supplier;
 import java.io.IOException;
 import java.nio.file.*;
-import java.util.ArrayList;
 import java.util.List;
-import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author zuwei
  */
-public class PaymentItemRepo {
-
-    // define the txt file that stores data
-    final private Path filePath = Path.of("database/paymentItem.txt");
-
+public class PaymentItemRepo extends MasterRepo<PaymentItem>{
     public PaymentItemRepo() {
-
+        super(Path.of("database/paymentItem.txt"));
     }
-
-    // create
-    public void createPaymentItem(PaymentItem paymentItem) throws IOException {
-        List<String> lines = Files.readAllLines(filePath);
-        lines.add(objectToString(paymentItem));
-
-        Files.write(filePath, lines);
-    }
-
-    // read
-    public List<PaymentItem> getAllPaymentItem() throws IOException {
-        List<PaymentItem> paymentItemList = new ArrayList<>();
-        List<String> lines = Files.readAllLines(filePath);
-
-        for (String line : lines) {
-            PaymentItem pi = stringToObject(line);
-            paymentItemList.add(pi);
-        }
-        return paymentItemList;
-    }
-
+    
+    // custom method
     public PaymentItem getPaymentItemById(Long paymentItemId) throws IOException {
         List<String> lines = Files.readAllLines(filePath);
 
         for (String line : lines) {
             PaymentItem pi = stringToObject(line);
 
-            if (pi.getPaymentItemId().equals(paymentItemId)) {
+            if (pi.getId().equals(paymentItemId)) {
                 return pi;
             }
         }
@@ -73,44 +45,11 @@ public class PaymentItemRepo {
         return null;
     }
 
-    // update
-    public void updatePaymentItem(PaymentItem paymentItem) throws IOException {
-        List<String> lines = Files.readAllLines(filePath);
-        List<String> updatedLines = new ArrayList<>();
-
-        for (String line : lines) {
-            PaymentItem pi = stringToObject(line);
-
-            if (pi.getPaymentItemId().equals(paymentItem.getPaymentItemId())) {
-                updatedLines.add(objectToString(paymentItem));
-            } else {
-                updatedLines.add(line);
-            }
-        }
-        Files.write(filePath, updatedLines);
-    }
-
-    // delete
-    public void deletePaymentItem(PaymentItem paymentItem) throws IOException {
-        List<String> lines = Files.readAllLines(filePath);
-        List<String> updatedLines = new ArrayList<>();
-
-        for (String line : lines) {
-            PaymentItem pi = stringToObject(line);
-
-            if (!pi.getPaymentItemId().equals(paymentItem.getPaymentItemId())) {
-                updatedLines.add(line);
-            }
-        }
-        Files.write(filePath, updatedLines);
-    }
-
-    // others
     // Converts User object to pipe-delimited string
-    private String objectToString(PaymentItem paymentItem) {
+    @Override
+    protected String objectToString(PaymentItem paymentItem) {
         return String.join("|",
-                paymentItem.getPaymentItemId().toString(),
-                
+                paymentItem.getId().toString(),
                 paymentItem.getPaymentId().toString(),
                 paymentItem.getPaymentCode(),
                 paymentItem.getPurchaseOrderId().toString(),
@@ -120,7 +59,8 @@ public class PaymentItemRepo {
     }
 
     // Converts pipe-delimited string back to User object
-    private PaymentItem stringToObject(String line) {
+    @Override
+    protected PaymentItem stringToObject(String line) {
         String[] parts = line.split("\\|", 5);
 
         return new PaymentItem(

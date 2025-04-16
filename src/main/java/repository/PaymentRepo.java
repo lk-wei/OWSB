@@ -4,13 +4,11 @@
  */
 package repository;
 
-import domain.FinancialReport;
 import domain.Payment;
 import domain.Supplier;
 import java.io.IOException;
 import java.nio.file.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
 
@@ -18,33 +16,9 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author zuwei
  */
-public class PaymentRepo {
-
-    // define the txt file that stores data
-    final private Path filePath = Path.of("database/payment.txt");
-
+public class PaymentRepo extends MasterRepo<Payment>{
     public PaymentRepo() {
-
-    }
-
-    // create
-    public void createPayment(Payment payment) throws IOException {
-        List<String> lines = Files.readAllLines(filePath);
-        lines.add(objectToString(payment));
-
-        Files.write(filePath, lines);
-    }
-
-    // read
-    public List<Payment> getAllPayment() throws IOException {
-        List<Payment> paymentList = new ArrayList<>();
-        List<String> lines = Files.readAllLines(filePath);
-
-        for (String line : lines) {
-            Payment p = stringToObject(line);
-            paymentList.add(p);
-        }
-        return paymentList;
+        super(Path.of("database/payment.txt"));
     }
 
     public Payment getPaymentById(Long paymentID) throws IOException {
@@ -53,7 +27,7 @@ public class PaymentRepo {
         for (String line : lines) {
             Payment p = stringToObject(line);
 
-            if (p.getPaymentId().equals(paymentID)) {
+            if (p.getId().equals(paymentID)) {
                 return p;
             }
         }
@@ -73,50 +47,6 @@ public class PaymentRepo {
         return null;
     }
 
-    // update
-    public void updatePayment(Payment payment) throws IOException {
-        List<String> lines = Files.readAllLines(filePath);
-        List<String> updatedLines = new ArrayList<>();
-
-        for (String line : lines) {
-            Payment p = stringToObject(line);
-
-            if (p.getPaymentId().equals(payment.getPaymentId())) {
-                updatedLines.add(objectToString(payment));
-            } else {
-                updatedLines.add(line);
-            }
-        }
-        Files.write(filePath, updatedLines);
-    }
-
-    // delete
-    public void deletePayment(Payment payment) throws IOException {
-        List<String> lines = Files.readAllLines(filePath);
-        List<String> updatedLines = new ArrayList<>();
-
-        for (String line : lines) {
-            Payment p = stringToObject(line);
-
-            if (!p.getPaymentId().equals(payment.getPaymentId())) {
-                updatedLines.add(line);
-            }
-        }
-        Files.write(filePath, updatedLines);
-    }
-    
-        public Payment getBySupplierId(Long supplierID) throws IOException {
-        List<String> lines = Files.readAllLines(filePath);
-
-        for (String line : lines) {
-            Payment p = stringToObject(line);
-
-            if (p.getSupplierId().equals(supplierID)) {
-                return p;
-            }
-        }
-        return null;
-    }
         //ui
     public DefaultTableModel getTableModel() throws IOException {
         DefaultTableModel model = new DefaultTableModel(
@@ -125,7 +55,7 @@ public class PaymentRepo {
             new String[]{"Payment Code", "Supplier Name", "Date", "Amount", ""}
         );
 
-        List<Payment> payments = getAllPayment(); 
+        List<Payment> payments = getAll(); 
         SupplierRepo supplierRepo = new SupplierRepo();
 
         for (Payment payment : payments) {
@@ -141,11 +71,11 @@ public class PaymentRepo {
         return model;
     }
     
-    // others
     // Converts User object to pipe-delimited string
-    private String objectToString(Payment payment) {
+    @Override
+    protected String objectToString(Payment payment) {
         return String.join("|",
-                payment.getPaymentId().toString(),
+                payment.getId().toString(),
                 payment.getPaymentCode(),
                 payment.getSupplierId().toString(),
                 payment.getPaymentDate().toString(),
@@ -154,7 +84,8 @@ public class PaymentRepo {
     }
 
     // Converts pipe-delimited string back to User object
-    private Payment stringToObject(String line) {
+    @Override
+    protected Payment stringToObject(String line) {
         String[] parts = line.split("\\|");
 
         return new Payment(

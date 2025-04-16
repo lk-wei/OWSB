@@ -45,19 +45,9 @@ public class FinancialReportRepo extends MasterRepo<FinancialReport> {
     
     // Implement required abstract methods
     @Override
-    protected Long getId(FinancialReport entity) {
-        return entity.getFinancialReportId();
-    }
-    
-    @Override
-    protected void setId(FinancialReport entity, long id) {
-        entity.setFinancialReportId(id);
-    }
-
-    @Override
     protected String objectToString(FinancialReport report) {
         return String.join("|",
-            report.getFinancialReportId().toString(),
+            report.getId().toString(),
             report.getReportCode(),
             report.getCreatedBy().toString(),
             report.getCreationDate().toString(),
