@@ -4,7 +4,9 @@
  */
 package repository;
 
+import domain.Item;
 import domain.StockUpdate;
+import domain.User;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -12,6 +14,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -57,6 +60,30 @@ public class StockUpdateRepo {
             }
         }
         return StockUpdateList;
+    }
+    
+    // UI method
+    public DefaultTableModel getTableModel() throws IOException {
+        DefaultTableModel model = new DefaultTableModel(
+            new Object[][]{},
+            // These column names must match what's in your JFrame
+            new String[]{"Stock Update Code", "Date", "Updated By", ""}
+        );
+
+        List<StockUpdate> stockupdates = getAllStockUpdate(); 
+        UserRepo userRepo = new UserRepo();    
+    
+        for (StockUpdate stockupdate : stockupdates) {
+            User user = userRepo.getUserById(stockupdate.getUpdatedById());
+            
+            model.addRow(new Object[]{
+                stockupdate.getStockUpdateCode(),    // "Report Number"
+                stockupdate.getDate(),   // "Description"
+                user.getFullName(),    // "Created By"
+                ""                        // Empty column (action buttons?)
+            });
+        }
+        return model;
     }
     
     // update
@@ -105,7 +132,7 @@ public class StockUpdateRepo {
     }
     
     // convert string with | into object
-    private StockUpdate stringToObject(String line) {
+    private StockUpdate stringToObject(String line) throws IOException {
         String[] parts = line.split("\\|", -1); // 
 
         return new StockUpdate(
@@ -115,7 +142,23 @@ public class StockUpdateRepo {
             Long.valueOf(parts[3]), // itemId
             Integer.parseInt(parts[4]), // quantity
             LocalDate.parse(parts[5]), //date
-            Long.valueOf(parts[6])// updatedById
+            Long.valueOf(parts[6]),//updatedById
+//            getItemList(Long.parseLong(parts[0])) // Problem here !!
+            null
         );
+    }
+    
+    private List<Item> getItemList(Long stockUpdateId) throws IOException{
+        StockUpdateRepo suRepo = new StockUpdateRepo();
+        List<StockUpdate> suList = suRepo.getByStockUpdateId(stockUpdateId);
+        
+        ItemRepo itemRepo = new ItemRepo();
+        List<Item> itemList = new ArrayList<>();
+        
+        for(StockUpdate su : suList){
+            itemList.add(itemRepo.getItemById(su.getItemId()));
+        }
+        
+        return itemList;
     }
 }

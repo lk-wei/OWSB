@@ -44,7 +44,7 @@ public class ItemRepo {
         return itemList;
     }
 
-    public Item getItemById(String itemId) throws IOException {
+    public Item getItemById(Long itemId) throws IOException {
         List<String> lines = Files.readAllLines(filePath);
 
         for (String line : lines) {

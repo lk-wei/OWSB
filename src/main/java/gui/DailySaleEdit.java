@@ -95,7 +95,7 @@ public class DailySaleEdit extends javax.swing.JFrame {
         inputPanel.setMinimumSize(new java.awt.Dimension(800, 600));
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel2.setText("Sale ID");
+        jLabel2.setText("Sale Code");
 
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel6.setText("Sale Date");
@@ -127,9 +127,17 @@ public class DailySaleEdit extends javax.swing.JFrame {
                 {null, null, null}
             },
             new String [] {
-                "Item ID", "Quantity Sold", "Title 3"
+                "Item Code", "Quantity Sold", "Title 3"
             }
-        ));
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.Integer.class, java.lang.Object.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
         jTable2.setShowGrid(true);
         jScrollPane3.setViewportView(jTable2);
 
