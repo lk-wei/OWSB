@@ -5,6 +5,7 @@
 package domain;
 
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  *
@@ -17,19 +18,31 @@ public class DailySale {
     private LocalDate saleDate;
     private int quantitySold;
     private Long recordedById; //FK to User
-    
+    private List<Item> itemList;
     //Constructor
     public DailySale() {
     }
 
-    public DailySale(Long saleId, String saleCode, Long itemId, LocalDate saleDate, int quantitySold, Long recordedById) {
+    public DailySale(Long saleId, String saleCode, Long itemId, LocalDate saleDate, int quantitySold, Long recordedById, List<Item> itemList) {
         this.saleId = saleId;
         this.saleCode = saleCode;
         this.itemId = itemId;
         this.saleDate = saleDate;
         this.quantitySold = quantitySold;
         this.recordedById = recordedById;
+        this.itemList = itemList;
     }
+    
+    
+
+//    public DailySale(Long saleId, String saleCode, Long itemId, LocalDate saleDate, int quantitySold, Long recordedById) {
+//        this.saleId = saleId;
+//        this.saleCode = saleCode;
+//        this.itemId = itemId;
+//        this.saleDate = saleDate;
+//        this.quantitySold = quantitySold;
+//        this.recordedById = recordedById;
+//    }
 
     public Long getSaleId() {
         return saleId;
@@ -78,4 +91,15 @@ public class DailySale {
     public void setRecordedById(Long recordedById) {
         this.recordedById = recordedById;
     }
+
+    public List<Item> getItemList() {
+        return itemList;
+    }
+
+    public void setItemList(List<Item> itemList) {
+        this.itemList = itemList;
+    }
+    
+    
+
 }

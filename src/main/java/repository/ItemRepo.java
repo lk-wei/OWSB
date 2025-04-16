@@ -24,7 +24,7 @@ public class ItemRepo extends MasterRepo<Item>{
         super(Path.of("database/item.txt"));
     }
 
-    // custom method
+    //custom method
     public Item getItemByItemName(String itemName) throws IOException {
         List<String> lines = Files.readAllLines(filePath);
 

@@ -4,6 +4,9 @@
  */
 package gui.table;
 
+import java.io.IOException;
+import javax.swing.JOptionPane;
+import repository.DailySaleRepo;
 import sample.*;
 
 /**
@@ -17,10 +20,20 @@ public class DailySaleTable extends javax.swing.JFrame {
     
     public DailySaleTable() {
         initComponents();
+        updateTable();
         this.setLocationRelativeTo(null); //this will center your frame
     }
     
     // Custom Methods
+    private void updateTable() {
+        DailySaleRepo repo = new DailySaleRepo();
+        try {
+             jTable1.setModel(repo.getTableModel());
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
+        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -58,11 +71,11 @@ public class DailySaleTable extends javax.swing.JFrame {
                 {null, null, null, null}
             },
             new String [] {
-                "Sale ID", "Sale Date", "Recorded By", "Title 4"
+                "Sale Code", "Sale Date", "Recorded By", "Title 4"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Long.class, java.lang.String.class, java.lang.Long.class, java.lang.Object.class
+                java.lang.String.class, java.lang.String.class, java.lang.Long.class, java.lang.Object.class
             };
 
             public Class getColumnClass(int columnIndex) {

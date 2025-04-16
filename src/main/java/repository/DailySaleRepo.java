@@ -5,6 +5,8 @@
 package repository;
 
 import domain.DailySale;
+import domain.Item;
+import domain.User;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -12,6 +14,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -60,6 +63,30 @@ public class DailySaleRepo {
         return DailySaleList;
     }
     
+    // UI method
+    public DefaultTableModel getTableModel() throws IOException {
+        DefaultTableModel model = new DefaultTableModel(
+            new Object[][]{},
+            // These column names must match what's in your JFrame
+            new String[]{"Sale Code", "Sale Date", "Recorded By", ""}
+        );
+
+        List<DailySale> dailysales = getAllDailySale(); 
+        UserRepo userRepo = new UserRepo();    
+
+        for (DailySale dailysale : dailysales) {
+            User user = userRepo.getUserById(dailysale.getRecordedById());
+            
+            model.addRow(new Object[]{
+                dailysale.getSaleCode(),    // Sale Code
+                dailysale.getSaleDate(),   // Sale Date
+                user.getFullName(),  // Recorded By
+                ""                        // Empty column (action buttons?)
+            });
+        }
+        return model;
+    }
+    
     // update
     public void updateDailySale(DailySale dailySale) throws IOException{
         List<String> lines = Files.readAllLines(filePath);
@@ -105,7 +132,7 @@ public class DailySaleRepo {
     }
     
     // convert string with | into object
-    private DailySale stringToObject(String line) {
+    private DailySale stringToObject(String line) throws IOException {
         String[] parts = line.split("\\|", -1); // 
 
         return new DailySale(
@@ -114,7 +141,24 @@ public class DailySaleRepo {
             Long.valueOf(parts[2]), // itemId
             LocalDate.parse(parts[3]), //saleDate
             Integer.parseInt(parts[4]), // quantitySold
-            Long.valueOf(parts[5])// recordedBy
+            Long.valueOf(parts[5]),// recordedBy
+//            getItemList(Long.parseLong(parts[0])) // Problem here !!!
+            null
         );
     }
+    
+    private List<Item> getItemList(Long saleId) throws IOException{
+        DailySaleRepo dsRepo = new DailySaleRepo();
+        List<DailySale> dsList = dsRepo.getByDailySaleId(saleId);
+//        List<DailySale> dsList = getByDailySaleId(saleId); // Problem here !!!
+
+        ItemRepo itemRepo = new ItemRepo();
+        List<Item> itemList = new ArrayList<>();
+        
+        for(DailySale ds : dsList){
+            itemList.add(itemRepo.getItemById(ds.getItemId()));
+        }
+        return itemList;
+    }
+    
 }

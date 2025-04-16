@@ -4,6 +4,9 @@
  */
 package gui.table;
 
+import java.io.IOException;
+import javax.swing.JOptionPane;
+import repository.StockUpdateRepo;
 import sample.*;
 
 /**
@@ -17,11 +20,20 @@ public class StockUpdateTable extends javax.swing.JFrame {
     
     public StockUpdateTable() {
         initComponents();
+        updateTable();
         this.setLocationRelativeTo(null); //this will center your frame
     }
     
     // Custom Methods
-
+    private void updateTable() {
+        StockUpdateRepo repo = new StockUpdateRepo();
+        try {
+             jTable1.setModel(repo.getTableModel());
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -52,17 +64,17 @@ public class StockUpdateTable extends javax.swing.JFrame {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
             },
             new String [] {
-                "Stock Update ID", "Stock Update Code", "Date ", "Updated By", "Title 5"
+                "Stock Update Code", "Date ", "Updated By", "Title 4"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Long.class, java.lang.String.class, java.lang.String.class, java.lang.Long.class, java.lang.Object.class
+                java.lang.String.class, java.lang.String.class, java.lang.Long.class, java.lang.Object.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -75,7 +87,6 @@ public class StockUpdateTable extends javax.swing.JFrame {
             jTable1.getColumnModel().getColumn(1).setResizable(false);
             jTable1.getColumnModel().getColumn(2).setResizable(false);
             jTable1.getColumnModel().getColumn(3).setResizable(false);
-            jTable1.getColumnModel().getColumn(4).setResizable(false);
         }
 
         jButton1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N

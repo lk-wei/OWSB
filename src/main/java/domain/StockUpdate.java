@@ -5,6 +5,7 @@
 package domain;
 
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  *
@@ -18,11 +19,22 @@ public class StockUpdate {
     private int quantity;
     private LocalDate date;
     private Long updatedById; //FK to User
+    private List<Item> itemList;    
 
     public StockUpdate() {
     }
 
-    public StockUpdate(Long stockUpdateId, String stockUpdateCode, String description, Long itemId, int quantity, LocalDate date, Long updatedById) {
+//    public StockUpdate(Long stockUpdateId, String stockUpdateCode, String description, Long itemId, int quantity, LocalDate date, Long updatedById) {
+//        this.stockUpdateId = stockUpdateId;
+//        this.stockUpdateCode = stockUpdateCode;
+//        this.description = description;
+//        this.itemId = itemId;
+//        this.quantity = quantity;
+//        this.date = date;
+//        this.updatedById = updatedById;
+//    }
+
+    public StockUpdate(Long stockUpdateId, String stockUpdateCode, String description, Long itemId, int quantity, LocalDate date, Long updatedById, List<Item> itemList) {
         this.stockUpdateId = stockUpdateId;
         this.stockUpdateCode = stockUpdateCode;
         this.description = description;
@@ -30,8 +42,10 @@ public class StockUpdate {
         this.quantity = quantity;
         this.date = date;
         this.updatedById = updatedById;
+        this.itemList = itemList;
     }
-
+    
+    
     public Long getStockUpdateId() {
         return stockUpdateId;
     }
@@ -88,5 +102,12 @@ public class StockUpdate {
         this.updatedById = updatedById;
     }
 
+    public List<Item> getItemList() {
+        return itemList;
+    }
+
+    public void setItemList(List<Item> itemList) {
+        this.itemList = itemList;
+    }
     
 }

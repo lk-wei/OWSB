@@ -1,3 +1,5 @@
+1|user1|user123|CK|admin
+2|admin1|admin123|CK|admin
 1|salesmgr01|password123|Alice Tan|SalesManager
 2|purchasemgr01|securepass|Bob Lee|PurchaseManager
 3|admin01|adminpass|Catherine Wong|Administrator
