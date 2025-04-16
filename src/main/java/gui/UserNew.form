@@ -91,21 +91,28 @@
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="75" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
-                              <Component id="addFullNameTextField" alignment="0" max="32767" attributes="0"/>
-                              <Component id="addUserNameTextField" alignment="0" pref="300" max="32767" attributes="0"/>
-                              <Component id="userNameLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <Component id="fullNameLabel" min="-2" max="-2" attributes="0"/>
+                          <Component id="addUserNameTextField" alignment="0" min="-2" pref="300" max="-2" attributes="0"/>
+                          <Component id="userNameLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="passwordLabel" min="-2" max="-2" attributes="0"/>
+                          <Component id="addPasswordTextField" min="-2" pref="300" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace pref="50" max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="roleLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="passwordLabel" min="-2" max="-2" attributes="0"/>
-                          <Component id="addPasswordTextField" min="-2" pref="300" max="-2" attributes="0"/>
-                          <Component id="addRoleComboBox" min="-2" pref="300" max="-2" attributes="0"/>
+                          <Group type="102" attributes="0">
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="roleLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="addRoleComboBox" min="-2" pref="300" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace min="-2" pref="75" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" attributes="0">
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="addFullNameTextField" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="fullNameLabel" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace min="-2" pref="75" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
-                      <EmptySpace min="-2" pref="75" max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -114,27 +121,25 @@
                   <Group type="102" alignment="0" attributes="0">
                       <Group type="103" groupAlignment="1" attributes="0">
                           <Group type="102" alignment="1" attributes="0">
+                              <Component id="fullNameLabel" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="addFullNameTextField" min="-2" pref="35" max="-2" attributes="0"/>
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
                               <Component id="roleLabel" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="addRoleComboBox" min="-2" pref="35" max="-2" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="1" attributes="0">
-                              <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="userNameLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="passwordLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                              </Group>
+                              <Component id="userNameLabel" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="addUserNameTextField" alignment="3" min="-2" pref="35" max="-2" attributes="0"/>
-                                  <Component id="addPasswordTextField" alignment="3" min="-2" pref="35" max="-2" attributes="0"/>
-                              </Group>
+                              <Component id="addUserNameTextField" min="-2" pref="35" max="-2" attributes="0"/>
                               <EmptySpace type="separate" max="-2" attributes="0"/>
-                              <Component id="fullNameLabel" min="-2" max="-2" attributes="0"/>
+                              <Component id="passwordLabel" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="addFullNameTextField" min="-2" pref="35" max="-2" attributes="0"/>
+                              <Component id="addPasswordTextField" min="-2" pref="35" max="-2" attributes="0"/>
                           </Group>
                       </Group>
-                      <EmptySpace pref="278" max="32767" attributes="0"/>
+                      <EmptySpace pref="75" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -197,11 +202,11 @@
               <Properties>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                   <StringArray count="5">
-                    <StringItem index="0" value="Sales Manager"/>
-                    <StringItem index="1" value="Purchase Manager"/>
+                    <StringItem index="0" value="SalesManager"/>
+                    <StringItem index="1" value="PurchaseManager"/>
                     <StringItem index="2" value="Administrator"/>
-                    <StringItem index="3" value="Inventory Manager"/>
-                    <StringItem index="4" value="Finance Manager"/>
+                    <StringItem index="3" value="InventoryManager"/>
+                    <StringItem index="4" value="FinanceManager"/>
                   </StringArray>
                 </Property>
                 <Property name="selectedIndex" type="int" value="-1"/>

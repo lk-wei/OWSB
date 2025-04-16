@@ -4,6 +4,9 @@
  */
 package gui;
 
+import java.io.IOException;
+import javax.swing.JOptionPane;
+import repository.UserRepo;
 import sample.*;
 
 /**
@@ -17,10 +20,20 @@ public class UserTable extends javax.swing.JFrame {
     
     public UserTable() {
         initComponents();
+        updateTable();
         this.setLocationRelativeTo(null); //this will center your frame
     }
     
     // Custom Methods
+    private void updateTable() {
+        UserRepo repo = new UserRepo();
+        try {
+             userTable.setModel(repo.getTableModel());
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
+        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -52,17 +65,17 @@ public class UserTable extends javax.swing.JFrame {
 
         userTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
             },
             new String [] {
-                "ID", "Username", "Role"
+                "Username", "Full Name", "Role", ""
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Long.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.Object.class, java.lang.String.class, java.lang.Object.class
             };
 
             public Class getColumnClass(int columnIndex) {
