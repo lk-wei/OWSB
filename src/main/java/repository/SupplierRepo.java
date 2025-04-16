@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -69,6 +70,29 @@ public class SupplierRepo {
         }
         return null;
     }
+    
+    // UI method
+    public DefaultTableModel getTableModel() throws IOException {
+        DefaultTableModel model = new DefaultTableModel(
+            new Object[][]{},
+            // These column names must match what's in your JFrame
+            new String[]{"Code", "Name", "Email", "Phone", ""}
+        );
+
+        List<Supplier> suppliers = getAllSupplier(); 
+            
+
+        for (Supplier supplier : suppliers) {
+            model.addRow(new Object[]{
+                supplier.getSupplierCode(),
+                supplier.getSuppliername(),
+                supplier.getEmail(),
+                supplier.getPhone(),
+                ""                  // Empty column (action buttons?)
+            });
+        }
+        return model;
+    }
 
     // update
     public void updateSupplier(Supplier supplier) throws IOException {
@@ -114,14 +138,18 @@ public class SupplierRepo {
         );
     }
 
-    private Supplier stringToObject(String line) {
-        String[] parts = line.split("\\|");
+    private Supplier stringToObject(String line) throws IOException {
+        
+        ItemSupplierRepo itemSupplierRepo = new ItemSupplierRepo();
+        String[] parts = line.split("\\|", -1); // -1 keeps empty values
+        
         return new Supplier(
                 Long.valueOf(parts[0]), // userId
                 parts[1], // userName
                 parts[2], // password
                 parts[3], // fullName
-                parts[4]
+                parts[4],
+                itemSupplierRepo.getBySupplierId(Long.valueOf(parts[0]))
 
         );
     }

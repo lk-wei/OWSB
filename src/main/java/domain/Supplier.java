@@ -4,6 +4,8 @@
  */
 package domain;
 
+import java.util.List;
+
 /**
  *
  * @author zuwei
@@ -14,16 +16,18 @@ public class Supplier {
     private String suppliername;
     private String email;
     private String phone;
+    private List<ItemSupplier> item;
     
     public Supplier() {
     }
 
-    public Supplier(Long supplierId, String supplierCode, String suppliername, String email, String phone) {
+    public Supplier(Long supplierId, String supplierCode, String suppliername, String email, String phone, List<ItemSupplier> item) {
         this.supplierId = supplierId;
         this.supplierCode = supplierCode;
         this.suppliername = suppliername;
         this.email = email;
         this.phone = phone;
+        this.item = item;
     }
 
     public Long getSupplierId() {

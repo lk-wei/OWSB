@@ -4,6 +4,9 @@
  */
 package gui.table;
 
+import java.io.IOException;
+import javax.swing.JOptionPane;
+import repository.SupplierRepo;
 import sample.*;
 
 /**
@@ -17,10 +20,20 @@ public class SupplierTable extends javax.swing.JFrame {
     
     public SupplierTable() {
         initComponents();
+        updateTable();
         this.setLocationRelativeTo(null); //this will center your frame
     }
     
     // Custom Methods
+    private void updateTable() {
+        SupplierRepo repo = new SupplierRepo();
+        try {
+             supplierTable.setModel(repo.getTableModel());
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
+        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -52,17 +65,17 @@ public class SupplierTable extends javax.swing.JFrame {
 
         supplierTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "ID", "Name", "Email", "Phone"
+                "Code", "Name", "Email", "Phone", ""
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Long.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class
             };
 
             public Class getColumnClass(int columnIndex) {

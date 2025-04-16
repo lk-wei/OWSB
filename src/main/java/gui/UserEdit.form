@@ -90,23 +90,21 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="75" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="editRoleComboBox" pref="300" max="32767" attributes="0"/>
-                          <Component id="editFullNameTextField" alignment="0" pref="300" max="32767" attributes="0"/>
-                          <Component id="roleLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="fullNameLabel" min="-2" max="-2" attributes="0"/>
-                          <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
-                              <Component id="editUserNameTextField" alignment="0" pref="300" max="32767" attributes="0"/>
-                              <Component id="userNameLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                          </Group>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="editUserNameTextField" alignment="0" min="-2" pref="300" max="-2" attributes="0"/>
+                          <Component id="userNameLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="passwordLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="editPasswordTextField" alignment="0" min="-2" pref="300" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace pref="50" max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="userIdLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
-                              <Component id="editUserIdTextField" alignment="0" max="32767" attributes="0"/>
-                              <Component id="passwordLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Component id="editPasswordTextField" alignment="0" pref="300" max="32767" attributes="0"/>
+                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                              <Component id="editFullNameTextField" alignment="0" pref="300" max="32767" attributes="0"/>
+                              <Component id="fullNameLabel" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                              <Component id="editRoleComboBox" pref="300" max="32767" attributes="0"/>
+                              <Component id="roleLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace min="-2" pref="75" max="-2" attributes="0"/>
@@ -123,29 +121,26 @@
                               <Component id="editUserNameTextField" min="-2" pref="35" max="-2" attributes="0"/>
                           </Group>
                           <Group type="102" attributes="0">
-                              <Component id="userIdLabel" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="editUserIdTextField" min="-2" pref="35" max="-2" attributes="0"/>
-                          </Group>
-                      </Group>
-                      <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="1" attributes="0">
-                          <Group type="102" attributes="0">
                               <Component id="fullNameLabel" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="editFullNameTextField" min="-2" pref="35" max="-2" attributes="0"/>
                           </Group>
+                      </Group>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
                               <Component id="passwordLabel" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="editPasswordTextField" min="-2" pref="35" max="-2" attributes="0"/>
+                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                          </Group>
+                          <Group type="102" attributes="0">
+                              <Component id="roleLabel" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="editRoleComboBox" max="32767" attributes="0"/>
                           </Group>
                       </Group>
-                      <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="roleLabel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="editRoleComboBox" pref="35" max="32767" attributes="0"/>
-                      <EmptySpace pref="199" max="32767" attributes="0"/>
+                      <EmptySpace min="-2" pref="75" max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -204,31 +199,15 @@
                 <Property name="text" type="java.lang.String" value="Role"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JLabel" name="userIdLabel">
-              <Properties>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Segoe UI" size="14" style="0"/>
-                </Property>
-                <Property name="text" type="java.lang.String" value="User ID"/>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JTextField" name="editUserIdTextField">
-              <Properties>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Segoe UI" size="14" style="0"/>
-                </Property>
-                <Property name="enabled" type="boolean" value="false"/>
-              </Properties>
-            </Component>
             <Component class="javax.swing.JComboBox" name="editRoleComboBox">
               <Properties>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                   <StringArray count="5">
-                    <StringItem index="0" value="Sales Manager"/>
-                    <StringItem index="1" value="Purchase Manager"/>
+                    <StringItem index="0" value="SalesManager"/>
+                    <StringItem index="1" value="PurchaseManager"/>
                     <StringItem index="2" value="Administrator"/>
-                    <StringItem index="3" value="Inventory Manager"/>
-                    <StringItem index="4" value="Finance Manager"/>
+                    <StringItem index="3" value="InventoryManager"/>
+                    <StringItem index="4" value="FinanceManager"/>
                   </StringArray>
                 </Property>
                 <Property name="selectedIndex" type="int" value="-1"/>

@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -67,6 +68,28 @@ public class UserRepo {
             }
         }
         return null;
+    }
+    
+    // UI method
+    public DefaultTableModel getTableModel() throws IOException {
+        DefaultTableModel model = new DefaultTableModel(
+            new Object[][]{},
+            // These column names must match what's in your JFrame
+            new String[]{"Username", "Full Name", "Role", ""}
+        );
+
+        List<User> users = getAllUser(); 
+            
+
+        for (User user : users) {
+            model.addRow(new Object[]{
+                user.getUserName(),    
+                user.getFullName(),   
+                user.getRole(), 
+                ""                        // Empty column (action buttons?)
+            });
+        }
+        return model;
     }
     
     // update

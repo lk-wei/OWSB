@@ -73,7 +73,7 @@ public class UserNew extends javax.swing.JFrame {
         roleLabel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         roleLabel.setText("Role");
 
-        addRoleComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Sales Manager", "Purchase Manager", "Administrator", "Inventory Manager", "Finance Manager" }));
+        addRoleComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SalesManager", "PurchaseManager", "Administrator", "InventoryManager", "FinanceManager" }));
         addRoleComboBox.setSelectedIndex(-1);
 
         javax.swing.GroupLayout inputPanelLayout = new javax.swing.GroupLayout(inputPanel);
@@ -83,40 +83,44 @@ public class UserNew extends javax.swing.JFrame {
             .addGroup(inputPanelLayout.createSequentialGroup()
                 .addGap(75, 75, 75)
                 .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(addFullNameTextField, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(addUserNameTextField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
-                        .addComponent(userNameLabel, javax.swing.GroupLayout.Alignment.LEADING))
-                    .addComponent(fullNameLabel))
+                    .addComponent(addUserNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(userNameLabel)
+                    .addComponent(passwordLabel)
+                    .addComponent(addPasswordTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
                 .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(roleLabel)
-                    .addComponent(passwordLabel)
-                    .addComponent(addPasswordTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(addRoleComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(75, 75, 75))
+                    .addGroup(inputPanelLayout.createSequentialGroup()
+                        .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(roleLabel)
+                            .addComponent(addRoleComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(75, 75, 75))
+                    .addGroup(inputPanelLayout.createSequentialGroup()
+                        .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(addFullNameTextField)
+                            .addComponent(fullNameLabel))
+                        .addGap(75, 75, 75))))
         );
         inputPanelLayout.setVerticalGroup(
             inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(inputPanelLayout.createSequentialGroup()
                 .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(inputPanelLayout.createSequentialGroup()
+                        .addComponent(fullNameLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(addFullNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
                         .addComponent(roleLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(addRoleComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(inputPanelLayout.createSequentialGroup()
-                        .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(userNameLabel)
-                            .addComponent(passwordLabel))
+                        .addComponent(userNameLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(addUserNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(addPasswordTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(addUserNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(fullNameLabel)
+                        .addComponent(passwordLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(addFullNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(278, Short.MAX_VALUE))
+                        .addComponent(addPasswordTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(75, Short.MAX_VALUE))
         );
 
         jButton1.setBackground(new java.awt.Color(255, 0, 51));

@@ -1,1 +1,10 @@
-
+1|SUP1001|TechSource Electronics|sales@techsource.com|012-3456789
+2|SUP1002|MegaChip Supplies|contact@megachip.com|013-8765432
+3|SUP1003|ElectroHub Sdn Bhd|info@electrohub.my|011-2233445
+4|SUP1004|DigitalCore Traders|support@digitalcore.com|017-5566778
+5|SUP1005|SmartWave Solutions|enquiry@smartwave.com|010-9988776
+6|SUP1006|Tronix Components|sales@tronix.com.my|018-3344556
+7|SUP1007|PowerTech Electronics|hello@powertech.com|014-6677889
+8|SUP1008|MicroGear Distribution|service@microgear.com|016-4455667
+9|SUP1009|Electra Supply House|orders@electrasupply.com|012-5566771
+10|SUP1010|NextGen Circuits|admin@nextgencircuits.com|019-7788990

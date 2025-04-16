@@ -35,11 +35,13 @@ public class SupplierNew extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         inputPanel = new javax.swing.JPanel();
         supplierNameLabel = new javax.swing.JLabel();
+        viewSupplierNameTextField = new javax.swing.JTextField();
         phoneLabel = new javax.swing.JLabel();
-        addSupplierNameTextField = new javax.swing.JTextField();
-        addPhoneTextField = new javax.swing.JTextField();
+        viewPhoneTextField = new javax.swing.JTextField();
         emailLabel = new javax.swing.JLabel();
-        addEmailTextField = new javax.swing.JTextField();
+        viewEmailTextField = new javax.swing.JTextField();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        ItemSupplierTable = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
 
@@ -50,23 +52,41 @@ public class SupplierNew extends javax.swing.JFrame {
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("New Supplier");
+        jLabel1.setText("Add New Supplier");
         jLabel1.setToolTipText("");
 
         supplierNameLabel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         supplierNameLabel.setText("Name");
 
+        viewSupplierNameTextField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+
         phoneLabel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         phoneLabel.setText("Phone");
 
-        addSupplierNameTextField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-
-        addPhoneTextField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        viewPhoneTextField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         emailLabel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         emailLabel.setText("Email");
 
-        addEmailTextField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        viewEmailTextField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+
+        ItemSupplierTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Item Code", "Item Name"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
+        jScrollPane1.setViewportView(ItemSupplierTable);
 
         javax.swing.GroupLayout inputPanelLayout = new javax.swing.GroupLayout(inputPanel);
         inputPanel.setLayout(inputPanelLayout);
@@ -76,45 +96,61 @@ public class SupplierNew extends javax.swing.JFrame {
                 .addGap(75, 75, 75)
                 .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(inputPanelLayout.createSequentialGroup()
-                        .addComponent(emailLabel)
+                        .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(emailLabel)
+                            .addComponent(viewEmailTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(inputPanelLayout.createSequentialGroup()
                         .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(addEmailTextField, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(addSupplierNameTextField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
-                            .addComponent(supplierNameLabel, javax.swing.GroupLayout.Alignment.LEADING))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
-                        .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(phoneLabel)
-                            .addComponent(addPhoneTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(75, 75, 75))
+                            .addComponent(supplierNameLabel, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(viewSupplierNameTextField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(inputPanelLayout.createSequentialGroup()
+                        .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 654, Short.MAX_VALUE)
+                            .addGroup(inputPanelLayout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(viewPhoneTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(phoneLabel))))
+                        .addGap(75, 75, 75))))
         );
         inputPanelLayout.setVerticalGroup(
             inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, inputPanelLayout.createSequentialGroup()
-                .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(supplierNameLabel)
-                    .addComponent(phoneLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(addSupplierNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(addPhoneTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(inputPanelLayout.createSequentialGroup()
+                        .addComponent(supplierNameLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(viewSupplierNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(inputPanelLayout.createSequentialGroup()
+                        .addComponent(phoneLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(viewPhoneTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addComponent(emailLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(addEmailTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(278, Short.MAX_VALUE))
+                .addComponent(viewEmailTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(75, Short.MAX_VALUE))
         );
 
         jButton1.setBackground(new java.awt.Color(255, 0, 51));
         jButton1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jButton1.setForeground(new java.awt.Color(255, 255, 255));
         jButton1.setText("Cancel");
+        jButton1.setMaximumSize(new java.awt.Dimension(84, 32));
+        jButton1.setMinimumSize(new java.awt.Dimension(84, 32));
+        jButton1.setPreferredSize(new java.awt.Dimension(84, 32));
 
         jButton2.setBackground(new java.awt.Color(102, 204, 0));
         jButton2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jButton2.setForeground(new java.awt.Color(255, 255, 255));
         jButton2.setText("Create");
+        jButton2.setMaximumSize(new java.awt.Dimension(83, 32));
+        jButton2.setMinimumSize(new java.awt.Dimension(83, 32));
+        jButton2.setPreferredSize(new java.awt.Dimension(83, 32));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -124,9 +160,9 @@ public class SupplierNew extends javax.swing.JFrame {
             .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton1)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jButton2)
+                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(75, 75, 75))
         );
         jPanel1Layout.setVerticalGroup(
@@ -197,6 +233,54 @@ public class SupplierNew extends javax.swing.JFrame {
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -207,16 +291,18 @@ public class SupplierNew extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField addEmailTextField;
-    private javax.swing.JTextField addPhoneTextField;
-    private javax.swing.JTextField addSupplierNameTextField;
+    private javax.swing.JTable ItemSupplierTable;
     private javax.swing.JLabel emailLabel;
     private javax.swing.JPanel inputPanel;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel phoneLabel;
     private javax.swing.JLabel supplierNameLabel;
+    private javax.swing.JTextField viewEmailTextField;
+    private javax.swing.JTextField viewPhoneTextField;
+    private javax.swing.JTextField viewSupplierNameTextField;
     // End of variables declaration//GEN-END:variables
 }

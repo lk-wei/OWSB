@@ -59,6 +59,20 @@ public class ItemSupplierRepo {
         return ItemSupplierList;
     }
     
+    public List<ItemSupplier> getBySupplierId(Long sid) throws IOException{
+        List<ItemSupplier> ItemSupplierList = new ArrayList<>();
+        List<String> lines = Files.readAllLines(filePath);
+   
+        for(String line : lines){
+            ItemSupplier is = stringToObject(line);
+            
+            if(Objects.equals(is.getSupplierId(), sid)){
+                ItemSupplierList.add(is);
+            }
+        }
+        return ItemSupplierList;
+    }
+    
     // update
     public void updateItemSupplier(ItemSupplier itemSupplier) throws IOException{
         List<String> lines = Files.readAllLines(filePath);
