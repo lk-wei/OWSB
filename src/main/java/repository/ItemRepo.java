@@ -17,46 +17,14 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author zuwei
  */
-public class ItemRepo {
+public class ItemRepo extends MasterRepo<Item>{
     // define the txt file that stores data
 
-    final private Path filePath = Path.of("database/item.txt");
-
-    // create
-    public void createItem(Item item) throws IOException {
-        item.setItemId(IdGenerator.getId(filePath));
-        List<String> lines = Files.readAllLines(filePath);
-        lines.add(objectToString(item));
-
-        Files.write(filePath, lines);
+    public ItemRepo() {
+        super(Path.of("database/item.txt"));
     }
 
-    // read
-    public List<Item> getAllItem() throws IOException {
-        List<Item> itemList = new ArrayList<>();
-        List<String> lines = Files.readAllLines(filePath);
-
-        for (String line : lines) {
-            Item i = stringToObject(line);
-            itemList.add(i);
-            
-        }
-        return itemList;
-    }
-
-    public Item getItemById(Long itemId) throws IOException {
-        List<String> lines = Files.readAllLines(filePath);
-
-        for (String line : lines) {
-            Item i = stringToObject(line);
-
-            if (i.getItemId().equals(itemId)) {
-                return i;
-            }
-        }
-        return null;
-    }
-
+    // custom method
     public Item getItemByItemName(String itemName) throws IOException {
         List<String> lines = Files.readAllLines(filePath);
 
@@ -70,38 +38,6 @@ public class ItemRepo {
         return null;
     }
 
-    // update
-    public void updateItem(Item item) throws IOException {
-        List<String> lines = Files.readAllLines(filePath);
-        List<String> updatedLines = new ArrayList<>();
-
-        for (String line : lines) {
-            Item i = stringToObject(line);
-
-            if (i.getItemId().equals(item.getItemId())) {
-                updatedLines.add(objectToString(item));
-            } else {
-                updatedLines.add(line);
-            }
-        }
-        Files.write(filePath, updatedLines);
-    }
-
-    // delete
-    public void deleteItem(Item item) throws IOException {
-        List<String> lines = Files.readAllLines(filePath);
-        List<String> updatedLines = new ArrayList<>();
-
-        for (String line : lines) {
-            Item i = stringToObject(line);
-
-            if (!i.getItemId().equals(item.getItemId())) {
-                updatedLines.add(line);
-            }
-        }
-        Files.write(filePath, updatedLines);
-    }
-
     public DefaultTableModel getTableModel() throws IOException {
 
         DefaultTableModel model = new DefaultTableModel(
@@ -109,7 +45,7 @@ public class ItemRepo {
                 // These column names must match what's in your JFrame
                 new String[]{"Item Code", "Item Name", "Current Stock", "Min Stock", "Unit Cost", ""}
         );
-        List<Item> items = getAllItem();
+        List<Item> items = getAll();
 
         for (Item item : items) {
             model.addRow(new Object[]{
@@ -122,8 +58,20 @@ public class ItemRepo {
         }
         return model;
     }
+    
+    // Implement required abstract methods
+    @Override
+    protected Long getId(Item entity) {
+        return entity.getItemId();
+    }
+    
+    @Override
+    protected void setId(Item entity, long id) {
+        entity.setItemId(id);
+    }
 
-    private String objectToString(Item item) {
+    @Override
+    protected String objectToString(Item item) {
         return String.join("|",
                 item.getItemId().toString(),
                 item.getItemCode(),
@@ -135,7 +83,8 @@ public class ItemRepo {
 
     }
 
-    private Item stringToObject(String line) {
+    @Override
+    protected Item stringToObject(String line) {
         String[] parts = line.split("\\|");
         return new Item(
                 Long.valueOf(parts[0]), // itemId

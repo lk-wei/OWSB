@@ -4,8 +4,12 @@
  */
 package gui;
 
-import function.ItemFunction;
+import domain.Item;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import repository.ItemRepo;
 
 /**
  *
@@ -196,15 +200,18 @@ public class ItemNew extends javax.swing.JFrame {
     }//GEN-LAST:event_itemCodeFieldActionPerformed
 
     private void createButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createButtonActionPerformed
-        ItemFunction itemFunction = new ItemFunction();
+        ItemRepo itemRepo = new ItemRepo();
+        
         try {
-            itemFunction.addNewItem(
-                    itemCodeField.getText(),
-                    itemNameField.getText(),
-                    Integer.parseInt(currentStockField.getText()),
-                    Integer.parseInt(minStockField.getText()),
-                    Double.parseDouble(unitCostField.getText())
+            Item newItem = new Item(
+                        null,
+                        itemCodeField.getText(),
+                        itemNameField.getText(),
+                        Integer.parseInt(currentStockField.getText()),
+                        Integer.parseInt(minStockField.getText()),
+                        Double.parseDouble(unitCostField.getText())
             );
+            itemRepo.create(newItem);
             JOptionPane.showMessageDialog(null, "Item added successfully!");
             itemCodeField.setText("");
             itemNameField.setText("");
@@ -213,6 +220,8 @@ public class ItemNew extends javax.swing.JFrame {
             unitCostField.setText("");
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(null, "Please enter valid numbers for stock and unit cost.");
+        } catch (IOException ex) {
+            Logger.getLogger(ItemNew.class.getName()).log(Level.SEVERE, null, ex);
         }
 
 

@@ -25,7 +25,7 @@ public abstract class MasterRepo<T> {
     // Common CRUD operations
     public void create(T entity) throws IOException {
         
-        setId(entity, IdGenerator.getId(filePath));
+        setId(entity, IdGenerator.getNewId(filePath));
         List<String> lines = Files.readAllLines(filePath);
         lines.add(objectToString(entity));
         Files.write(filePath, lines);

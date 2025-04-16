@@ -26,7 +26,7 @@ public class PurchaseOrderRepo {
     
     // create
     public void createPurchaseOrder(PurchaseOrder PurchaseOrder) throws IOException{
-        PurchaseOrder.setPurchaseOrderId(IdGenerator.getId(filePath));
+        PurchaseOrder.setPurchaseOrderId(IdGenerator.getNewId(filePath));
         
         List<String> lines = Files.readAllLines(filePath);
         lines.add(objectToString(PurchaseOrder));
