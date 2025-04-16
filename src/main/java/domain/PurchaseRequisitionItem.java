@@ -8,56 +8,63 @@ package domain;
  *
  * @author See Kai Yang
  */
-public class PurchaseRequisitionItem {
+public class PurchaseRequisitionItem implements Identifiable<Long>{
     
-    private long purchaseRequisitionItemId; //PK
-    private long purchaseRequisitionId; //FK to PurchaseRequisition
-    private long itemId; //FK to Item
+    private Long id; //PK
+    private Long purchaseRequisitionId; //FK to PurchaseRequisition
+    private Long itemId; //FK to Item
     private int quantity; 
-    private long supplierId;  //FK to Supplier
-
-    public long getPurchaseRequisitionItemId() {
-        return purchaseRequisitionItemId;
+    private Long supplierId;  //FK to Supplier
+    
+    public PurchaseRequisitionItem(){
+        
     }
 
-    public long getPurchaseRequisitionId() {
+    public PurchaseRequisitionItem(Long id, Long purchaseRequisitionId, Long itemId, int quantity, Long supplierId) {
+        this.id = id;
+        this.purchaseRequisitionId = purchaseRequisitionId;
+        this.itemId = itemId;
+        this.quantity = quantity;
+        this.supplierId = supplierId;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getPurchaseRequisitionId() {
         return purchaseRequisitionId;
     }
 
-    public long getItemId() {
+    public void setPurchaseRequisitionId(Long purchaseRequisitionId) {
+        this.purchaseRequisitionId = purchaseRequisitionId;
+    }
+
+    public Long getItemId() {
         return itemId;
+    }
+
+    public void setItemId(Long itemId) {
+        this.itemId = itemId;
     }
 
     public int getQuantity() {
         return quantity;
     }
 
-    public long getSupplierId() {
-        return supplierId;
-    }
-
-    public void setPurchaseRequisitionItemId(long purchaseRequisitionItemId) {
-        this.purchaseRequisitionItemId = purchaseRequisitionItemId;
-    }
-
-    public void setPurchaseRequisitionId(long purchaseRequisitionId) {
-        this.purchaseRequisitionId = purchaseRequisitionId;
-    }
-
-    public void setItemId(long itemId) {
-        this.itemId = itemId;
-    }
-
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
 
-    public void setSupplierId(long supplierId) {
+    public Long getSupplierId() {
+        return supplierId;
+    }
+
+    public void setSupplierId(Long supplierId) {
         this.supplierId = supplierId;
     }
-    
-    
-    
-    
-    
 }

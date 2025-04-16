@@ -10,9 +10,9 @@ import java.time.LocalDate;
  *
  * @author See Kai Yang
  */
-public class PurchaseRequisition {
-    private long purchaseRequisitionID; //PK
-    private long requestById; //FK to User
+public class PurchaseRequisition implements Identifiable<Long>{
+    private Long id; //PK
+    private Long requestById; //FK to User
     private LocalDate requestDate; 
     private LocalDate requiredDate;
     private Status status;  //(Draft/Submitted/Approved/Rejected/ConvertedToPurchaseOrder)
@@ -25,45 +25,55 @@ public class PurchaseRequisition {
         CONVERTED_TO_PURCHASE_ORDER
     }
 
-    public long getPurchaseRequisitionID() {
-        return purchaseRequisitionID;
+    public PurchaseRequisition() {
     }
 
-    public long getRequestById() {
+    public PurchaseRequisition(Long id, Long requestById, LocalDate requestDate, LocalDate requiredDate, Status status) {
+        this.id = id;
+        this.requestById = requestById;
+        this.requestDate = requestDate;
+        this.requiredDate = requiredDate;
+        this.status = status;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getRequestById() {
         return requestById;
+    }
+
+    public void setRequestById(Long requestById) {
+        this.requestById = requestById;
     }
 
     public LocalDate getRequestDate() {
         return requestDate;
     }
 
-    public LocalDate getRequiredDate() {
-        return requiredDate;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setPurchaseRequisitionID(long purchaseRequisitionID) {
-        this.purchaseRequisitionID = purchaseRequisitionID;
-    }
-
-    public void setRequestById(long requestById) {
-        this.requestById = requestById;
-    }
-
     public void setRequestDate(LocalDate requestDate) {
         this.requestDate = requestDate;
+    }
+
+    public LocalDate getRequiredDate() {
+        return requiredDate;
     }
 
     public void setRequiredDate(LocalDate requiredDate) {
         this.requiredDate = requiredDate;
     }
 
+    public Status getStatus() {
+        return status;
+    }
+
     public void setStatus(Status status) {
         this.status = status;
     }
-    
     
 }

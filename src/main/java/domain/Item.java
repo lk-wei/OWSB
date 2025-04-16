@@ -10,9 +10,9 @@ import java.math.BigDecimal;
  *
  * @author zuwei
  */
-public class Item {
+public class Item implements Identifiable<Long>{
 
-    private Long itemId;
+    private Long id;
     private String itemCode;
     private String itemName;
     private int currentStock;
@@ -22,8 +22,8 @@ public class Item {
     public Item() {
     }
 
-    public Item(Long itemId, String itemCode, String itemName, int currentStock, int minStock, double unitCost) {
-        this.itemId = itemId;
+    public Item(Long id, String itemCode, String itemName, int currentStock, int minStock, double unitCost) {
+        this.id = id;
         this.itemCode = itemCode;
         this.itemName = itemName;
         this.currentStock = currentStock; 
@@ -33,12 +33,12 @@ public class Item {
 
   
 
-    public Long getItemId() {
-        return itemId;
+    public Long getId() {
+        return id;
     }
 
-    public void setItemId(Long itemId) {
-        this.itemId = itemId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getItemCode() {

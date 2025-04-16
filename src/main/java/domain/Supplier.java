@@ -10,8 +10,8 @@ import java.util.List;
  *
  * @author zuwei
  */
-public class Supplier {
-    private Long supplierId;
+public class Supplier implements Identifiable<Long>{
+    private Long id;
     private String supplierCode;
     private String suppliername;
     private String email;
@@ -21,8 +21,8 @@ public class Supplier {
     public Supplier() {
     }
 
-    public Supplier(Long supplierId, String supplierCode, String suppliername, String email, String phone, List<ItemSupplier> item) {
-        this.supplierId = supplierId;
+    public Supplier(Long id, String supplierCode, String suppliername, String email, String phone, List<ItemSupplier> item) {
+        this.id = id;
         this.supplierCode = supplierCode;
         this.suppliername = suppliername;
         this.email = email;
@@ -30,13 +30,13 @@ public class Supplier {
         this.item = item;
     }
 
-    public Long getSupplierId() {
-        return supplierId;
+    public Long getId() {
+        return id;
     }
 
 
-    public void setSupplierId(Long supplierId) {
-        this.supplierId = supplierId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getSupplierCode() {

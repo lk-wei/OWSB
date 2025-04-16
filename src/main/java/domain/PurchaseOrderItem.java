@@ -10,8 +10,8 @@ import java.math.BigDecimal;
  *
  * @author Kang Wei
  */
-public class PurchaseOrderItem {
-    private Long purchaseOrderItemId; // PK
+public class PurchaseOrderItem implements Identifiable<Long>{
+    private Long id; // PK
     private Long purchaseOrderId;    // FK to PurchaseOrder
     private Long itemId;             // FK to Item
     private int quantity;
@@ -21,20 +21,20 @@ public class PurchaseOrderItem {
     public PurchaseOrderItem() {
     }
 
-    public PurchaseOrderItem(Long purchaseOrderItemId, Long purchaseOrderId, Long itemId, int quantity, double unitCost) {
-        this.purchaseOrderItemId = purchaseOrderItemId;
+    public PurchaseOrderItem(Long id, Long purchaseOrderId, Long itemId, int quantity, double unitCost) {
+        this.id = id;
         this.purchaseOrderId = purchaseOrderId;
         this.itemId = itemId;
         this.quantity = quantity;
         this.unitCost = unitCost;
     }
 
-    public Long getPurchaseOrderItemId() {
-        return purchaseOrderItemId;
+    public Long getId() {
+        return id;
     }
 
-    public void setPurchaseOrderItemId(Long purchaseOrderItemId) {
-        this.purchaseOrderItemId = purchaseOrderItemId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Long getPurchaseOrderId() {

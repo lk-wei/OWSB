@@ -11,8 +11,8 @@ import java.util.List;
  *
  * @author CK
  */
-public class DailySale {
-    private Long saleId; //PK
+public class DailySale implements Identifiable<Long>{
+    private Long id; //PK
     private String saleCode;
     private Long itemId; //FK to Item
     private LocalDate saleDate;
@@ -23,8 +23,8 @@ public class DailySale {
     public DailySale() {
     }
 
-    public DailySale(Long saleId, String saleCode, Long itemId, LocalDate saleDate, int quantitySold, Long recordedById, List<Item> itemList) {
-        this.saleId = saleId;
+    public DailySale(Long id, String saleCode, Long itemId, LocalDate saleDate, int quantitySold, Long recordedById, List<Item> itemList) {
+        this.id = id;
         this.saleCode = saleCode;
         this.itemId = itemId;
         this.saleDate = saleDate;
@@ -44,12 +44,12 @@ public class DailySale {
 //        this.recordedById = recordedById;
 //    }
 
-    public Long getSaleId() {
-        return saleId;
+    public Long getId() {
+        return id;
     }
 
-    public void setSaleId(Long saleId) {
-        this.saleId = saleId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getSaleCode() {

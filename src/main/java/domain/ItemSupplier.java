@@ -8,26 +8,26 @@ package domain;
  *
  * @author CK
  */
-public class ItemSupplier {
-    private Long itemSupplierId; //PK
+public class ItemSupplier implements Identifiable<Long>{
+    private Long id; //PK
     private Long itemId; // FK to Item
     private Long supplierId; //FK to Supplier
 
     public ItemSupplier() {
     }
 
-    public ItemSupplier(Long itemSupplierId, Long itemId, Long supplierId) {
-        this.itemSupplierId = itemSupplierId;
+    public ItemSupplier(Long id, Long itemId, Long supplierId) {
+        this.id = id;
         this.itemId = itemId;
         this.supplierId = supplierId;
     }
 
-    public Long getItemSupplierId() {
-        return itemSupplierId;
+    public Long getId() {
+        return id;
     }
 
-    public void setItemSupplierId(Long itemSupplierId) {
-        this.itemSupplierId = itemSupplierId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Long getItemId() {

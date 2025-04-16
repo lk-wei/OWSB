@@ -11,26 +11,26 @@ import java.util.List;
  *
  * @author Kang Wei
  */
-public class StockReportItem {
-    private Long stockReportItemId;
+public class StockReportItem implements Identifiable<Long>{
+    private Long id;
     private Long stockReportId;
     private Long stockUpdateId;
     
     public StockReportItem() {
     }
 
-    public StockReportItem(Long stockReportItemId, Long stockReportId, Long stockUpdateId) {
-        this.stockReportItemId = stockReportItemId;
+    public StockReportItem(Long id, Long stockReportId, Long stockUpdateId) {
+        this.id = id;
         this.stockReportId = stockReportId;
         this.stockUpdateId = stockUpdateId;
     }
 
-    public Long getStockReportItemId() {
-        return stockReportItemId;
+    public Long getId() {
+        return id;
     }
 
-    public void setStockReportItemId(Long stockReportItemId) {
-        this.stockReportItemId = stockReportItemId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Long getStockReportId() {
@@ -48,6 +48,4 @@ public class StockReportItem {
     public void setStockUpdateId(Long stockUpdateId) {
         this.stockUpdateId = stockUpdateId;
     }
-   
-    
 }

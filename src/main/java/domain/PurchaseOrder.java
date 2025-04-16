@@ -12,8 +12,8 @@ import java.util.List;
  *
  * @author Kang Wei
  */
-public class PurchaseOrder {
-    private Long purchaseOrderId; // PK
+public class PurchaseOrder implements Identifiable<Long>{
+    private Long id; // PK
     private Long purchaseRequisitionId; // FK to PurchaseRequisition
     private Long createdById; // FK to User
     private Long supplierId; // FK to Supplier
@@ -29,8 +29,8 @@ public class PurchaseOrder {
     public PurchaseOrder() {
     }
 
-    public PurchaseOrder(Long purchaseOrderId, Long purchaseRequisitionId, Long createdById, Long supplierId, LocalDate orderDate, LocalDate expectedDeliveryDate, String status, LocalDate approvalDate, Long approvedById, Double totalAmount, List<PurchaseOrderItem> item) {
-        this.purchaseOrderId = purchaseOrderId;
+    public PurchaseOrder(Long id, Long purchaseRequisitionId, Long createdById, Long supplierId, LocalDate orderDate, LocalDate expectedDeliveryDate, String status, LocalDate approvalDate, Long approvedById, Double totalAmount, List<PurchaseOrderItem> item) {
+        this.id = id;
         this.purchaseRequisitionId = purchaseRequisitionId;
         this.createdById = createdById;
         this.supplierId = supplierId;
@@ -43,12 +43,12 @@ public class PurchaseOrder {
         this.item = item;
     }
     
-    public Long getPurchaseOrderId() {
-        return purchaseOrderId;
+    public Long getId() {
+        return id;
     }
 
-    public void setPurchaseOrderId(Long purchaseOrderId) {
-        this.purchaseOrderId = purchaseOrderId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Long getPurchaseRequisitionId() {
@@ -135,7 +135,7 @@ public class PurchaseOrder {
     @Override
     public String toString() {
         return "PurchaseOrder{" +
-                "purchaseOrderId=" + purchaseOrderId +
+                "purchaseOrderId=" + id +
                 ", purchaseRequisitionId=" + purchaseRequisitionId +
                 ", createdById=" + createdById +
                 ", supplierId=" + supplierId +

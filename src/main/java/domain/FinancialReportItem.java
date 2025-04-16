@@ -11,26 +11,26 @@ import java.util.List;
  *
  * @author Kang Wei
  */
-public class FinancialReportItem {
-    private Long financialReportItemId;
+public class FinancialReportItem implements Identifiable<Long>{
+    private Long id;
     private Long financialReportId;
     private Long paymentId;
     
     public FinancialReportItem() {
     }
 
-    public FinancialReportItem(Long financialReportItemId, Long financialReportId, Long paymentId) {
-        this.financialReportItemId = financialReportItemId;
+    public FinancialReportItem(Long id, Long financialReportId, Long paymentId) {
+        this.id = id;
         this.financialReportId = financialReportId;
         this.paymentId = paymentId;
     }
 
-    public Long getFinancialReportItemId() {
-        return financialReportItemId;
+    public Long getId() {
+        return id;
     }
 
-    public void setFinancialReportItemId(Long financialReportItemId) {
-        this.financialReportItemId = financialReportItemId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Long getFinancialReportId() {

@@ -11,8 +11,8 @@ import java.util.List;
  *
  * @author Kang Wei
  */
-public class FinancialReport {
-    private Long financialReportId;
+public class FinancialReport implements Identifiable<Long>{
+    private Long id;
     private String reportCode;
     private Long createdBy;
     private LocalDate creationDate;
@@ -22,8 +22,8 @@ public class FinancialReport {
     public FinancialReport() {
     }
 
-    public FinancialReport(Long financialReportId, String reportCode, Long createdBy, LocalDate creationDate, String description, List<Payment> paymentList) {
-        this.financialReportId = financialReportId;
+    public FinancialReport(Long id, String reportCode, Long createdBy, LocalDate creationDate, String description, List<Payment> paymentList) {
+        this.id = id;
         this.reportCode = reportCode;
         this.createdBy = createdBy;
         this.creationDate = creationDate;
@@ -31,12 +31,12 @@ public class FinancialReport {
         this.paymentList = paymentList;
     }
     
-    public Long getFinancialReportId() {
-        return financialReportId;
+    public Long getId() {
+        return id;
     }
 
-    public void setFinancialReportId(Long financialReportId) {
-        this.financialReportId = financialReportId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getReportCode() {

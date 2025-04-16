@@ -8,8 +8,8 @@ package domain;
  *
  * @author jacks
  */
-public class InventoryTransaction { 
-    private Long inventoryTransactionId; // PK
+public class InventoryTransaction implements Identifiable<Long>{ 
+    private Long id; // PK
     private Long itemId; // FK to Item
     private String transactionType; // Purchase/Sale/Adjustment
     private int quantity;
@@ -21,10 +21,10 @@ public class InventoryTransaction {
     public InventoryTransaction() {
     }
 
-    public InventoryTransaction(Long inventoryTransactionId, Long itemId, 
+    public InventoryTransaction(Long id, Long itemId, 
                                String transactionType, int quantity, 
                                Long referenceId, String referenceType, Long recordedById) {
-        this.inventoryTransactionId = inventoryTransactionId;
+        this.id = id;
         this.itemId = itemId;
         this.transactionType = transactionType;
         this.quantity = quantity;
@@ -34,12 +34,12 @@ public class InventoryTransaction {
     }
     
     // Getters and Setters
-    public Long getInventoryTransactionId() {
-        return inventoryTransactionId;
+    public Long getId() {
+        return id;
     }
 
-    public void setInventoryTransactionId(Long inventoryTransactionId) {
-        this.inventoryTransactionId = inventoryTransactionId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Long getItemId() {

@@ -8,8 +8,8 @@ package domain;
  *
  * @author Kang Wei
  */
-public class User {
-    private Long userId;     // PK
+public class User implements Identifiable<Long>{
+    private Long id;     // PK
     private String userName;
     private String password; // Note: In production, store only hashed passwords
     private String fullName;
@@ -19,8 +19,8 @@ public class User {
     public User() {
     }
 
-    public User(Long userId, String userName, String password, String fullName, String role) {
-        this.userId = userId;
+    public User(Long id, String userName, String password, String fullName, String role) {
+        this.id = id;
         this.userName = userName;
         this.password = password;
         this.fullName = fullName;
@@ -28,12 +28,12 @@ public class User {
     }
 
     // Getters and Setters
-    public Long getUserId() {
-        return userId;
+    public Long getId() {
+        return id;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getUserName() {
@@ -72,7 +72,7 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "userId=" + userId +
+                "userId=" + id +
                 ", userName='" + userName + '\'' +
                 ", password='[PROTECTED]'" +
                 ", fullName='" + fullName + '\'' +

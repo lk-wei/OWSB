@@ -10,8 +10,8 @@ import java.time.LocalDate;
  *
  * @author jacks
  */
-public class FinancialApproval {
-    private Long financialApprovalId; // PK
+public class FinancialApproval implements Identifiable<Long>{
+    private Long id; // PK
     private Long purchaseOrderId; // FK to PurchaseOrder
     private Long approvedById; // FK to User
     private LocalDate approvalDate;
@@ -21,9 +21,9 @@ public class FinancialApproval {
     public FinancialApproval() {
     }
 
-    public FinancialApproval(Long financialApprovalId, Long purchaseOrderId, 
+    public FinancialApproval(Long id, Long purchaseOrderId, 
                             Long approvedById, LocalDate approvalDate, Double approvedAmount) {
-        this.financialApprovalId = financialApprovalId;
+        this.id = id;
         this.purchaseOrderId = purchaseOrderId;
         this.approvedById = approvedById;
         this.approvalDate = approvalDate;
@@ -31,12 +31,12 @@ public class FinancialApproval {
     }
     
     // Getters and Setters
-    public Long getFinancialApprovalId() {
-        return financialApprovalId;
+    public Long getId() {
+        return id;
     }
 
-    public void setFinancialApprovalId(Long financialApprovalId) {
-        this.financialApprovalId = financialApprovalId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Long getPurchaseOrderId() {

@@ -10,8 +10,8 @@ import java.time.LocalDate;
  *
  * @author zuwei
  */
-public class PaymentItem {
-    private Long paymentItemId;    
+public class PaymentItem implements Identifiable<Long>{
+    private Long id;    
     private Long paymentId;  
     private String paymentCode;
     private Long purchaseOrderId;       
@@ -21,8 +21,8 @@ public class PaymentItem {
     public PaymentItem() {
     }
 
-    public PaymentItem(Long paymentItemId, Long paymentId, String paymentCode, Long purchaseOrderId, double TotalAmount, String productOrderCode) {
-        this.paymentItemId = paymentItemId;
+    public PaymentItem(Long id, Long paymentId, String paymentCode, Long purchaseOrderId, double TotalAmount, String productOrderCode) {
+        this.id = id;
         this.paymentId = paymentId;
         this.paymentCode = paymentCode;
         this.purchaseOrderId = purchaseOrderId;
@@ -30,12 +30,12 @@ public class PaymentItem {
         this.productOrderCode = productOrderCode;
     }
 
-    public Long getPaymentItemId() {
-        return paymentItemId;
+    public Long getId() {
+        return id;
     }
 
-    public void setPaymentItemId(Long paymentItemId) {
-        this.paymentItemId = paymentItemId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Long getPaymentId() {
@@ -77,11 +77,4 @@ public class PaymentItem {
     public void setProductOrderCode(String productOrderCode) {
         this.productOrderCode = productOrderCode;
     }
-
-
-
-
-    
-    
-    
 }

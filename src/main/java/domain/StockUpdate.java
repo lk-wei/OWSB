@@ -11,8 +11,8 @@ import java.util.List;
  *
  * @author CK
  */
-public class StockUpdate {
-    private Long stockUpdateId; //PK
+public class StockUpdate implements Identifiable<Long>{
+    private Long id; //PK
     private String stockUpdateCode;
     private String description;
     private Long itemId; //FK to Item
@@ -24,18 +24,8 @@ public class StockUpdate {
     public StockUpdate() {
     }
 
-//    public StockUpdate(Long stockUpdateId, String stockUpdateCode, String description, Long itemId, int quantity, LocalDate date, Long updatedById) {
-//        this.stockUpdateId = stockUpdateId;
-//        this.stockUpdateCode = stockUpdateCode;
-//        this.description = description;
-//        this.itemId = itemId;
-//        this.quantity = quantity;
-//        this.date = date;
-//        this.updatedById = updatedById;
-//    }
-
-    public StockUpdate(Long stockUpdateId, String stockUpdateCode, String description, Long itemId, int quantity, LocalDate date, Long updatedById, List<Item> itemList) {
-        this.stockUpdateId = stockUpdateId;
+    public StockUpdate(Long id, String stockUpdateCode, String description, Long itemId, int quantity, LocalDate date, Long updatedById, List<Item> itemList) {
+        this.id = id;
         this.stockUpdateCode = stockUpdateCode;
         this.description = description;
         this.itemId = itemId;
@@ -46,12 +36,12 @@ public class StockUpdate {
     }
     
     
-    public Long getStockUpdateId() {
-        return stockUpdateId;
+    public Long getId() {
+        return id;
     }
 
-    public void setStockUpdateId(Long stockUpdateId) {
-        this.stockUpdateId = stockUpdateId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getStockUpdateCode() {
