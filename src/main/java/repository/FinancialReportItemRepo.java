@@ -1,125 +1,79 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package repository;
 
-
-
 import domain.FinancialReportItem;
+import domain.Payment;
+import domain.Supplier;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.table.DefaultTableModel;
 
-/**
- *
- * @author See Kai Yang
- */
-public class FinancialReportItemRepo {
+public class FinancialReportItemRepo extends MasterRepo<FinancialReportItem> {
     
-    private final Path filePath = Path.of("database/financialReportItem.txt");
-
     public FinancialReportItemRepo() {
-    }
-
-    // Create
-    public void createFinancialReportItem(FinancialReportItem item) throws IOException {
-        List<String> lines = Files.readAllLines(filePath);
-        lines.add(objectToString(item));
-        Files.write(filePath, lines);
-    }
-
-    // Read all
-    public List<FinancialReportItem> getAllFinancialReportItems() throws IOException {
-        List<FinancialReportItem> itemList = new ArrayList<>();
-        List<String> lines = Files.readAllLines(filePath);
-
-        for (String line : lines) {
-            itemList.add(stringToObject(line));
-        }
-        return itemList;
-    }
-
-    // Read by ID
-    public FinancialReportItem getFinancialReportItemById(long itemId) throws IOException {
-        List<String> lines = Files.readAllLines(filePath);
-
-        for (String line : lines) {
-            FinancialReportItem item = stringToObject(line);
-            if (item.getFinancialReportItemId() == itemId) {
-                return item;
-            }
-        }
-        return null;
+        super(Path.of("database/financialReport.txt"));
     }
     
-    // Read by Financial Report ID
-     public List<FinancialReportItem> getByFinancialReportId(Long financialReportId) throws IOException {
+    // Custom methods
+    public List<FinancialReportItem> getByFinancialReportId(Long frid) throws IOException{
         List<FinancialReportItem> itemList = new ArrayList<>();
-        List<String> lines = Files.readAllLines(filePath);
-
-        for (String line : lines) {
-            FinancialReportItem item = stringToObject(line);
-            if (item.getFinancialReportId() == financialReportId) {
+        for (FinancialReportItem item : getAll()) {
+            if(item.getFinancialReportId().equals(frid)) {
                 itemList.add(item);
             }
         }
         return itemList;
     }
-
-    // Update
-    public void updateFinancialReportItem(FinancialReportItem item) throws IOException {
-        List<String> lines = Files.readAllLines(filePath);
-        List<String> updatedLines = new ArrayList<>();
-
-        for (String line : lines) {
-            FinancialReportItem existingItem = stringToObject(line);
-            if (existingItem.getFinancialReportItemId() == item.getFinancialReportItemId()) {
-                updatedLines.add(objectToString(item));
-            } else {
-                updatedLines.add(line);
-            }
+    
+    public DefaultTableModel getTableModel() throws IOException {
+        String[] columnNames = {"Payment Number", "Date", "Supplier Code", "Supplier Name", "Amount", ""};
+        DefaultTableModel model = new DefaultTableModel(columnNames, 0);
+        
+        for (FinancialReportItem item : getAll()) {
+            Payment py = new PaymentRepo().getPaymentById(item.getPaymentId());
+            Supplier s = new SupplierRepo().getSupplierById(py.getSupplierId());
+            
+            model.addRow(new Object[]{
+                py.getPaymentCode(),
+                py.getPaymentDate(),
+                s.getSupplierCode(),
+                s.getSuppliername(),
+                py.getPaymentAmount(),
+                "" // Action 
+            });
         }
-        Files.write(filePath, updatedLines);
+        return model;
+    }
+    
+    // Implement required abstract methods
+    @Override
+    protected Long getId(FinancialReportItem entity) {
+        return entity.getFinancialReportItemId();
+    }
+    
+    @Override
+    protected void setId(FinancialReportItem entity, long id) {
+        entity.setFinancialReportItemId(id);
     }
 
-    // Delete
-    public void deleteFinancialReportItem(long itemId) throws IOException {
-        List<String> lines = Files.readAllLines(filePath);
-        List<String> updatedLines = new ArrayList<>();
-
-        for (String line : lines) {
-            FinancialReportItem item = stringToObject(line);
-            if (item.getFinancialReportItemId() != itemId) {
-                updatedLines.add(line);
-            }
-        }
-        Files.write(filePath, updatedLines);
-    }
-
-    // Convert object to string for file storage
-    private String objectToString(FinancialReportItem item) {
-        return String.join(",",
-                String.valueOf(item.getFinancialReportItemId()),
-                String.valueOf(item.getFinancialReportId()),
-                String.valueOf(item.getPaymentId())
+    @Override
+    protected String objectToString(FinancialReportItem report) {
+        return String.join("|",
+            report.getFinancialReportItemId().toString(),
+            report.getFinancialReportId().toString(),
+            report.getPaymentId().toString()
         );
     }
 
-    // Convert string to object
-    private FinancialReportItem stringToObject(String line) {
-        String[] parts = line.split("\\|", 3);
+    @Override
+    protected FinancialReportItem stringToObject(String line) {
+        String[] parts = line.split("\\|", -1);
         
         return new FinancialReportItem(
-            Long.parseLong(parts[0]),
-            Long.parseLong(parts[1]),
-            Long.parseLong(parts[2])
+            Long.valueOf(parts[0]), // financialReport item Id
+            Long.valueOf(parts[1]),                 // financial report id
+            Long.valueOf(parts[2])    // payment id
         );
     }
-    
-    
-    
-    
 }

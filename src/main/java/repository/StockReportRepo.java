@@ -1,8 +1,10 @@
 package repository;
 
-import domain.FinancialReport;
-import domain.FinancialReportItem;
+import domain.StockReport;
+import domain.StockReportItem;
 import domain.Payment;
+import domain.StockReport;
+import domain.StockUpdate;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.LocalDate;
@@ -10,16 +12,16 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
 
-public class FinancialReportRepo extends MasterRepo<FinancialReport> {
+public class StockReportRepo extends MasterRepo<StockReport> {
     
-    public FinancialReportRepo() {
-        super(Path.of("database/financialReport.txt"));
+    public StockReportRepo() {
+        super(Path.of("database/stockReport.txt"));
     }
     
     // Custom methods
-    public List<FinancialReport> getByCreatedBy(Long userId) throws IOException {
-        List<FinancialReport> reports = new ArrayList<>();
-        for (FinancialReport report : getAll()) {
+    public List<StockReport> getByCreatedBy(Long userId) throws IOException {
+        List<StockReport> reports = new ArrayList<>();
+        for (StockReport report : getAll()) {
             if (report.getCreatedBy().equals(userId)) {
                 reports.add(report);
             }
@@ -31,7 +33,7 @@ public class FinancialReportRepo extends MasterRepo<FinancialReport> {
         String[] columnNames = {"Report Number", "Description", "Date", "Created By", ""};
         DefaultTableModel model = new DefaultTableModel(columnNames, 0);
         
-        for (FinancialReport report : getAll()) {
+        for (StockReport report : getAll()) {
             model.addRow(new Object[]{
                 report.getReportCode(),
                 report.getDescription(),
@@ -45,19 +47,19 @@ public class FinancialReportRepo extends MasterRepo<FinancialReport> {
     
     // Implement required abstract methods
     @Override
-    protected Long getId(FinancialReport entity) {
-        return entity.getFinancialReportId();
+    protected Long getId(StockReport entity) {
+        return entity.getStockReportId();
     }
     
     @Override
-    protected void setId(FinancialReport entity, long id) {
-        entity.setFinancialReportId(id);
+    protected void setId(StockReport entity, long id) {
+        entity.setStockReportId(id);
     }
 
     @Override
-    protected String objectToString(FinancialReport report) {
+    protected String objectToString(StockReport report) {
         return String.join("|",
-            report.getFinancialReportId().toString(),
+            report.getStockReportId().toString(),
             report.getReportCode(),
             report.getCreatedBy().toString(),
             report.getCreationDate().toString(),
@@ -66,11 +68,11 @@ public class FinancialReportRepo extends MasterRepo<FinancialReport> {
     }
 
     @Override
-    protected FinancialReport stringToObject(String line) {
+    protected StockReport stringToObject(String line) {
         String[] parts = line.split("\\|", -1);
         
-        return new FinancialReport(
-            Long.valueOf(parts[0]), // financialReportId
+        return new StockReport(
+            Long.valueOf(parts[0]), // stockReportId
             parts[1],                 // reportCode
             Long.valueOf(parts[2]), // createdBy
             LocalDate.parse(parts[3]),// creationDate
@@ -80,15 +82,15 @@ public class FinancialReportRepo extends MasterRepo<FinancialReport> {
     }
     
     // load payments when needed
-    public List<Payment> getItemsForReport(Long financialReportId) throws IOException {
-        FinancialReportItemRepo friRepo = new FinancialReportItemRepo();
-        PaymentRepo pRepo = new PaymentRepo();
-//        Payment payment = new Payment();
-        List<Payment> payments = new ArrayList<>();
+    public List<StockUpdate> getItemsForReport(Long stockReportId) throws IOException {
+        StockReportItemRepo sriRepo = new StockReportItemRepo();
+        StockUpdateRepo suRepo = new StockUpdateRepo();
+        List<StockUpdate> su = new ArrayList<>();
         
-        for (FinancialReportItem item : friRepo.getByFinancialReportId(financialReportId)) {
-            payments.add(pRepo.getPaymentById(item.getPaymentId()));
+        
+        for (StockReportItem item : sriRepo.getByStockReportId(stockReportId)) {
+            su.add(suRepo.getByStockUpdateId(item.getStockUpdateId()));
         }
-        return payments;
+        return su;
     }
 }
