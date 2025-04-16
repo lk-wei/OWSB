@@ -23,10 +23,12 @@ public class Item {
         this.itemId = itemId;
         this.itemCode = itemCode;
         this.itemName = itemName;
-        this.currentStock = currentStock;
+        this.currentStock = currentStock; 
         this.minStock = minStock;
         this.unitCost = unitCost;
     }
+
+  
 
     public Long getItemId() {
         return itemId;

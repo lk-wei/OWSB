@@ -16,6 +16,7 @@ public class Payment {
     private Long supplierId;    
     private LocalDate paymentDate;           
     private double paymentAmount;
+    
 
     public Payment(Long paymentId, String paymentCode, Long supplierId, LocalDate paymentDate, double paymentAmount) {
         this.paymentId = paymentId;
@@ -23,7 +24,10 @@ public class Payment {
         this.supplierId = supplierId;
         this.paymentDate = paymentDate;
         this.paymentAmount = paymentAmount;
+        
     }
+
+
 
     public Long getPaymentId() {
         return paymentId;
@@ -65,7 +69,8 @@ public class Payment {
         this.paymentAmount = paymentAmount;
     }
 
-   
+
+    
    
     
     }

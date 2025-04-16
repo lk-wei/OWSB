@@ -4,23 +4,36 @@
  */
 package gui;
 
-import sample.*;
+import java.io.IOException;
+import javax.swing.JOptionPane;
+import repository.ItemRepo;
 
 /**
  *
  * @author Kang Wei
  */
 public class ItemTable extends javax.swing.JFrame {
+
     /**
      * Creates new form DashBoardSample
      */
-    
+
     public ItemTable() {
         initComponents();
         this.setLocationRelativeTo(null); //this will center your frame
+        updateTable();
     }
-    
+
     // Custom Methods
+    private void updateTable() {
+        ItemRepo repo = new ItemRepo();
+        try {
+            jTable1.setModel(repo.getTableModel());
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
+        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -48,7 +61,7 @@ public class ItemTable extends javax.swing.JFrame {
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Payment Table");
+        jLabel1.setText("Item Table");
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -60,8 +73,19 @@ public class ItemTable extends javax.swing.JFrame {
             new String [] {
                 "Item Code", "Item Name", "Current Stock", "Min Stock", "Unit Cost", ""
             }
-        ));
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Double.class, java.lang.Object.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
         jScrollPane1.setViewportView(jTable1);
+        if (jTable1.getColumnModel().getColumnCount() > 0) {
+            jTable1.getColumnModel().getColumn(3).setResizable(false);
+        }
 
         jButton1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jButton1.setText("Button");

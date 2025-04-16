@@ -1,1 +1,11 @@
+1|S001|TechNova Ltd|support@technova.com|+1-202-555-0111
+2|S002|ByteWave Inc|contact@bytewave.com|+1-202-555-0123
+3|S003|Quantum Supplies|info@quantumsupplies.com|+1-202-555-0198
+4|S004|NexaParts|sales@nexaparts.com|+1-202-555-0175
+5|S005|FusionGear|hello@fusiongear.com|+1-202-555-0155
+6|S006|Apex Components|service@apexcomponents.com|+1-202-555-0183
+7|S007|VoltEdge Corp|support@voltedge.com|+1-202-555-0167
+8|S008|CircuitStream|team@circuitstream.com|+1-202-555-0144
+9|S009|NovaTech Global|info@novatechglobal.com|+1-202-555-0132
+10|S010|PixelWorks|contact@pixelworks.com|+1-202-555-0109
 

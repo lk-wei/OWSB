@@ -79,6 +79,18 @@ public class PurchaseOrderRepo {
         }
         Files.write(filePath, updatedLines);
     }
+    public PurchaseOrder getOrderById(Long purchaseOrderId) throws IOException {
+        List<String> lines = Files.readAllLines(filePath);
+
+        for (String line : lines) {
+            PurchaseOrder po = stringToObject(line);
+
+            if (po.getPurchaseOrderId().equals(purchaseOrderId)) {
+                return po;
+            }
+        }
+        return null;
+    }
     
     // others
     

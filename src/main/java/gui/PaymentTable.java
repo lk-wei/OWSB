@@ -4,7 +4,9 @@
  */
 package gui;
 
-import sample.*;
+import java.io.IOException;
+import javax.swing.JOptionPane;
+import repository.PaymentRepo;
 
 /**
  *
@@ -18,9 +20,19 @@ public class PaymentTable extends javax.swing.JFrame {
     public PaymentTable() {
         initComponents();
         this.setLocationRelativeTo(null); //this will center your frame
+        updateTable();
     }
     
     // Custom Methods
+     private void updateTable() {
+        PaymentRepo repo = new PaymentRepo();
+        try {
+             jTable1.setModel(repo.getTableModel());
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
+        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.

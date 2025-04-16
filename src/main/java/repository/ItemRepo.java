@@ -11,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -23,7 +24,7 @@ public class ItemRepo {
 
     // create
     public void createItem(Item item) throws IOException {
-        
+
         IdGenerator ig = new IdGenerator(filePath);
         item.setItemId(ig.getId());
         List<String> lines = Files.readAllLines(filePath);
@@ -40,11 +41,12 @@ public class ItemRepo {
         for (String line : lines) {
             Item i = stringToObject(line);
             itemList.add(i);
+            
         }
         return itemList;
     }
 
-    public Item getItemById(String itemId) throws IOException {
+    public Item getItemById(Long itemId) throws IOException {
         List<String> lines = Files.readAllLines(filePath);
 
         for (String line : lines) {
@@ -102,12 +104,32 @@ public class ItemRepo {
         Files.write(filePath, updatedLines);
     }
 
+    public DefaultTableModel getTableModel() throws IOException {
+
+        DefaultTableModel model = new DefaultTableModel(
+                new Object[][]{},
+                // These column names must match what's in your JFrame
+                new String[]{"Item Code", "Item Name", "Current Stock", "Min Stock", "Unit Cost", ""}
+        );
+        List<Item> items = getAllItem();
+
+        for (Item item : items) {
+            model.addRow(new Object[]{
+                item.getItemCode(), //itemCode
+                item.getItemName(), //ItemName
+                item.getCurrentStock(), //currentStock
+                item.getMinStock(), //minStock
+                item.getUnitCost(),
+                ""}); //unit Cost
+        }
+        return model;
+    }
+
     private String objectToString(Item item) {
         return String.join("|",
                 item.getItemId().toString(),
                 item.getItemCode(),
                 item.getItemName(),
-                
                 Integer.toString(item.getCurrentStock()),
                 Integer.toString(item.getMinStock()),
                 Double.toString(item.getUnitCost())
@@ -118,13 +140,14 @@ public class ItemRepo {
     private Item stringToObject(String line) {
         String[] parts = line.split("\\|");
         return new Item(
-                Long.valueOf(parts[0]),// id
-                parts[1], // code
-                parts[2], // name               
-                Integer.parseInt(parts[3]),// currentStock
-                Integer.parseInt(parts[4]),// min
-                Double.parseDouble(parts[5])
+                Long.valueOf(parts[0]), // itemId
+                parts[1], // itemCode
+                parts[2], // itemName
+                Integer.parseInt(parts[3]), // currentStock
+                Integer.parseInt(parts[4]), // minStock
+                Double.parseDouble(parts[5]) // unitCost
         );
+       
     }
 
 }
