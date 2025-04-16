@@ -23,9 +23,7 @@ public class ItemRepo {
 
     // create
     public void createItem(Item item) throws IOException {
-        
-        IdGenerator ig = new IdGenerator(filePath);
-        item.setItemId(ig.getId());
+        item.setItemId(IdGenerator.getId(filePath));
         List<String> lines = Files.readAllLines(filePath);
         lines.add(objectToString(item));
 

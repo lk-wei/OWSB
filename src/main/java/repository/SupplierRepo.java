@@ -44,7 +44,7 @@ public class SupplierRepo {
         return supplierList;
     }
 
-    public Supplier getSupplierById(String supplierId) throws IOException {
+    public Supplier getSupplierById(Long supplierId) throws IOException {
         List<String> lines = Files.readAllLines(filePath);
 
         for (String line : lines) {
