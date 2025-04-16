@@ -12,16 +12,13 @@ import repository.*;
  *
  * @author Kang Wei
  */
-public class Login {
+public class Authenticate {
     private String username;
     private String password;
-
-    public Login(String username, String password) {
+    
+    public boolean login(String username, String password) {
         this.username = username;
         this.password = password;
-    }
-    
-    public boolean authenticate() {
         try {
             UserRepo userRep = new UserRepo();
             User u = userRep.getUserByUsername(username); // Fetch user by username

@@ -45,21 +45,20 @@ public class StockUpdateRepo {
     }
     
     // match id get with the id stored in txt file
-    public List<StockUpdate> getByStockUpdateId(Long suid) throws IOException{
-        List<StockUpdate> StockUpdateList = new ArrayList<>();
+    public StockUpdate getByStockUpdateId(Long suid) throws IOException{
         List<String> lines = Files.readAllLines(filePath);
    
         for(String line : lines){
             StockUpdate su = stringToObject(line);
             
-            if(Objects.equals(su.getStockUpdateId(), suid)){
-                StockUpdateList.add(su);
+            if(su.getStockUpdateId() == suid){
+                return su;
             }
         }
-        return StockUpdateList;
+        return null;
     }
     
-    // update
+    // updates
     public void updateStockUpdate(StockUpdate stockUpdate) throws IOException{
         List<String> lines = Files.readAllLines(filePath);
         List<String> updatedLines = new ArrayList<>();
