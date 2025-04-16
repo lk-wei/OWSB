@@ -4,11 +4,15 @@
  */
 package repository;
 
+import domain.Payment;
 import domain.PaymentItem;
+import domain.PurchaseOrder;
+import domain.Supplier;
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *

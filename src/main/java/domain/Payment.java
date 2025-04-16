@@ -26,7 +26,10 @@ public class Payment {
         this.supplierId = supplierId;
         this.paymentDate = paymentDate;
         this.paymentAmount = paymentAmount;
+        
     }
+
+
 
     public Long getPaymentId() {
         return paymentId;
@@ -68,7 +71,8 @@ public class Payment {
         this.paymentAmount = paymentAmount;
     }
 
-   
+
+    
    
     
     }
