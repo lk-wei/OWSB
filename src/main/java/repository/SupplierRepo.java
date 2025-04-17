@@ -44,18 +44,22 @@ public class SupplierRepo {
         return supplierList;
     }
 
-    public Supplier getSupplierById(String supplierId) throws IOException {
+    
+    
+    public Supplier getSupplierById(Long supplierId) throws IOException {
         List<String> lines = Files.readAllLines(filePath);
 
         for (String line : lines) {
             Supplier s = stringToObject(line);
 
+            // Compare Long with Long
             if (s.getSupplierId().equals(supplierId)) {
                 return s;
             }
         }
         return null;
     }
+
 
     public Supplier getSupplierBySuppliername(String supplierName) throws IOException {
         List<String> lines = Files.readAllLines(filePath);

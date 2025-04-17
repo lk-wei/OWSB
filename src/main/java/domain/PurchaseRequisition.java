@@ -6,31 +6,41 @@ package domain;
 
 import java.time.LocalDate;
 
+import java.util.List;
+
 /**
  *
  * @author See Kai Yang
  */
 public class PurchaseRequisition {
     private long purchaseRequisitionID; //PK
-    private long requestById; //FK to User
+    private String purchaseRequisitionCode;
+    private long requestedById; //FK to User
     private LocalDate requestDate; 
     private LocalDate requiredDate;
-    private Status status;  //(Draft/Submitted/Approved/Rejected/ConvertedToPurchaseOrder)
-    
-    public enum Status {
-        DRAFT,
-        SUBMITTED,
-        APPROVED,
-        REJECTED,
-        CONVERTED_TO_PURCHASE_ORDER
+    private String status;  //(Draft/Submitted/Approved/Rejected/ConvertedToPurchaseOrder)
+    private List<PurchaseRequisitionItem> item;
+
+    public PurchaseRequisition() {
     }
+
+    public PurchaseRequisition(long purchaseRequisitionID, long requestedById, LocalDate requestDate, LocalDate requiredDate, String status, List<PurchaseRequisitionItem> item) {
+        this.purchaseRequisitionID = purchaseRequisitionID;
+        this.purchaseRequisitionCode = purchaseRequisitionCode;
+        this.requestedById = requestedById;
+        this.requestDate = requestDate;
+        this.requiredDate = requiredDate;
+        this.status = status;
+        this.item = item;
+    }
+    
 
     public long getPurchaseRequisitionID() {
         return purchaseRequisitionID;
     }
 
     public long getRequestById() {
-        return requestById;
+        return requestedById;
     }
 
     public LocalDate getRequestDate() {
@@ -41,7 +51,7 @@ public class PurchaseRequisition {
         return requiredDate;
     }
 
-    public Status getStatus() {
+    public String getStatus() {
         return status;
     }
 
@@ -49,8 +59,8 @@ public class PurchaseRequisition {
         this.purchaseRequisitionID = purchaseRequisitionID;
     }
 
-    public void setRequestById(long requestById) {
-        this.requestById = requestById;
+    public void setRequestedById(long requestById) {
+        this.requestedById = requestById;
     }
 
     public void setRequestDate(LocalDate requestDate) {
@@ -61,9 +71,28 @@ public class PurchaseRequisition {
         this.requiredDate = requiredDate;
     }
 
-    public void setStatus(Status status) {
+    public void setStatus(String status) {
         this.status = status;
     }
+
+    public List<PurchaseRequisitionItem> getItem() {
+        return item;
+    }
+
+    public void setItem(List<PurchaseRequisitionItem> item) {
+        this.item = item;
+    }
+
+    public String getPurchaseRequisitionCode() {
+        return purchaseRequisitionCode;
+    }
+
+    public void setPurchaseRequisitionCode(String purchaseRequisitionCode) {
+        this.purchaseRequisitionCode = purchaseRequisitionCode;
+    }
+    
+    
+    
     
     
 }

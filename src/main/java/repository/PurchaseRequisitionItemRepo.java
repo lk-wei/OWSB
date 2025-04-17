@@ -6,11 +6,14 @@ package repository;
 
 
 
+import domain.PurchaseRequisition;
 import domain.PurchaseRequisitionItem;
+import domain.Supplier;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -40,8 +43,24 @@ public class PurchaseRequisitionItemRepo {
             itemList.add(stringToObject(line));
         }
         return itemList;
+        
     }
-
+    
+    public List<PurchaseRequisitionItem> getByPurchaseRequisitionId (long prid) throws IOException{
+        List <PurchaseRequisitionItem>  PurchaseRequisitionItemList = new ArrayList<>(); 
+        List<String> lines = Files.readAllLines(filePath);
+        
+        
+        for(String line : lines){
+            PurchaseRequisitionItem pri = stringToObject(line);
+            if (pri.getPurchaseRequisitionId() == prid){
+                PurchaseRequisitionItemList.add(pri);
+            }
+        }
+        return PurchaseRequisitionItemList;
+    }
+    
+    
     // Read by ID
     public PurchaseRequisitionItem getPurchaseRequisitionItemById(long itemId) throws IOException {
         List<String> lines = Files.readAllLines(filePath);
@@ -87,18 +106,19 @@ public class PurchaseRequisitionItemRepo {
 
     // Convert object to string for file storage
     private String objectToString(PurchaseRequisitionItem item) {
-        return String.join(",",
-                String.valueOf(item.getPurchaseRequisitionItemId()),
+        return String.join("|",
                 String.valueOf(item.getPurchaseRequisitionId()),
+                String.valueOf(item.getPurchaseRequisitionCode()),
                 String.valueOf(item.getItemId()),
                 String.valueOf(item.getQuantity()),
                 String.valueOf(item.getSupplierId())
         );
     }
 
-    // Convert string to object
+
+     //Convert string to object
     private PurchaseRequisitionItem stringToObject(String line) {
-        String[] parts = line.split(",");
+        String[] parts = line.split("\\|", -1);
         PurchaseRequisitionItem item = new PurchaseRequisitionItem();
         item.setPurchaseRequisitionItemId(Long.parseLong(parts[0]));
         item.setPurchaseRequisitionId(Long.parseLong(parts[1]));
@@ -107,7 +127,6 @@ public class PurchaseRequisitionItemRepo {
         item.setSupplierId(Long.parseLong(parts[4]));
         return item;
     }
-    
     
     
     

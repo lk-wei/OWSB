@@ -100,14 +100,14 @@
               <Properties>
                 <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
                   <Table columnCount="8" rowCount="4">
-                    <Column editable="true" title="Purcahse Requisition ID" type="java.lang.Long"/>
-                    <Column editable="true" title="Requested By UserID" type="java.lang.Long"/>
+                    <Column editable="true" title="Purcahse Requisition Code" type="java.lang.String"/>
+                    <Column editable="true" title="Requested By" type="java.lang.String"/>
                     <Column editable="true" title="Request Date" type="java.lang.String"/>
                     <Column editable="true" title="Required Date" type="java.lang.String"/>
-                    <Column editable="true" title="ItemID" type="java.lang.String"/>
-                    <Column editable="true" title="SupplierID" type="java.lang.String"/>
-                    <Column editable="true" title="Quantity" type="java.lang.String"/>
+                    <Column editable="true" title="Supplier Code" type="java.lang.String"/>
+                    <Column editable="true" title="Supplier Name" type="java.lang.String"/>
                     <Column editable="true" title="Status" type="java.lang.String"/>
+                    <Column editable="true" title="" type="java.lang.Object"/>
                   </Table>
                 </Property>
                 <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">

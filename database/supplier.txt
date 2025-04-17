@@ -1,1 +1,10 @@
-
+1|ABC Supplies|ABC123|abc@supplies.com|123-456-7890
+2|XYZ Tech|XYZ987|xyz@tech.com|234-567-8901
+3|TechWorld|TW456|tech@world.com|345-678-9012
+4|GadgetHub|GH321|gadget@hub.com|456-789-0123
+5|OfficeGear|OG999|gear@office.com|567-890-1234
+6|ElectroMart|EM555|electro@mart.com|678-901-2345
+7|PrintCo|PC777|print@co.com|789-012-3456
+8|ScanPro|SP111|scan@pro.com|890-123-4567
+9|AudioTech|AT888|audio@tech.com|901-234-5678
+10|Visionary|VS666|vision@ary.com|012-345-6789

@@ -5,6 +5,12 @@
 package gui;
 
 import sample.*;
+import domain.FinancialReport;
+import java.io.IOException;
+import java.util.List;
+import javax.swing.JOptionPane;
+import repository.PurchaseRequisitionRepo;
+
 
 /**
  *
@@ -17,11 +23,20 @@ public class PurchaseRequsitionTable extends javax.swing.JFrame {
     
     public PurchaseRequsitionTable() {
         initComponents();
+        updateTable();
         this.setLocationRelativeTo(null); //this will center your frame
     }
     
     // Custom Methods
-
+    private void updateTable() {
+        PurchaseRequisitionRepo Prr = new PurchaseRequisitionRepo();
+        try {
+             jTable1.setModel(Prr.getTableModel());
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -57,11 +72,11 @@ public class PurchaseRequsitionTable extends javax.swing.JFrame {
                 {null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "Purcahse Requisition ID", "Requested By UserID", "Request Date", "Required Date", "ItemID", "SupplierID", "Quantity", "Status"
+                "Purcahse Requisition Code", "Requested By", "Request Date", "Required Date", "Supplier Code", "Supplier Name", "Status", ""
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Long.class, java.lang.Long.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class
             };
 
             public Class getColumnClass(int columnIndex) {

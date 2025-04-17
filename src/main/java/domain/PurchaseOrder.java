@@ -14,6 +14,7 @@ import java.util.List;
  */
 public class PurchaseOrder {
     private Long purchaseOrderId; // PK
+    private String purchaseOrderCode;
     private Long purchaseRequisitionId; // FK to PurchaseRequisition
     private Long createdById; // FK to User
     private Long supplierId; // FK to Supplier
@@ -29,8 +30,9 @@ public class PurchaseOrder {
     public PurchaseOrder() {
     }
 
-    public PurchaseOrder(Long purchaseOrderId, Long purchaseRequisitionId, Long createdById, Long supplierId, LocalDate orderDate, LocalDate expectedDeliveryDate, String status, LocalDate approvalDate, Long approvedById, Double totalAmount, List<PurchaseOrderItem> item) {
+    public PurchaseOrder(Long purchaseOrderId, String purchaseOrderCode, Long purchaseRequisitionId, Long createdById, Long supplierId, LocalDate orderDate, LocalDate expectedDeliveryDate, String status, LocalDate approvalDate, Long approvedById, Double totalAmount, List<PurchaseOrderItem> item) {
         this.purchaseOrderId = purchaseOrderId;
+        this.purchaseOrderCode = purchaseOrderCode;
         this.purchaseRequisitionId = purchaseRequisitionId;
         this.createdById = createdById;
         this.supplierId = supplierId;
@@ -131,11 +133,19 @@ public class PurchaseOrder {
         this.item = item;
     }
     
+    public String getPurchaseOrderCode() {
+        return purchaseOrderCode;
+    }
+
+    public void setPurchaseOrderCode(String purchaseOrderCode) {
+        this.purchaseOrderCode = purchaseOrderCode;
+    }    
     // toString method
     @Override
     public String toString() {
         return "PurchaseOrder{" +
                 "purchaseOrderId=" + purchaseOrderId +
+                ",purchaseOrderCode=" + purchaseOrderCode +
                 ", purchaseRequisitionId=" + purchaseRequisitionId +
                 ", createdById=" + createdById +
                 ", supplierId=" + supplierId +

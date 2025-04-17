@@ -55,6 +55,10 @@ public class PurchaseRequisitionItem {
     public void setSupplierId(long supplierId) {
         this.supplierId = supplierId;
     }
+
+    public Object getPurchaseRequisitionCode() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
     
     
     
