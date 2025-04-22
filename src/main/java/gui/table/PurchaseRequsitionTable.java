@@ -6,7 +6,6 @@ package gui.table;
 
 import gui.PurchaseRequisitionEdit;
 import gui.PurchaseRequisitionNew;
-import sample.*;
 
 /**
  *
