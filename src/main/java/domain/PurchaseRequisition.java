@@ -6,13 +6,16 @@ package domain;
 
 import java.time.LocalDate;
 
+import java.util.List;
+
 /**
  *
  * @author See Kai Yang
  */
 public class PurchaseRequisition implements Identifiable<Long>{
     private Long id; //PK
-    private Long requestById; //FK to User
+    private String purchaseRequisitionCode;
+    private Long requestedById; //FK to User
     private LocalDate requestDate; 
     private LocalDate requiredDate;
     private Status status;  //(Draft/Submitted/Approved/Rejected/ConvertedToPurchaseOrder)

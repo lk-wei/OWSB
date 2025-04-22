@@ -6,10 +6,14 @@ package repository;
 
 
 
+import domain.PurchaseRequisition;
 import domain.PurchaseRequisitionItem;
+import domain.Supplier;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -40,6 +44,7 @@ public class PurchaseRequisitionItemRepo extends MasterRepo<PurchaseRequisitionI
         return String.join(",",
                 String.valueOf(item.getId()),
                 String.valueOf(item.getPurchaseRequisitionId()),
+                String.valueOf(item.getPurchaseRequisitionCode()),
                 String.valueOf(item.getItemId()),
                 String.valueOf(item.getQuantity()),
                 String.valueOf(item.getSupplierId())
@@ -58,7 +63,6 @@ public class PurchaseRequisitionItemRepo extends MasterRepo<PurchaseRequisitionI
         item.setSupplierId(Long.valueOf(parts[4]));
         return item;
     }
-    
     
     
     

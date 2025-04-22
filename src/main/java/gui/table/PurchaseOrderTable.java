@@ -4,6 +4,9 @@
  */
 package gui.table;
 
+import java.io.IOException;
+import javax.swing.JOptionPane;
+import repository.PurchaseOrderRepo;
 import gui.PurchaseOrderEdit;
 import gui.PurchaseOrderNew;
 import sample.*;
@@ -19,11 +22,20 @@ public class PurchaseOrderTable extends javax.swing.JFrame {
     
     public PurchaseOrderTable() {
         initComponents();
+        updateTable();
         this.setLocationRelativeTo(null); //this will center your frame
     }
     
     // Custom Methods
-
+    private void updateTable() {
+        PurchaseOrderRepo Por = new PurchaseOrderRepo();
+        try {
+             jTable1.setModel(Por.getTableModel());
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -53,17 +65,17 @@ public class PurchaseOrderTable extends javax.swing.JFrame {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "Purcahse Order ID", "UserID", "SupplierID", "Approve By User ID", "Order Date", "ExpectedDelivery Date", "Status", "Total Amount"
+                "Purcahse Order Code", "Created by", "Supplier Code", "Supplier Name", "Approve By", "Order Date", "ExpectedDelivery Date", "Status", "Total Amount", ""
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Long.class, java.lang.Long.class, java.lang.Long.class, java.lang.Long.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Double.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Double.class, java.lang.Object.class
             };
 
             public Class getColumnClass(int columnIndex) {

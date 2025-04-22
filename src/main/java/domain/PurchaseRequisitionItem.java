@@ -67,4 +67,13 @@ public class PurchaseRequisitionItem implements Identifiable<Long>{
     public void setSupplierId(Long supplierId) {
         this.supplierId = supplierId;
     }
+
+    public Object getPurchaseRequisitionCode() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+    
+    
+    
+    
+    
 }
