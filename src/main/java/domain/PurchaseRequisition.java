@@ -18,22 +18,16 @@ public class PurchaseRequisition implements Identifiable<Long>{
     private Long requestedById; //FK to User
     private LocalDate requestDate; 
     private LocalDate requiredDate;
-    private Status status;  //(Draft/Submitted/Approved/Rejected/ConvertedToPurchaseOrder)
+    private String status;  //(Draft/Submitted/Approved/Rejected/ConvertedToPurchaseOrder)
+    private List<PurchaseRequisitionItem> item;
     
-    public enum Status {
-        DRAFT,
-        SUBMITTED,
-        APPROVED,
-        REJECTED,
-        CONVERTED_TO_PURCHASE_ORDER
-    }
-
     public PurchaseRequisition() {
     }
 
-    public PurchaseRequisition(Long id, Long requestById, LocalDate requestDate, LocalDate requiredDate, Status status) {
+    public PurchaseRequisition(Long id, String purchaseRequisitionCode, Long requestedById, LocalDate requestDate, LocalDate requiredDate, String status) {
         this.id = id;
-        this.requestById = requestById;
+        this.purchaseRequisitionCode = purchaseRequisitionCode;
+        this.requestedById = requestedById;
         this.requestDate = requestDate;
         this.requiredDate = requiredDate;
         this.status = status;
@@ -47,12 +41,20 @@ public class PurchaseRequisition implements Identifiable<Long>{
         this.id = id;
     }
 
-    public Long getRequestById() {
-        return requestById;
+    public String getPurchaseRequisitionCode() {
+        return purchaseRequisitionCode;
     }
 
-    public void setRequestById(Long requestById) {
-        this.requestById = requestById;
+    public void setPurchaseRequisitionCode(String purchaseRequisitionCode){
+        this.purchaseRequisitionCode = purchaseRequisitionCode;
+    }
+
+    public Long getRequestedById() {
+        return requestedById;
+    }
+
+    public void setRequestedById(Long requestedById) {
+        this.requestedById = requestedById;
     }
 
     public LocalDate getRequestDate() {
@@ -71,12 +73,20 @@ public class PurchaseRequisition implements Identifiable<Long>{
         this.requiredDate = requiredDate;
     }
 
-    public Status getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(Status status) {
+    public void setStatus(String status) {
         this.status = status;
+    }
+
+    public List<PurchaseRequisitionItem> getItem(){
+        return item;
+    }
+
+    public void setItem(List<PurchaseRequisitionItem> item){
+        this.item = item;
     }
     
 }

@@ -13,6 +13,7 @@ import java.nio.file.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -20,9 +21,6 @@ import javax.swing.table.DefaultTableModel;
  * @author Kang Wei
  */
 public class PurchaseOrderRepo extends MasterRepo<PurchaseOrder>{
-    // define the txt file that stores data
-    final private Path filePath = Path.of("database/purchaseOrder.txt");
-    
     public PurchaseOrderRepo(){
        super(Path.of("database/purchaseOrder.txt"));
     }
@@ -33,9 +31,11 @@ public class PurchaseOrderRepo extends MasterRepo<PurchaseOrder>{
 
         for (String line : lines) {
             PurchaseOrder po = stringToObject(line);
-            PurchaseOrderList.add(po);
+            if(Objects.equals(po.getId(), purchaseOrderId)){
+                return po;
+            }
         }
-        return PurchaseOrderList;
+        return null;
     }
     
     public DefaultTableModel getTableModel() throws IOException {
@@ -55,7 +55,7 @@ public class PurchaseOrderRepo extends MasterRepo<PurchaseOrder>{
         }
     );
 
-    List<PurchaseOrder> reports = getAllPurchaseOrder();
+    List<PurchaseOrder> reports = getAll();
     SupplierRepo supplierRepo = new SupplierRepo();
     UserRepo userRepo = new UserRepo();
     
@@ -78,23 +78,7 @@ public class PurchaseOrderRepo extends MasterRepo<PurchaseOrder>{
 
     return model;
 }
-    
-    // update
-    public void updatePurchaseOrder(PurchaseOrder PurchaseOrder) throws IOException{
-        List<String> lines = Files.readAllLines(filePath);
-        List<String> updatedLines = new ArrayList<>();
-   
-        for(String line : lines){
-            PurchaseOrder u = stringToObject(line);
-            
-            if(u.getPurchaseOrderId().equals(PurchaseOrder.getPurchaseOrderId())){
-                updatedLines.add(objectToString(PurchaseOrder));
-            }else{
-                updatedLines.add(line);
-            }
-        }
-        return null;
-    }
+
     
     // others
     
@@ -102,7 +86,7 @@ public class PurchaseOrderRepo extends MasterRepo<PurchaseOrder>{
     @Override
     protected String objectToString(PurchaseOrder po) {
         return String.join("|",
-            po.getPurchaseOrderId().toString(),
+            po.getId().toString(),
             po.getPurchaseOrderCode(), 
             po.getPurchaseRequisitionId().toString(),
             po.getCreatedById().toString(),
@@ -119,8 +103,6 @@ public class PurchaseOrderRepo extends MasterRepo<PurchaseOrder>{
     // Converts pipe-delimited string back to PurchaseOrder object
     @Override
     protected PurchaseOrder stringToObject(String line) {
-        
-    private PurchaseOrder stringToObject(String line) throws IOException {
         PurchaseOrderItemRepo itemRepo = new PurchaseOrderItemRepo();
         String[] parts = line.split("\\|", -1); // -1 keeps empty values
 
@@ -136,7 +118,7 @@ public class PurchaseOrderRepo extends MasterRepo<PurchaseOrder>{
             LocalDate.parse(parts[8]),                                // approvalDate (not saved)
             Long.valueOf(parts[9]),              // approvedById
             Double.valueOf(parts[10]),            // totalAmount
-            itemRepo.getByPurchaseOrderId(Long.valueOf(parts[0])) // item list
+            new ArrayList<>() // item list
         );
     }
 

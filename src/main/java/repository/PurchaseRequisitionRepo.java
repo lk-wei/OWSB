@@ -55,13 +55,13 @@ public class PurchaseRequisitionRepo extends MasterRepo<PurchaseRequisition>{
             }
         );
 
-        List<PurchaseRequisition> reports = getAllPurchaseRequisitions();
+        List<PurchaseRequisition> reports = getAll();
         SupplierRepo supplierRepo = new SupplierRepo();
         UserRepo userRepo = new UserRepo();
 
         for (PurchaseRequisition report : reports) {
             for (PurchaseRequisitionItem item : report.getItem()) {
-                User user = userRepo.getUserById(report.getRequestById());
+                User user = userRepo.getUserById(report.getId());
                 Supplier supplierObj = supplierRepo.getSupplierById(item.getSupplierId());
 
                 model.addRow(new Object[]{
@@ -80,46 +80,12 @@ public class PurchaseRequisitionRepo extends MasterRepo<PurchaseRequisition>{
         return model;
     }
 
-    
-    
-    
-    
-    // Update
-    public void updatePurchaseRequisition(PurchaseRequisition pr) throws IOException {
-        List<String> lines = Files.readAllLines(filePath);
-        List<String> updatedLines = new ArrayList<>();
-
-        for (String line : lines) {
-            PurchaseRequisition existingPR = stringToObject(line);
-            if (existingPR.getPurchaseRequisitionID() == pr.getPurchaseRequisitionID()) {
-                updatedLines.add(objectToString(pr));
-            } else {
-                updatedLines.add(line);
-            }
-        }
-        Files.write(filePath, updatedLines);
-    }
-
-    // Delete
-    public void deletePurchaseRequisition(long prId) throws IOException {
-        List<String> lines = Files.readAllLines(filePath);
-        List<String> updatedLines = new ArrayList<>();
-
-        for (String line : lines) {
-            PurchaseRequisition pr = stringToObject(line);
-            if (pr.getPurchaseRequisitionID() != prId) {
-                updatedLines.add(line);
-            }
-        }
-        Files.write(filePath, updatedLines);
-    }
-
     // Convert object to string for file storage
     @Override
     protected String objectToString(PurchaseRequisition pr) {
         return String.join(",",
                 String.valueOf(pr.getId()),
-                String.valueOf(pr.getRequestById()),
+                String.valueOf(pr.getRequestedById()),
                 pr.getRequestDate().toString(),
                 pr.getRequiredDate().toString(),
                 pr.getStatus()
@@ -138,7 +104,6 @@ public class PurchaseRequisitionRepo extends MasterRepo<PurchaseRequisition>{
         pr.setRequestDate(LocalDate.parse(parts[3]));
         pr.setRequiredDate(LocalDate.parse(parts[4]));
         pr.setStatus(String.valueOf(parts[5]));
-        pr.setItem(prir.getByPurchaseRequisitionId(pr.getPurchaseRequisitionID()));
         return pr;
         
     }
