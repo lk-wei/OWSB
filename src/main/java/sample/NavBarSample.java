@@ -103,13 +103,7 @@ public class NavBarSample extends javax.swing.JPanel {
     }//GEN-LAST:event_userButtonActionPerformed
 
     private void notificationButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_notificationButtonMouseClicked
-        if(num == 1){
-            notificationButton.setIcon(unreadNotiIcon);
-            num += 1;
-        }else{
-            notificationButton.setIcon(notiIcon);
-            num -= 1;
-        }
+        new AlertFrame().setVisible(true);
     }//GEN-LAST:event_notificationButtonMouseClicked
 
 
