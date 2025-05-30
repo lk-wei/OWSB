@@ -4,15 +4,11 @@
  */
 package gui.table;
 
-import domain.FinancialReport;
 import domain.User;
 import function.FrontendPermissionManager;
-import function.PermissionService;
 import java.io.IOException;
-import java.util.List;
 import javax.swing.JOptionPane;
 import repository.FinancialReportRepo;
-import sample.*;
 
 /**
  *

@@ -1,0 +1,10 @@
+1|3|PM|New PR Created|PR #PR001 needs review for PO creation.|unread
+2|6|PM|New PR Created|PR #PR002 needs review for PO creation.|unread
+3|3|IM|PO Approved - Awaiting Stock Update|PO #PO001 items are expected. Please prepare for stock update.|unread
+4|4|FM|PO Submitted for Approval|PO #PO003 is awaiting financial approval.|unread
+5|3|PM|New PR Created|PR #PR003 needs review for PO creation.|unread
+6|6|PM|New PR Created|PR #PR004 needs review for PO creation.|unread
+7|8|SM|Low Stock Warning|Item C001 (Wireless Mouse) is below minimum stock.|unread
+8|4|FM|Payment Processed|Payment for PO #PO002 to supplier S002 has been processed.|read
+9|3|PM|New PR Created|PR #PR005 needs review for PO creation.|unread
+10|1|AD|System Maintenance Alert|Scheduled maintenance tonight at 2 AM.|unread

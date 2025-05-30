@@ -4,7 +4,6 @@
  */
 package gui;
 
-import sample.*;
 import javax.swing.table.DefaultTableModel;
 
 /**

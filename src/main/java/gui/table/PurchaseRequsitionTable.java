@@ -7,12 +7,6 @@ package gui.table;
 import gui.PurchaseRequisitionEdit;
 import gui.PurchaseRequisitionNew;
 import sample.*;
-import domain.FinancialReport;
-import java.io.IOException;
-import java.util.List;
-import javax.swing.JOptionPane;
-import repository.PurchaseRequisitionRepo;
-
 
 /**
  *

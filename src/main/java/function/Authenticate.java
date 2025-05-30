@@ -13,12 +13,7 @@ import repository.*;
  * @author Kang Wei
  */
 public class Authenticate {
-    private String username;
-    private String password;
-    
-    public boolean login(String username, String password) {
-        this.username = username;
-        this.password = password;
+    public static boolean login(String username, String password) {
         try {
             UserRepo userRep = new UserRepo();
             User u = userRep.getUserByUsername(username); // Fetch user by username
@@ -26,21 +21,25 @@ public class Authenticate {
             // Handle case where user is not found (u is null)
             if (u == null) {
                 System.out.println("User not found!");
-                return false;  // Authentication failed if user is null
+                return false;
             }
-
-            // Compare password
-            return u.getPassword().equals(password);
-
+            
+            if(u.getPassword().equals(password)){
+                UserSession.getInstance().setCurrentUser(u);
+                return true;
+            }else{
+                System.out.println("Incorrect passowrd!");
+                return false;
+            }
+            
         } catch (IOException e) {
-            // Handle IO exceptions (e.g., file read issues)
             System.out.println("An error occurred while accessing the user repository: " + e.getMessage());
             return false;
 
         } catch (Exception e) {
-            // Catch any other exceptions (e.g., unexpected errors)
             System.out.println("An unexpected error occurred: " + e.getMessage());
             return false;
         }
     }
 }
+

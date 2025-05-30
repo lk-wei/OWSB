@@ -9,7 +9,6 @@ import javax.swing.JOptionPane;
 import repository.PurchaseOrderRepo;
 import gui.PurchaseOrderEdit;
 import gui.PurchaseOrderNew;
-import sample.*;
 
 /**
  *

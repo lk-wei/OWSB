@@ -1,12 +1,10 @@
-1|user1|user123|CK|admin
-2|admin1|admin123|CK|admin
-1|salesmgr01|password123|Alice Tan|SalesManager
-2|purchasemgr01|securepass|Bob Lee|PurchaseManager
-3|admin01|adminpass|Catherine Wong|Administrator
-4|inventory01|inv12345|Daniel Ng|InventoryManager
-5|finance01|fin2024|Emily Lim|FinanceManager
-6|salesmgr02|salespass|Felix Tan|SalesManager
-7|purchasemgr02|buysecure|Grace Lau|PurchaseManager
-8|admin02|rootadmin|Henry Goh|Administrator
-9|inventory02|stockpass|Ivy Chew|InventoryManager
-10|finance02|money123|Jason Yip|FinanceManager
+1|admin1|password123|Alice Tan|AD
+2|purchase1|password123|Bob Lee|PM
+3|sales1|password123|Catherine Wong|SM
+4|inventory1|password123|Daniel Ng|IM
+5|finance1|password123|Emily Lim|FM
+6|admin02|salespass|Felix Tan|AD
+7|purchasemgr02|buysecure|Grace Lau|PM
+8|salesmgr02|rootadmin|Henry Goh|SM
+9|inventory02|stockpass|Ivy Chew|IM
+10|finance02|money123|Jason Yip|FM

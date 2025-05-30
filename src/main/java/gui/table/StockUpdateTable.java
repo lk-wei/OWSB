@@ -7,7 +7,6 @@ package gui.table;
 import java.io.IOException;
 import javax.swing.JOptionPane;
 import repository.StockUpdateRepo;
-import sample.*;
 
 /**
  *
