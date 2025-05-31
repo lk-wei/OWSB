@@ -111,7 +111,6 @@ public class DailySaleEdit extends javax.swing.JFrame {
 
         jTextField7.setEditable(false);
         jTextField7.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jTextField7.setText("Input");
 
         addItemBtn.setText("+ Add");
         addItemBtn.addMouseListener(new java.awt.event.MouseAdapter() {
