@@ -4,6 +4,9 @@
  */
 package gui.table;
 
+import domain.User;
+import function.FrontendPermissionManager;
+import gui.DailySaleNew;
 import java.io.IOException;
 import javax.swing.JOptionPane;
 import repository.DailySaleRepo;
@@ -17,8 +20,22 @@ public class DailySaleTable extends javax.swing.JFrame {
      * Creates new form DashBoardSample
      */
     
+    User currentUser = new User();
+    
     public DailySaleTable() {
+
+        currentUser.setRole("SM");
+
         initComponents();
+        
+        FrontendPermissionManager.applyButtonPermissions(
+                currentUser,
+                "ds",
+                newButton,      
+                null,      
+                null    
+        );
+        
         updateTable();
         this.setLocationRelativeTo(null); //this will center your frame
     }
@@ -48,7 +65,7 @@ public class DailySaleTable extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
+        newButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(1000, 800));
@@ -83,11 +100,11 @@ public class DailySaleTable extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(jTable1);
 
-        jButton1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jButton1.setText("+ Add");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        newButton.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        newButton.setText("+ Add");
+        newButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                newButtonActionPerformed(evt);
             }
         });
 
@@ -99,7 +116,7 @@ public class DailySaleTable extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(50, 50, 50)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton1)
+                    .addComponent(newButton)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 900, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(50, Short.MAX_VALUE))
         );
@@ -108,7 +125,7 @@ public class DailySaleTable extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(12, 12, 12)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(newButton, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 550, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 73, Short.MAX_VALUE))
@@ -119,9 +136,15 @@ public class DailySaleTable extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void newButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newButtonActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+        // Open SecondFrame
+        DailySaleNew second = new DailySaleNew();
+        second.setVisible(true);
+
+        // Close or hide current frame (optional)
+        this.dispose(); // or this.setVisible(false);
+    }//GEN-LAST:event_newButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -166,11 +189,11 @@ public class DailySaleTable extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     private sample.NavBarSample navBarSample2;
+    private javax.swing.JButton newButton;
     // End of variables declaration//GEN-END:variables
 }

@@ -1,4 +1,4 @@
-/*
+ /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
@@ -57,7 +57,6 @@ public class FinancialReportTable extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        navBarSample2 = new sample.NavBarSample();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -68,7 +67,6 @@ public class FinancialReportTable extends javax.swing.JFrame {
         setMinimumSize(new java.awt.Dimension(1000, 800));
         setResizable(false);
         setSize(new java.awt.Dimension(1000, 800));
-        getContentPane().add(navBarSample2, java.awt.BorderLayout.NORTH);
 
         jPanel2.setMinimumSize(new java.awt.Dimension(1000, 0));
         jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -165,7 +163,6 @@ public class FinancialReportTable extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
-    private sample.NavBarSample navBarSample2;
     private javax.swing.JButton newButton;
     // End of variables declaration//GEN-END:variables
 }

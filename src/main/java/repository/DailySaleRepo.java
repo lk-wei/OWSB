@@ -70,9 +70,8 @@ public class DailySaleRepo extends MasterRepo<DailySale>{
             Long.valueOf(parts[2]), // itemId
             LocalDate.parse(parts[3]), //saleDate
             Integer.parseInt(parts[4]), // quantitySold
-            Long.valueOf(parts[5]),// recordedBy
-//            getItemList(Long.parseLong(parts[0])) // Problem here !!!
-            null
+            Long.valueOf(parts[5])// recordedBy
+
         );
     }
     

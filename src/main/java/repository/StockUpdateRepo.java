@@ -38,7 +38,7 @@ public class StockUpdateRepo extends MasterRepo<StockUpdate>{
     }
     
     // UI method
-    public DefaultTableModel getTableModel() throws IOException {
+   public DefaultTableModel getTableModel() throws IOException {
         DefaultTableModel model = new DefaultTableModel(
             new Object[][]{},
             // These column names must match what's in your JFrame
@@ -47,19 +47,21 @@ public class StockUpdateRepo extends MasterRepo<StockUpdate>{
 
         List<StockUpdate> stockupdates = getAll(); 
         UserRepo userRepo = new UserRepo();    
-    
+
         for (StockUpdate stockupdate : stockupdates) {
-            User user = userRepo.getUserById(stockupdate.getUpdatedById());
+            User user = userRepo.getById(stockupdate.getUpdatedById());
             
             model.addRow(new Object[]{
-                stockupdate.getStockUpdateCode(),    // "Report Number"
-                stockupdate.getDate(),   // "Description"
-                user.getFullName(),    // "Created By"
-                ""                        // Empty column (action buttons?)
+                stockupdate.getStockUpdateCode(),   
+                stockupdate.getDate(),   
+                user != null ? user.getFullName() : "Unknown", // avoid null pointer
+                ""
             });
         }
+
         return model;
     }
+
     
     // convert object into string seperated by |
     @Override
