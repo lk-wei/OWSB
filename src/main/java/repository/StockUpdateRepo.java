@@ -49,7 +49,7 @@ public class StockUpdateRepo extends MasterRepo<StockUpdate>{
         UserRepo userRepo = new UserRepo();    
     
         for (StockUpdate stockupdate : stockupdates) {
-            User user = userRepo.getUserById(stockupdate.getUpdatedById());
+            User user = userRepo.getById(stockupdate.getUpdatedById());
             
             model.addRow(new Object[]{
                 stockupdate.getStockUpdateCode(),    // "Report Number"

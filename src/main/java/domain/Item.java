@@ -81,17 +81,8 @@ public class Item implements Identifiable<Long>{
         this.unitCost = unitCost;
     }
     
-    
-
-
-
-
-
-
-
-
- 
-  
-
-
+    @Override
+    public String toString() {
+        return itemName;
+    }
 }

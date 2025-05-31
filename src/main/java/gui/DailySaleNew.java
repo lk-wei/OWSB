@@ -4,20 +4,24 @@
  */
 package gui;
 
+import component.ButtonEditor;
+import component.ButtonRenderer;
 import domain.DailySale;
 import domain.Item;
-import java.awt.List;
+import java.awt.Component;
+import java.util.List;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 import repository.DailySaleRepo;
 import repository.ItemRepo;
 
@@ -30,21 +34,54 @@ public class DailySaleNew extends javax.swing.JFrame {
      * Creates new form DashBoardSample
      */
     private DefaultTableModel tableModel;
+    protected List<SalesItem> itemList = new ArrayList<>();
     
+    // In DailySaleNew.java constructor
     public DailySaleNew() {
-        initComponents();
-        this.setLocationRelativeTo(null); //this will center your frame
-        
-        initTableModel();
+        initComponents(); // Initializes itemTable
+        tableModel = (DefaultTableModel) itemTable.getModel(); // <--- CORRECTED LINE
+        this.setLocationRelativeTo(null);
     }
     
     // Custom Methods
     
-    private void initTableModel() {
-        tableModel = (DefaultTableModel) itemTable.getModel();
-        tableModel.setRowCount(0);
+    
+    public void updateTable() throws IOException {
+        removeAllRows();
+        ItemRepo ir = new ItemRepo();
+
+        for (SalesItem item : itemList) {
+            System.out.println(item.itemId);
+            Item i = ir.getById(item.itemId);
+            System.out.println(i.getItemName());
+
+            tableModel.addRow(new Object[]{i.getItemName(), i.getItemName(), item.quantity, "Delete"});
+            
+            System.out.println("table updated");
+            System.out.println(i.getItemName());
+        }
         
-        tableModel.addRow(new Object[]{"", "", "", ""});
+        TableColumn actionColumn = itemTable.getColumnModel().getColumn(3);
+        actionColumn.setCellRenderer(new ButtonRenderer());
+        actionColumn.setCellEditor(new ButtonEditor(new JCheckBox()) {
+            @Override
+            public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+                Component c = super.getTableCellEditorComponent(table, value, isSelected, row, column);
+
+                button.addActionListener(e -> {
+                    // add button function here
+                    String name = table.getValueAt(row, 1).toString();
+                    JOptionPane.showMessageDialog(table, "Editing: " + name);
+                });
+                return c;
+            }
+        });
+    }
+
+    private void removeAllRows() {
+        while (tableModel.getRowCount() > 0) {
+            tableModel.removeRow(0);
+        }
     }
 
     /**
@@ -65,7 +102,7 @@ public class DailySaleNew extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         codeField = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        userIdField = new javax.swing.JTextField();
+        descriptionField = new javax.swing.JTextField();
         addItemBtn = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
         itemTable = new javax.swing.JTable();
@@ -117,33 +154,25 @@ public class DailySaleNew extends javax.swing.JFrame {
         codeField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel3.setText("Recorded By");
+        jLabel3.setText("Description");
 
-        userIdField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        descriptionField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         addItemBtn.setText("+ Add");
-        addItemBtn.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                addItemBtnMouseClicked(evt);
+        addItemBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addItemBtnActionPerformed(evt);
             }
         });
 
         itemTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null}
+                {null, null, null, null}
             },
             new String [] {
-                "Item Code", "Quantity Sold", "Title 3"
+                "Item Code", "Name", "Quantity Sold", "Action"
             }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.Integer.class, java.lang.Object.class
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-        });
+        ));
         itemTable.setShowGrid(true);
         jScrollPane3.setViewportView(itemTable);
 
@@ -188,7 +217,7 @@ public class DailySaleNew extends javax.swing.JFrame {
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, inputPanelLayout.createSequentialGroup()
                                 .addComponent(jLabel3)
                                 .addGap(0, 0, Short.MAX_VALUE))
-                            .addComponent(userIdField, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(descriptionField, javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(inputPanelLayout.createSequentialGroup()
                                 .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel2)
@@ -214,7 +243,7 @@ public class DailySaleNew extends javax.swing.JFrame {
                         .addComponent(codeField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(jLabel3)))
-                .addComponent(userIdField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(descriptionField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(addItemBtn)
                 .addGap(18, 18, 18)
@@ -254,11 +283,6 @@ public class DailySaleNew extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_cancelButtonActionPerformed
 
-    private void addItemBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_addItemBtnMouseClicked
-        tableModel.addRow(new Object[]{"", "", "", ""});
-        itemTable.scrollRectToVisible(itemTable.getCellRect(tableModel.getRowCount()-1, 0, true));
-    }//GEN-LAST:event_addItemBtnMouseClicked
-
     private void createButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createButtonActionPerformed
         // TODO add your handling code here:
         DailySaleRepo dailySaleRepo = new DailySaleRepo();
@@ -266,7 +290,7 @@ public class DailySaleNew extends javax.swing.JFrame {
         try {
             Date selectedDate = dateField.getDate();
             // When merge, this field will automatically get the current user id
-            Long recordedById = Long.parseLong(userIdField.getText());
+            Long recordedById = 1L; // need to change to currnt user ID
 
             // Check for null to avoid NullPointerException
             if (selectedDate == null) {
@@ -277,26 +301,39 @@ public class DailySaleNew extends javax.swing.JFrame {
             // Convert Date to LocalDate
             LocalDate saleDate = selectedDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
             
-            DailySale newDailySale = new DailySale(
-                        null,
-                        codeField.getText(),
-                        Long.parseLong("10"),
-                        saleDate,
-                        0,
-                        recordedById,
-                        null
-            );
-            dailySaleRepo.create(newDailySale);
+            
+            for(SalesItem i : itemList){
+                DailySale newDailySale = new DailySale(
+                            null,
+                            codeField.getText(),
+                            i.itemId,
+                            saleDate,
+                            i.quantity,
+                            recordedById
+                );
+                
+                dailySaleRepo.create(newDailySale);
+            }
+            
             JOptionPane.showMessageDialog(null, "Daily Sale added successfully!");
             codeField.setText("");
             dateField.setDate(null);
-            userIdField.setText("");
+            descriptionField.setText("");
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(null, "Please enter valid numbers for stock and unit cost.");
         } catch (IOException ex) {
             
         }
     }//GEN-LAST:event_createButtonActionPerformed
+
+    private void addItemBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addItemBtnActionPerformed
+
+        try {
+            new DailySalesItem(this).setVisible(true);
+        } catch (IOException ex) {
+            Logger.getLogger(DailySaleNew.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_addItemBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -347,6 +384,21 @@ public class DailySaleNew extends javax.swing.JFrame {
             }
         });
     }
+    
+    public class SalesItem{
+        private long itemId;
+        private int quantity;
+        
+        public SalesItem(Long itemId, int quantity){
+            this.itemId = itemId;
+            this.quantity = quantity;
+        }
+    }
+    
+    public void addToList(Long id, int quantity){
+        itemList.add(new SalesItem(id, quantity));
+        System.out.println("added to list" + id + "" +quantity);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addItemBtn;
@@ -354,6 +406,7 @@ public class DailySaleNew extends javax.swing.JFrame {
     private javax.swing.JTextField codeField;
     private javax.swing.JButton createButton;
     private com.toedter.calendar.JDateChooser dateField;
+    private javax.swing.JTextField descriptionField;
     private javax.swing.JPanel inputPanel;
     private javax.swing.JTable itemTable;
     private javax.swing.JLabel jLabel1;
@@ -364,6 +417,5 @@ public class DailySaleNew extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTextField userIdField;
     // End of variables declaration//GEN-END:variables
 }
