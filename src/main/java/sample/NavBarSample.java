@@ -4,6 +4,7 @@
  */
 package sample;
 
+import function.NavigationManager;
 import javax.swing.*;
 
 /**
@@ -96,6 +97,7 @@ public class NavBarSample extends javax.swing.JPanel {
 
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
         // TODO add your handling code here:
+        NavigationManager.getInstance().goBack();
     }//GEN-LAST:event_backButtonActionPerformed
 
     private void userButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userButtonActionPerformed

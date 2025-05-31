@@ -4,6 +4,8 @@
  */
 package gui.dashboard;
 
+import function.NavigationManager;
+import gui.table.*;
 import sample.*;
 import java.awt.BorderLayout;
 
@@ -74,7 +76,7 @@ public class AdminDashBoard extends javax.swing.JFrame {
         stockUpdateBtn = new javax.swing.JButton();
         itemBtn = new javax.swing.JButton();
         financialReportBtn = new javax.swing.JButton();
-        inventoryreportBtn = new javax.swing.JButton();
+        StockReportBtn = new javax.swing.JButton();
         nextPageButton = new javax.swing.JButton();
         PrevPageButton = new javax.swing.JButton();
 
@@ -106,17 +108,32 @@ public class AdminDashBoard extends javax.swing.JFrame {
         paymentBtn.setText("Payment");
         paymentBtn.setBorderPainted(false);
         paymentBtn.setPreferredSize(new java.awt.Dimension(150, 100));
+        paymentBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                paymentBtnActionPerformed(evt);
+            }
+        });
 
         supplierBtn.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         supplierBtn.setText("Supplier");
         supplierBtn.setBorderPainted(false);
         supplierBtn.setPreferredSize(new java.awt.Dimension(150, 100));
+        supplierBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                supplierBtnActionPerformed(evt);
+            }
+        });
 
         purchaseOrderBtn.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         purchaseOrderBtn.setText("Purchase Order");
         purchaseOrderBtn.setBorderPainted(false);
         purchaseOrderBtn.setMargin(new java.awt.Insets(2, 0, 3, 0));
         purchaseOrderBtn.setPreferredSize(new java.awt.Dimension(150, 100));
+        purchaseOrderBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                purchaseOrderBtnActionPerformed(evt);
+            }
+        });
 
         userBtn.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         userBtn.setText("User");
@@ -132,6 +149,11 @@ public class AdminDashBoard extends javax.swing.JFrame {
         dailySalesBtn.setText("Daily Sales");
         dailySalesBtn.setBorderPainted(false);
         dailySalesBtn.setPreferredSize(new java.awt.Dimension(150, 100));
+        dailySalesBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                dailySalesBtnActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout page1Layout = new javax.swing.GroupLayout(page1);
         page1.setLayout(page1Layout);
@@ -174,23 +196,43 @@ public class AdminDashBoard extends javax.swing.JFrame {
         stockUpdateBtn.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         stockUpdateBtn.setInheritsPopupMenu(true);
         stockUpdateBtn.setPreferredSize(new java.awt.Dimension(150, 100));
+        stockUpdateBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                stockUpdateBtnActionPerformed(evt);
+            }
+        });
 
         itemBtn.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         itemBtn.setText("Item");
         itemBtn.setBorderPainted(false);
         itemBtn.setPreferredSize(new java.awt.Dimension(150, 100));
+        itemBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemBtnActionPerformed(evt);
+            }
+        });
 
         financialReportBtn.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         financialReportBtn.setText("Financial Report");
         financialReportBtn.setBorderPainted(false);
         financialReportBtn.setMargin(new java.awt.Insets(2, 0, 3, 0));
         financialReportBtn.setPreferredSize(new java.awt.Dimension(150, 100));
+        financialReportBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                financialReportBtnActionPerformed(evt);
+            }
+        });
 
-        inventoryreportBtn.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        inventoryreportBtn.setText("Inventory Report");
-        inventoryreportBtn.setBorderPainted(false);
-        inventoryreportBtn.setMargin(new java.awt.Insets(2, 0, 3, 0));
-        inventoryreportBtn.setPreferredSize(new java.awt.Dimension(150, 100));
+        StockReportBtn.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        StockReportBtn.setText("Stock Report");
+        StockReportBtn.setBorderPainted(false);
+        StockReportBtn.setMargin(new java.awt.Insets(2, 0, 3, 0));
+        StockReportBtn.setPreferredSize(new java.awt.Dimension(150, 100));
+        StockReportBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                StockReportBtnActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout page2Layout = new javax.swing.GroupLayout(page2);
         page2.setLayout(page2Layout);
@@ -203,7 +245,7 @@ public class AdminDashBoard extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
                         .addComponent(stockUpdateBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(page2Layout.createSequentialGroup()
-                        .addComponent(inventoryreportBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(StockReportBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addGap(50, 50, 50)
                 .addComponent(financialReportBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -217,7 +259,7 @@ public class AdminDashBoard extends javax.swing.JFrame {
                         .addComponent(itemBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(financialReportBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 56, Short.MAX_VALUE)
-                .addComponent(inventoryreportBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(StockReportBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pages.add(page2, "card3");
@@ -247,13 +289,12 @@ public class AdminDashBoard extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(325, 325, 325)
-                .addComponent(PrevPageButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(50, 50, 50)
-                .addComponent(nextPageButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(325, 325, 325)
+                        .addComponent(PrevPageButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(50, 50, 50)
+                        .addComponent(nextPageButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(125, 125, 125)
                         .addComponent(pages, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -289,11 +330,53 @@ public class AdminDashBoard extends javax.swing.JFrame {
 
     private void userBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userBtnActionPerformed
         // TODO add your handling code here:
+        NavigationManager.getInstance().openFrame(new UserTable(), this);
     }//GEN-LAST:event_userBtnActionPerformed
 
     private void purchaseRequisitionBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_purchaseRequisitionBtnActionPerformed
         // TODO add your handling code here:
+        NavigationManager.getInstance().openFrame(new PurchaseRequsitionTable(), this);
     }//GEN-LAST:event_purchaseRequisitionBtnActionPerformed
+
+    private void purchaseOrderBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_purchaseOrderBtnActionPerformed
+        // TODO add your handling code here:
+        NavigationManager.getInstance().openFrame(new PurchaseOrderTable(), this);
+    }//GEN-LAST:event_purchaseOrderBtnActionPerformed
+
+    private void supplierBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_supplierBtnActionPerformed
+        // TODO add your handling code here:
+        NavigationManager.getInstance().openFrame(new SupplierTable(), this);
+    }//GEN-LAST:event_supplierBtnActionPerformed
+
+    private void dailySalesBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dailySalesBtnActionPerformed
+        // TODO add your handling code here:
+        NavigationManager.getInstance().openFrame(new DailySaleTable(), this);
+    }//GEN-LAST:event_dailySalesBtnActionPerformed
+
+    private void paymentBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_paymentBtnActionPerformed
+        // TODO add your handling code here:
+        NavigationManager.getInstance().openFrame(new PaymentTable(), this);
+    }//GEN-LAST:event_paymentBtnActionPerformed
+
+    private void itemBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemBtnActionPerformed
+        // TODO add your handling code here:
+        NavigationManager.getInstance().openFrame(new ItemTable(), this);
+    }//GEN-LAST:event_itemBtnActionPerformed
+
+    private void stockUpdateBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stockUpdateBtnActionPerformed
+        // TODO add your handling code here:
+        NavigationManager.getInstance().openFrame(new StockUpdateTable(), this);
+    }//GEN-LAST:event_stockUpdateBtnActionPerformed
+
+    private void financialReportBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_financialReportBtnActionPerformed
+        // TODO add your handling code here:
+        NavigationManager.getInstance().openFrame(new FinancialReportTable(), this);
+    }//GEN-LAST:event_financialReportBtnActionPerformed
+
+    private void StockReportBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StockReportBtnActionPerformed
+        // TODO add your handling code here:
+        NavigationManager.getInstance().openFrame(new StockReportTable(), this);
+    }//GEN-LAST:event_StockReportBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -333,9 +416,9 @@ public class AdminDashBoard extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton PrevPageButton;
+    private javax.swing.JButton StockReportBtn;
     private javax.swing.JButton dailySalesBtn;
     private javax.swing.JButton financialReportBtn;
-    private javax.swing.JButton inventoryreportBtn;
     private javax.swing.JButton itemBtn;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
