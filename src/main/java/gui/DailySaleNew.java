@@ -8,6 +8,7 @@ import component.ButtonEditor;
 import component.ButtonRenderer;
 import domain.DailySale;
 import domain.Item;
+import gui.table.DailySaleTable;
 import java.awt.Component;
 import java.util.List;
 import java.io.IOException;
