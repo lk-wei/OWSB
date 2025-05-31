@@ -21,9 +21,7 @@ public class ButtonRenderer extends JButton implements TableCellRenderer {
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value,
                                                    boolean isSelected, boolean hasFocus, int row, int column) {
-        // Set custom text here
-        String text = "More"; // ← custom label
-        setText(text);
+        setText((value == null) ? "" : value.toString());
         return this;
     }
 }

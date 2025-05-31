@@ -18,31 +18,19 @@ public class DailySale implements Identifiable<Long>{
     private LocalDate saleDate;
     private int quantitySold;
     private Long recordedById; //FK to User
-    private List<Item> itemList;
+
     //Constructor
     public DailySale() {
     }
 
-    public DailySale(Long id, String saleCode, Long itemId, LocalDate saleDate, int quantitySold, Long recordedById, List<Item> itemList) {
+    public DailySale(Long id, String saleCode, Long itemId, LocalDate saleDate, int quantitySold, Long recordedById) {
         this.id = id;
         this.saleCode = saleCode;
         this.itemId = itemId;
         this.saleDate = saleDate;
         this.quantitySold = quantitySold;
         this.recordedById = recordedById;
-        this.itemList = itemList;
     }
-    
-    
-
-//    public DailySale(Long saleId, String saleCode, Long itemId, LocalDate saleDate, int quantitySold, Long recordedById) {
-//        this.saleId = saleId;
-//        this.saleCode = saleCode;
-//        this.itemId = itemId;
-//        this.saleDate = saleDate;
-//        this.quantitySold = quantitySold;
-//        this.recordedById = recordedById;
-//    }
 
     public Long getId() {
         return id;
@@ -91,15 +79,4 @@ public class DailySale implements Identifiable<Long>{
     public void setRecordedById(Long recordedById) {
         this.recordedById = recordedById;
     }
-
-    public List<Item> getItemList() {
-        return itemList;
-    }
-
-    public void setItemList(List<Item> itemList) {
-        this.itemList = itemList;
-    }
-    
-    
-
 }
