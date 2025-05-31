@@ -19,12 +19,12 @@ public class StockUpdate implements Identifiable<Long>{
     private int quantity;
     private LocalDate date;
     private Long updatedById; //FK to User
-    private List<Item> itemList;    
+    //private List<Item> itemList;    
 
     public StockUpdate() {
     }
 
-    public StockUpdate(Long id, String stockUpdateCode, String description, Long itemId, int quantity, LocalDate date, Long updatedById, List<Item> itemList) {
+    public StockUpdate(Long id, String stockUpdateCode, String description, Long itemId, int quantity, LocalDate date, Long updatedById) {
         this.id = id;
         this.stockUpdateCode = stockUpdateCode;
         this.description = description;
@@ -32,7 +32,6 @@ public class StockUpdate implements Identifiable<Long>{
         this.quantity = quantity;
         this.date = date;
         this.updatedById = updatedById;
-        this.itemList = itemList;
     }
     
     
@@ -92,12 +91,12 @@ public class StockUpdate implements Identifiable<Long>{
         this.updatedById = updatedById;
     }
 
-    public List<Item> getItemList() {
-        return itemList;
-    }
-
-    public void setItemList(List<Item> itemList) {
-        this.itemList = itemList;
-    }
+//    public List<Item> getItemList() {
+//        return itemList;
+//    }
+//
+//    public void setItemList(List<Item> itemList) {
+//        this.itemList = itemList;
+//    }
     
 }

@@ -15,14 +15,14 @@ import repository.ItemRepo;
  *
  * @author zuwei
  */
-public class DailySalesItem extends javax.swing.JFrame {
+public class StockUpdateItem extends javax.swing.JFrame {
 
     /**
      * Creates new form DashBoardSample
      */
-    private DailySaleNew mainframe;
+    private StockUpdateNew mainframe;
     
-    public DailySalesItem(DailySaleNew mainframe) throws IOException {
+    public StockUpdateItem(StockUpdateNew mainframe) throws IOException {
         this.mainframe = mainframe;
         List<Item> itemList = new ItemRepo().getAll();
         
@@ -211,7 +211,7 @@ public class DailySalesItem extends javax.swing.JFrame {
         try {
             mainframe.updateTable();
         } catch (IOException ex) {
-            Logger.getLogger(DailySalesItem.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(StockUpdateItem.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         this.dispose();

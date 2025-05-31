@@ -89,9 +89,7 @@ public class StockUpdateRepo extends MasterRepo<StockUpdate>{
             Long.valueOf(parts[3]), // itemId
             Integer.parseInt(parts[4]), // quantity
             LocalDate.parse(parts[5]), //date
-            Long.valueOf(parts[6]),//updatedById
-//            getItemList(Long.parseLong(parts[0])) // Problem here !!
-            null
+            Long.valueOf(parts[6])//updatedById
         );
     }
     
