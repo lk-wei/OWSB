@@ -15,9 +15,7 @@ public class NavBarSample extends javax.swing.JPanel {
     /**
      * Creates new form NavBarSampleget
      */
-    int num = 1;
-    ImageIcon notiIcon = new javax.swing.ImageIcon("src\\resource\\notification.png");
-    ImageIcon unreadNotiIcon = new javax.swing.ImageIcon("src\\resource\\unreadNotification.png");
+    
     public NavBarSample() {
         initComponents();
     }

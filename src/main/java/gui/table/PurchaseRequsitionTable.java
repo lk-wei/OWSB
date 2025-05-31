@@ -6,6 +6,9 @@ package gui.table;
 
 import gui.PurchaseRequisitionEdit;
 import gui.PurchaseRequisitionNew;
+import java.io.IOException;
+import javax.swing.JOptionPane;
+import repository.PurchaseRequisitionRepo;
 import sample.*;
 
 /**
