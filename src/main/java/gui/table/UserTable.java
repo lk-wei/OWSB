@@ -4,6 +4,8 @@
  */
 package gui.table;
 
+import domain.User;
+import function.FrontendPermissionManager;
 import java.io.IOException;
 import javax.swing.JOptionPane;
 import repository.UserRepo;
@@ -16,9 +18,21 @@ public class UserTable extends javax.swing.JFrame {
     /**
      * Creates new form DashBoardSample
      */
+    User currentUser = new User();
     
     public UserTable() {
+        
+        currentUser.setRole("AD");
         initComponents();
+        
+        FrontendPermissionManager.applyButtonPermissions(
+                currentUser,
+                "u",
+                newButton,      
+                null,      
+                null    
+        );
+        
         updateTable();
         this.setLocationRelativeTo(null); //this will center your frame
     }
@@ -48,7 +62,7 @@ public class UserTable extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         userTable = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
+        newButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(1000, 800));
@@ -83,8 +97,8 @@ public class UserTable extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(userTable);
 
-        jButton1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jButton1.setText("Add");
+        newButton.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        newButton.setText("New +");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -94,7 +108,7 @@ public class UserTable extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(50, 50, 50)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton1)
+                    .addComponent(newButton)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 900, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(50, Short.MAX_VALUE))
         );
@@ -103,7 +117,7 @@ public class UserTable extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(12, 12, 12)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(newButton, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 550, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 73, Short.MAX_VALUE))
@@ -157,11 +171,11 @@ public class UserTable extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private sample.NavBarSample navBarSample2;
+    private javax.swing.JButton newButton;
     private javax.swing.JTable userTable;
     // End of variables declaration//GEN-END:variables
 }
