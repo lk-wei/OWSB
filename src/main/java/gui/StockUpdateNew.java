@@ -5,6 +5,7 @@
 package gui;
 
 import domain.StockUpdate;
+import gui.table.StockUpdateTable;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -267,6 +268,9 @@ public class StockUpdateNew extends javax.swing.JFrame {
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
         // TODO add your handling code here:
+        StockUpdateTable second = new StockUpdateTable();
+        second.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void addItemBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_addItemBtnMouseClicked
@@ -305,6 +309,7 @@ public class StockUpdateNew extends javax.swing.JFrame {
             stockUpdateRepo.create(newStockUpdate);
             JOptionPane.showMessageDialog(null, "Stock Update added successfully!");
             codeField.setText("");
+            descriptionField.setText("");
             dateField.setDate(null);
             userIdField.setText("");
         } catch (NumberFormatException ex) {

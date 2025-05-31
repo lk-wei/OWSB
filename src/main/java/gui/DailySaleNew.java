@@ -6,6 +6,7 @@ package gui;
 
 import domain.DailySale;
 import domain.Item;
+import gui.table.DailySaleTable;
 import java.awt.List;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -252,6 +253,9 @@ public class DailySaleNew extends javax.swing.JFrame {
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
         // TODO add your handling code here:
+        DailySaleTable second = new DailySaleTable();
+        second.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void addItemBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_addItemBtnMouseClicked

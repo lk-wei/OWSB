@@ -4,6 +4,12 @@
  */
 package gui.dashboard;
 
+import function.NavigationManager;
+import gui.table.FinancialReportTable;
+import gui.table.PaymentTable;
+import gui.table.PurchaseOrderTable;
+import gui.table.PurchaseRequsitionTable;
+import gui.table.StockUpdateTable;
 import sample.*;
 import java.awt.BorderLayout;
 
@@ -57,11 +63,11 @@ public class FinanceManagerDashBoard extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         pages = new javax.swing.JPanel();
         page1 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
+        productRequisitionBtn = new javax.swing.JButton();
+        paymentBtn = new javax.swing.JButton();
+        stockUpdateBtn = new javax.swing.JButton();
+        purchaseOrderBtn = new javax.swing.JButton();
+        financialReportBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(800, 600));
@@ -76,41 +82,56 @@ public class FinanceManagerDashBoard extends javax.swing.JFrame {
 
         pages.setLayout(new java.awt.CardLayout());
 
-        jButton1.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
-        jButton1.setText("Product Requisition");
-        jButton1.setBorderPainted(false);
-        jButton1.setMargin(new java.awt.Insets(2, 0, 3, 0));
-        jButton1.setPreferredSize(new java.awt.Dimension(150, 100));
-
-        jButton3.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jButton3.setText("Payment");
-        jButton3.setBorderPainted(false);
-        jButton3.setPreferredSize(new java.awt.Dimension(150, 100));
-
-        jButton4.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jButton4.setText("Stock Update");
-        jButton4.setBorderPainted(false);
-        jButton4.setMargin(new java.awt.Insets(2, 0, 3, 0));
-        jButton4.setPreferredSize(new java.awt.Dimension(150, 100));
-
-        jButton5.setFont(new java.awt.Font("Segoe UI", 0, 22)); // NOI18N
-        jButton5.setText("Product Order");
-        jButton5.setBorderPainted(false);
-        jButton5.setMargin(new java.awt.Insets(2, 0, 3, 0));
-        jButton5.setPreferredSize(new java.awt.Dimension(150, 100));
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
+        productRequisitionBtn.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        productRequisitionBtn.setText("Product Requisition");
+        productRequisitionBtn.setBorderPainted(false);
+        productRequisitionBtn.setMargin(new java.awt.Insets(2, 0, 3, 0));
+        productRequisitionBtn.setPreferredSize(new java.awt.Dimension(150, 100));
+        productRequisitionBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
+                productRequisitionBtnActionPerformed(evt);
             }
         });
 
-        jButton6.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jButton6.setText("Report");
-        jButton6.setBorderPainted(false);
-        jButton6.setPreferredSize(new java.awt.Dimension(150, 100));
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
+        paymentBtn.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        paymentBtn.setText("Payment");
+        paymentBtn.setBorderPainted(false);
+        paymentBtn.setPreferredSize(new java.awt.Dimension(150, 100));
+        paymentBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
+                paymentBtnActionPerformed(evt);
+            }
+        });
+
+        stockUpdateBtn.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        stockUpdateBtn.setText("Stock Update");
+        stockUpdateBtn.setBorderPainted(false);
+        stockUpdateBtn.setMargin(new java.awt.Insets(2, 0, 3, 0));
+        stockUpdateBtn.setPreferredSize(new java.awt.Dimension(150, 100));
+        stockUpdateBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                stockUpdateBtnActionPerformed(evt);
+            }
+        });
+
+        purchaseOrderBtn.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        purchaseOrderBtn.setText("Purchase Order");
+        purchaseOrderBtn.setBorderPainted(false);
+        purchaseOrderBtn.setMargin(new java.awt.Insets(2, 0, 3, 0));
+        purchaseOrderBtn.setPreferredSize(new java.awt.Dimension(150, 100));
+        purchaseOrderBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                purchaseOrderBtnActionPerformed(evt);
+            }
+        });
+
+        financialReportBtn.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        financialReportBtn.setText("Financial Report");
+        financialReportBtn.setBorderPainted(false);
+        financialReportBtn.setPreferredSize(new java.awt.Dimension(150, 100));
+        financialReportBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                financialReportBtnActionPerformed(evt);
             }
         });
 
@@ -121,27 +142,27 @@ public class FinanceManagerDashBoard extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, page1Layout.createSequentialGroup()
                 .addGroup(page1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(page1Layout.createSequentialGroup()
-                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(paymentBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
-                        .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(financialReportBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(page1Layout.createSequentialGroup()
-                        .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(purchaseOrderBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(productRequisitionBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(50, 50, 50)
-                .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(stockUpdateBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         page1Layout.setVerticalGroup(
             page1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(page1Layout.createSequentialGroup()
                 .addGroup(page1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(purchaseOrderBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(stockUpdateBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(productRequisitionBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
                 .addGroup(page1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(paymentBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(financialReportBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
 
         pages.add(page1, "card3");
@@ -165,7 +186,7 @@ public class FinanceManagerDashBoard extends javax.swing.JFrame {
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(pages, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(165, Short.MAX_VALUE))
+                .addContainerGap(161, Short.MAX_VALUE))
         );
 
         getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
@@ -173,13 +194,30 @@ public class FinanceManagerDashBoard extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+    private void purchaseOrderBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_purchaseOrderBtnActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton5ActionPerformed
+        NavigationManager.getInstance().openFrame(new PurchaseOrderTable(), this);
+    }//GEN-LAST:event_purchaseOrderBtnActionPerformed
 
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+    private void financialReportBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_financialReportBtnActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton6ActionPerformed
+        NavigationManager.getInstance().openFrame(new FinancialReportTable(), this);
+    }//GEN-LAST:event_financialReportBtnActionPerformed
+
+    private void productRequisitionBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_productRequisitionBtnActionPerformed
+        // TODO add your handling code here:
+        NavigationManager.getInstance().openFrame(new PurchaseRequsitionTable(), this);
+    }//GEN-LAST:event_productRequisitionBtnActionPerformed
+
+    private void paymentBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_paymentBtnActionPerformed
+        // TODO add your handling code here:
+        NavigationManager.getInstance().openFrame(new PaymentTable(), this);
+    }//GEN-LAST:event_paymentBtnActionPerformed
+
+    private void stockUpdateBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stockUpdateBtnActionPerformed
+        // TODO add your handling code here:
+        NavigationManager.getInstance().openFrame(new StockUpdateTable(), this);
+    }//GEN-LAST:event_stockUpdateBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -218,15 +256,15 @@ public class FinanceManagerDashBoard extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
+    private javax.swing.JButton financialReportBtn;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private sample.NavBarSample navBarSample1;
     private javax.swing.JPanel page1;
     private javax.swing.JPanel pages;
+    private javax.swing.JButton paymentBtn;
+    private javax.swing.JButton productRequisitionBtn;
+    private javax.swing.JButton purchaseOrderBtn;
+    private javax.swing.JButton stockUpdateBtn;
     // End of variables declaration//GEN-END:variables
 }
