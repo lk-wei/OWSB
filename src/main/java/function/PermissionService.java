@@ -55,12 +55,18 @@ public class PermissionService {
     );
 
     public static boolean hasPermission(User user, String permission) {
-        // Admins have all permissions
-        if ("AD".equals(user.getRole())) return true;
-        
-        // Check if the role has the permission
-        return PERMISSION.getOrDefault(user.getRole(), Set.of())
-                              .contains(permission) ||
-               PERMISSION.get(user.getRole()).contains("*");
+        Set<String> permissions = PERMISSION.get(user.getRole());
+
+        if (permissions == null) {
+            System.out.println("No permissions for role: " + user.getRole());
+            return false;
+        }
+
+        if (permissions.contains("*")) return true;
+
+        boolean has = permissions.contains(permission);
+        System.out.printf("Checking '%s' for role '%s': %s%n", permission, user.getRole(), has);
+        return has;
     }
+
 }

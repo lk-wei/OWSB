@@ -24,10 +24,10 @@ public class FrontendPermissionManager {
             setButtonState(newButton, PermissionService.hasPermission(user, prefix + ":add"));
         }
         if (editButton != null) {
-            setButtonState(editButton, PermissionService.hasPermission(user, prefix + "fr:edit"));
+            setButtonState(editButton, PermissionService.hasPermission(user, prefix + ":edit"));
         }
         if (deleteButton != null) {
-            setButtonState(deleteButton, PermissionService.hasPermission(user, prefix + "fr:delete"));
+            setButtonState(deleteButton, PermissionService.hasPermission(user, prefix + ":delete"));
         }
     }
     
