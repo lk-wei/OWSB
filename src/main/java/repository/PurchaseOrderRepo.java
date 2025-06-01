@@ -42,6 +42,7 @@ public class PurchaseOrderRepo extends MasterRepo<PurchaseOrder>{
     DefaultTableModel model = new DefaultTableModel(
         new Object[][]{},
         new String[]{
+            "",
             "Purchase Order Code", 
             "Created By", 
             "Suppplier Code",
@@ -61,18 +62,21 @@ public class PurchaseOrderRepo extends MasterRepo<PurchaseOrder>{
     
     for (PurchaseOrder report : reports) {
         Supplier supp = supplierRepo.getSupplierById(report.getSupplierId());
-        User user = userRepo.getUserById(report.getCreatedById());
+        User createdUser = userRepo.getUserById(report.getCreatedById());
+        User approvedUser = userRepo.getUserById(report.getApprovedById());
+        
         model.addRow(new Object[]{
+            report.getId(),
             report.getPurchaseOrderCode(),
-            user.getFullName(),
+            createdUser.getFullName(),
             supp.getSupplierCode(),
             supp.getSuppliername(),
-            user.getFullName(),
+            approvedUser.getFullName(),
             report.getOrderDate(),
             report.getExpectedDeliveryDate(),
             report.getStatus(),
             report.getTotalAmount(),
-            ""
+            "View"
         });
     }
 

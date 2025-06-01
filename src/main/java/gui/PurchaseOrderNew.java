@@ -145,6 +145,11 @@ public class PurchaseOrderNew extends javax.swing.JFrame {
         jTextField5.setEditable(false);
         jTextField5.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jTextField5.setText("Display");
+        jTextField5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField5ActionPerformed(evt);
+            }
+        });
 
         jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel7.setText("Item ID");
@@ -397,6 +402,10 @@ public class PurchaseOrderNew extends javax.swing.JFrame {
         second.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_cancel
+
+    private void jTextField5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField5ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField5ActionPerformed
 
     /**
      * @param args the command line arguments
