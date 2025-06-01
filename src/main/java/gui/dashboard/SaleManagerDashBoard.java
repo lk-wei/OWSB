@@ -4,6 +4,12 @@
  */
 package gui.dashboard;
 
+import function.NavigationManager;
+import gui.table.DailySaleTable;
+import gui.table.ItemTable;
+import gui.table.PurchaseOrderTable;
+import gui.table.PurchaseRequsitionTable;
+import gui.table.SupplierTable;
 import sample.*;
 import java.awt.BorderLayout;
 
@@ -27,8 +33,7 @@ public class SaleManagerDashBoard extends javax.swing.JFrame {
         
         // Initial state
         page1.setVisible(true);
-        page2.setVisible(false);
-        PrevPageButton.setEnabled(false); // Disable previous button initially
+       
 
     }
     
@@ -37,15 +42,12 @@ public class SaleManagerDashBoard extends javax.swing.JFrame {
         // Switch page visibility
         if (pageNumber == 1) {
             page1.setVisible(true);
-            page2.setVisible(false);
+           
         } else {
             page1.setVisible(false);
-            page2.setVisible(true);
+            
         }
 
-        // Update navigation button states
-        PrevPageButton.setEnabled(pageNumber != 1);  // Disable on first page
-        nextPageButton.setEnabled(pageNumber != 2);  // Disable on last page
 
         currentPage = pageNumber;
     }
@@ -63,12 +65,11 @@ public class SaleManagerDashBoard extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         pages = new javax.swing.JPanel();
         page1 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
+        purchaseRequisition = new javax.swing.JButton();
+        itemButton = new javax.swing.JButton();
+        dailySales = new javax.swing.JButton();
+        purchaseOrder = new javax.swing.JButton();
+        supplierButton = new javax.swing.JButton();
         page2 = new javax.swing.JPanel();
         jButton7 = new javax.swing.JButton();
         jButton8 = new javax.swing.JButton();
@@ -76,8 +77,6 @@ public class SaleManagerDashBoard extends javax.swing.JFrame {
         jButton10 = new javax.swing.JButton();
         jButton11 = new javax.swing.JButton();
         jButton12 = new javax.swing.JButton();
-        nextPageButton = new javax.swing.JButton();
-        PrevPageButton = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -92,40 +91,55 @@ public class SaleManagerDashBoard extends javax.swing.JFrame {
 
         pages.setLayout(new java.awt.CardLayout());
 
-        jButton1.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jButton1.setText("Purchase Requisition");
-        jButton1.setBorderPainted(false);
-        jButton1.setPreferredSize(new java.awt.Dimension(150, 100));
-
-        jButton2.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jButton2.setText("Button");
-        jButton2.setBorderPainted(false);
-        jButton2.setPreferredSize(new java.awt.Dimension(150, 100));
-
-        jButton3.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jButton3.setText("Item");
-        jButton3.setBorderPainted(false);
-        jButton3.setPreferredSize(new java.awt.Dimension(150, 100));
-
-        jButton4.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jButton4.setText("Daily Sales");
-        jButton4.setBorderPainted(false);
-        jButton4.setPreferredSize(new java.awt.Dimension(150, 100));
-
-        jButton5.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jButton5.setText("Purcahse Order");
-        jButton5.setBorderPainted(false);
-        jButton5.setPreferredSize(new java.awt.Dimension(150, 100));
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
+        purchaseRequisition.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        purchaseRequisition.setText("Purchase Requisition");
+        purchaseRequisition.setBorderPainted(false);
+        purchaseRequisition.setPreferredSize(new java.awt.Dimension(150, 100));
+        purchaseRequisition.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
+                purchaseRequisitionActionPerformed(evt);
             }
         });
 
-        jButton6.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jButton6.setText("Supplier");
-        jButton6.setBorderPainted(false);
-        jButton6.setPreferredSize(new java.awt.Dimension(150, 100));
+        itemButton.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        itemButton.setText("Item");
+        itemButton.setBorderPainted(false);
+        itemButton.setPreferredSize(new java.awt.Dimension(150, 100));
+        itemButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemButtonActionPerformed(evt);
+            }
+        });
+
+        dailySales.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        dailySales.setText("Daily Sales");
+        dailySales.setBorderPainted(false);
+        dailySales.setPreferredSize(new java.awt.Dimension(150, 100));
+        dailySales.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                dailySalesActionPerformed(evt);
+            }
+        });
+
+        purchaseOrder.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        purchaseOrder.setText("Purcahse Order");
+        purchaseOrder.setBorderPainted(false);
+        purchaseOrder.setPreferredSize(new java.awt.Dimension(150, 100));
+        purchaseOrder.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                purchaseOrderActionPerformed(evt);
+            }
+        });
+
+        supplierButton.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        supplierButton.setText("Supplier");
+        supplierButton.setBorderPainted(false);
+        supplierButton.setPreferredSize(new java.awt.Dimension(150, 100));
+        supplierButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                supplierButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout page1Layout = new javax.swing.GroupLayout(page1);
         page1.setLayout(page1Layout);
@@ -134,30 +148,27 @@ public class SaleManagerDashBoard extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, page1Layout.createSequentialGroup()
                 .addGroup(page1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(page1Layout.createSequentialGroup()
-                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(itemButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
-                        .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(supplierButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(page1Layout.createSequentialGroup()
-                        .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(purchaseOrder, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(purchaseRequisition, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(50, 50, 50)
-                .addGroup(page1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addComponent(dailySales, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         page1Layout.setVerticalGroup(
             page1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(page1Layout.createSequentialGroup()
                 .addGroup(page1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(purchaseOrder, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(dailySales, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(purchaseRequisition, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
                 .addGroup(page1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(itemButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(supplierButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
 
         pages.add(page1, "card3");
@@ -218,7 +229,7 @@ public class SaleManagerDashBoard extends javax.swing.JFrame {
                     .addComponent(jButton11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 53, Short.MAX_VALUE)
                 .addGroup(page2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -226,26 +237,6 @@ public class SaleManagerDashBoard extends javax.swing.JFrame {
         );
 
         pages.add(page2, "card3");
-
-        nextPageButton.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        nextPageButton.setText(">");
-        nextPageButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        nextPageButton.setPreferredSize(new java.awt.Dimension(50, 50));
-        nextPageButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                nextPageButtonMouseClicked(evt);
-            }
-        });
-
-        PrevPageButton.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        PrevPageButton.setText("<");
-        PrevPageButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        PrevPageButton.setPreferredSize(new java.awt.Dimension(50, 50));
-        PrevPageButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                PrevPageButtonMouseClicked(evt);
-            }
-        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -263,11 +254,7 @@ public class SaleManagerDashBoard extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(325, 325, 325)
-                .addComponent(PrevPageButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(50, 50, 50)
-                .addComponent(nextPageButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(92, 92, 92))
             .addGroup(jPanel1Layout.createSequentialGroup()
@@ -285,12 +272,8 @@ public class SaleManagerDashBoard extends javax.swing.JFrame {
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(pages, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 106, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(PrevPageButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(nextPageButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 103, Short.MAX_VALUE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -299,17 +282,25 @@ public class SaleManagerDashBoard extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void nextPageButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_nextPageButtonMouseClicked
-        showPage(2);
-    }//GEN-LAST:event_nextPageButtonMouseClicked
+    private void purchaseOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_purchaseOrderActionPerformed
+        NavigationManager.getInstance().openFrame(new PurchaseOrderTable(), this);
+    }//GEN-LAST:event_purchaseOrderActionPerformed
 
-    private void PrevPageButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PrevPageButtonMouseClicked
-        showPage(1);
-    }//GEN-LAST:event_PrevPageButtonMouseClicked
+    private void purchaseRequisitionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_purchaseRequisitionActionPerformed
+        NavigationManager.getInstance().openFrame(new PurchaseRequsitionTable(), this);
+    }//GEN-LAST:event_purchaseRequisitionActionPerformed
 
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton5ActionPerformed
+    private void dailySalesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dailySalesActionPerformed
+        NavigationManager.getInstance().openFrame(new DailySaleTable(), this);
+    }//GEN-LAST:event_dailySalesActionPerformed
+
+    private void itemButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemButtonActionPerformed
+        NavigationManager.getInstance().openFrame(new ItemTable(), this);
+    }//GEN-LAST:event_itemButtonActionPerformed
+
+    private void supplierButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_supplierButtonActionPerformed
+        NavigationManager.getInstance().openFrame(new SupplierTable(), this);
+    }//GEN-LAST:event_supplierButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -350,25 +341,22 @@ public class SaleManagerDashBoard extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton PrevPageButton;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton dailySales;
+    private javax.swing.JButton itemButton;
     private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton11;
     private javax.swing.JButton jButton12;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
     private javax.swing.JButton jButton9;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JButton nextPageButton;
     private javax.swing.JPanel page1;
     private javax.swing.JPanel page2;
     private javax.swing.JPanel pages;
+    private javax.swing.JButton purchaseOrder;
+    private javax.swing.JButton purchaseRequisition;
+    private javax.swing.JButton supplierButton;
     // End of variables declaration//GEN-END:variables
 }
