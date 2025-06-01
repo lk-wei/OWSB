@@ -8,6 +8,7 @@ import component.ButtonEditor;
 import component.ButtonRenderer;
 import domain.Item;
 import domain.StockUpdate;
+import function.ManageStock;
 import function.NavigationManager;
 import gui.table.StockUpdateTable;
 import java.awt.Component;
@@ -17,6 +18,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JCheckBox;
@@ -323,6 +325,8 @@ public class StockUpdateNew extends javax.swing.JFrame {
     private void createButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createButtonActionPerformed
         // TODO add your handling code here:
         StockUpdateRepo stockUpdateRepo = new StockUpdateRepo();
+        ManageStock manageStock = new ManageStock();
+        ItemRepo ir = new ItemRepo();
         
         try {
             Date selectedDate = dateField.getDate();
@@ -337,6 +341,7 @@ public class StockUpdateNew extends javax.swing.JFrame {
 
             // Convert Date to LocalDate
             LocalDate date = selectedDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            List<Map<String, Object>> stockList = new ArrayList<>();
             
             for(StockItem i : itemList){
                 StockUpdate newStockUpdate = new StockUpdate(
@@ -350,6 +355,12 @@ public class StockUpdateNew extends javax.swing.JFrame {
                 );
                 
                 stockUpdateRepo.create(newStockUpdate);
+                
+                // Get current item data
+                Item item = ir.getById(i.itemId); // Make sure i.itemId is Long or convertible
+                
+                // Update stock in repository
+                manageStock.addStockUpdateQuantity(item, i.quantity);
             }
             
             JOptionPane.showMessageDialog(null, "Stock Update added successfully!");

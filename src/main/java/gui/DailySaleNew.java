@@ -17,6 +17,8 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JCheckBox;
@@ -26,6 +28,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import repository.DailySaleRepo;
 import repository.ItemRepo;
+import function.ManageStock;
 
 /**
  *
@@ -291,6 +294,8 @@ public class DailySaleNew extends javax.swing.JFrame {
     private void createButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createButtonActionPerformed
         // TODO add your handling code here:
         DailySaleRepo dailySaleRepo = new DailySaleRepo();
+        ManageStock manageStock = new ManageStock();
+        ItemRepo ir = new ItemRepo();
         
         try {
             Date selectedDate = dateField.getDate();
@@ -305,25 +310,27 @@ public class DailySaleNew extends javax.swing.JFrame {
 
             // Convert Date to LocalDate
             LocalDate saleDate = selectedDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-            
-            
-            for(SalesItem i : itemList){
-                DailySale newDailySale = new DailySale(
-                            null,
-                            codeField.getText(),
-                            i.itemId,
-                            saleDate,
-                            i.quantity,
-                            recordedById
-                );
-                
-                dailySaleRepo.create(newDailySale);
-            }
-            
+
+                for (SalesItem i : itemList) {
+                    DailySale newDailySale = new DailySale(
+                        null,
+                        codeField.getText(),
+                        i.itemId,
+                        saleDate,
+                        i.quantity,
+                        recordedById
+                    );
+
+                    dailySaleRepo.create(newDailySale);
+                    
+                   // Get current item data
+                    Item item = ir.getById(i.itemId); // Make sure i.itemId is Long or convertible
+        
+                    // Update stock in repository
+                    manageStock.deductStockQuantity(item, i.quantity);
+                }
+
             JOptionPane.showMessageDialog(null, "Daily Sale added successfully!");
-//            codeField.setText("");
-//            dateField.setDate(null);
-//            descriptionField.setText("");
             NavigationManager.getInstance().goBack();
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(null, "Please enter valid numbers for stock and unit cost.");

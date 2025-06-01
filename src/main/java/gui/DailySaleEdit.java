@@ -7,6 +7,7 @@ package gui;
 import domain.DailySale;
 import domain.Item;
 import domain.User;
+import function.ManageStock;
 import function.NavigationManager;
 import gui.table.DailySaleTable;
 import java.io.IOException;
@@ -290,12 +291,17 @@ public class DailySaleEdit extends javax.swing.JFrame {
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
         // TODO add your handling code here:
+        ManageStock manageStock = new ManageStock();
         int qty = (Integer) quantitySpinner.getValue();
+        
         
         toEdit.setQuantitySold(qty);
         
         try {
+            manageStock.editStockQuantity(viewId, qty);
+            
             new DailySaleRepo().update(toEdit);
+            
             
             JOptionPane.showMessageDialog(null, "Sale Record Updated successfully!");
             NavigationManager.getInstance().goBack();

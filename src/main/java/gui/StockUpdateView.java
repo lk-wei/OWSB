@@ -7,6 +7,7 @@ package gui;
 import domain.Item;
 import domain.StockUpdate;
 import domain.User;
+import function.ManageStock;
 import function.NavigationManager;
 import gui.table.StockUpdateTable;
 import java.io.IOException;
@@ -335,6 +336,7 @@ public class StockUpdateView extends javax.swing.JFrame {
 
     private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
         // TODO add your handling code here:
+        ManageStock manageStock = new ManageStock();
         int confirm = JOptionPane.showConfirmDialog(
                 this,
                 "Are you sure you want to delete this update record? This Action is Irreversible",
@@ -351,6 +353,8 @@ public class StockUpdateView extends javax.swing.JFrame {
         if (confirm == JOptionPane.YES_OPTION) {
             StockUpdateRepo sur = new StockUpdateRepo();
             try {
+                manageStock.removeStockUpdateQuantity(update.getId());
+                
                 sur.delete(update); 
                 JOptionPane.showMessageDialog(this, "Update record deleted successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
                 NavigationManager.getInstance().goBack();
