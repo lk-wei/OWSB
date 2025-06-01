@@ -3,6 +3,7 @@ package repository;
 import domain.FinancialReport;
 import domain.FinancialReportItem;
 import domain.Payment;
+import domain.User;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.LocalDate;
@@ -28,16 +29,19 @@ public class FinancialReportRepo extends MasterRepo<FinancialReport> {
     }
     
     public DefaultTableModel getTableModel() throws IOException {
-        String[] columnNames = {"Report Number", "Description", "Date", "Created By", ""};
+        String[] columnNames = {"", "Report Number", "Description", "Date", "Created By", ""};
         DefaultTableModel model = new DefaultTableModel(columnNames, 0);
         
         for (FinancialReport report : getAll()) {
+            User u = new UserRepo().getById(report.getCreatedBy());
+            
             model.addRow(new Object[]{
+                report.getId(),
                 report.getReportCode(),
                 report.getDescription(),
                 report.getCreationDate(),
-                report.getCreatedBy(),
-                "" // Action 
+                u.getUserName(),
+                "View" // Action 
             });
         }
         return model;

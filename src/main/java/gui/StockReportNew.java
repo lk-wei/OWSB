@@ -4,6 +4,7 @@
  */
 package gui;
 
+import function.NavigationManager;
 import sample.*;
 import javax.swing.table.DefaultTableModel;
 
@@ -21,17 +22,11 @@ public class StockReportNew extends javax.swing.JFrame {
         initComponents();
         this.setLocationRelativeTo(null); //this will center your frame
         
-        initTableModel();
     }
     
     // Custom Methods
     
-    private void initTableModel() {
-        tableModel = (DefaultTableModel) jTable2.getModel();
-        tableModel.setRowCount(0);
-        
-        tableModel.addRow(new Object[]{"", "", "", ""});
-    }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -246,12 +241,11 @@ public class StockReportNew extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+        NavigationManager.getInstance().goBack();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void addItemBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_addItemBtnMouseClicked
-        tableModel.addRow(new Object[]{"", "", "", ""});
-        jTable2.scrollRectToVisible(jTable2.getCellRect(tableModel.getRowCount()-1, 0, true));
+
     }//GEN-LAST:event_addItemBtnMouseClicked
 
     private void addItemBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addItemBtnActionPerformed
