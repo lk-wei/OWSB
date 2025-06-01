@@ -61,11 +61,6 @@ public class FinancialReportView extends javax.swing.JFrame {
             reportCodeField.setText(report.getReportCode());
             descriptionField.setText(report.getDescription());
             reportDateField.setText(String.valueOf(report.getCreationDate()));
-//            
-//            LocalDate localDate = report.getCreationDate(); // example date
-//            Date date = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
-//
-//            reportDateField.setDate(date);
             
             jTable2.setModel(frr.getTableModel(viewId));
         } catch (IllegalArgumentException e) {
@@ -311,9 +306,17 @@ public class FinancialReportView extends javax.swing.JFrame {
         }
 
         if (confirm == JOptionPane.YES_OPTION) {
-            FinancialReportRepo fr = new FinancialReportRepo();
             try {
-                fr.delete(report); 
+                new FinancialReportRepo().delete(report); 
+                
+                // Delete all items of the report
+                FinancialReportItemRepo frir = new FinancialReportItemRepo();
+                List<FinancialReportItem> items = frir.getByFinancialReportId(viewId);
+                
+                for(FinancialReportItem item : items){
+                    frir.delete(item);
+                }
+                
                 JOptionPane.showMessageDialog(this, "Financial report deleted successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
                 NavigationManager.getInstance().goBack();
             } catch (IOException ex) {

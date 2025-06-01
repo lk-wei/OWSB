@@ -4,9 +4,6 @@
  */
 package domain;
 
-import java.util.Date;
-import java.util.List;
-
 /**
  *
  * @author Kang Wei
@@ -14,17 +11,23 @@ import java.util.List;
 public class StockReportItem implements Identifiable<Long>{
     private Long id;
     private Long stockReportId;
-    private Long stockUpdateId;
+    private Long itemId;
+    private String itemCode;
+    private String itemName;
+    private int stockLevel;
     
     public StockReportItem() {
     }
 
-    public StockReportItem(Long id, Long stockReportId, Long stockUpdateId) {
+    public StockReportItem(Long id, Long stockReportId, Long itemId, String itemCode, String itemName, int stockLevel) {
         this.id = id;
         this.stockReportId = stockReportId;
-        this.stockUpdateId = stockUpdateId;
+        this.itemId = itemId;
+        this.itemCode = itemCode;
+        this.itemName = itemName;
+        this.stockLevel = stockLevel;
     }
-
+    
     public Long getId() {
         return id;
     }
@@ -41,11 +44,35 @@ public class StockReportItem implements Identifiable<Long>{
         this.stockReportId = stockReportId;
     }
 
-    public Long getStockUpdateId() {
-        return stockUpdateId;
+    public Long getItemId() {
+        return itemId;
     }
 
-    public void setStockUpdateId(Long stockUpdateId) {
-        this.stockUpdateId = stockUpdateId;
+    public void getItemId(Long itemId) {
+        this.itemId = itemId;
+    }
+
+    public String getItemCode() {
+        return itemCode;
+    }
+
+    public void setItemCode(String itemCode) {
+        this.itemCode = itemCode;
+    }
+
+    public String getItemName() {
+        return itemName;
+    }
+
+    public void setItemName(String itemName) {
+        this.itemName = itemName;
+    }
+
+    public int getStockLevel() {
+        return stockLevel;
+    }
+
+    public void setStockLevel(int stockLevel) {
+        this.stockLevel = stockLevel;
     }
 }

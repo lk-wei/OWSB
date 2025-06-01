@@ -21,11 +21,10 @@ import repository.FinancialReportRepo;
  * @author Kang Wei
  */
 public class FinancialReportEdit extends javax.swing.JFrame {
-    /**
+/**
      * Creates new form DashBoardSample
      */
-    private DefaultTableModel tableModel;
-    private Long viewId;
+        private final Long viewId;
     private FinancialReport toEdit;
     
     public FinancialReportEdit(Long viewId) {
@@ -66,8 +65,6 @@ public class FinancialReportEdit extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         inputPanel = new javax.swing.JPanel();
@@ -81,19 +78,6 @@ public class FinancialReportEdit extends javax.swing.JFrame {
         jTable2 = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        jScrollPane2.setViewportView(jTable1);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(800, 600));
@@ -380,9 +364,7 @@ public class FinancialReportEdit extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;
     private javax.swing.JTextField reportCodeField;
     private javax.swing.JTextField reportDateField;

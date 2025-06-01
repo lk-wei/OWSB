@@ -4,10 +4,17 @@
  */
 package gui.table;
 
+import component.ButtonEditor;
+import component.ButtonRenderer;
 import function.NavigationManager;
 import gui.StockReportNew;
+import gui.StockReportView;
+import java.awt.Component;
 import java.io.IOException;
+import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.table.TableColumn;
 import repository.StockReportRepo;
 
 /**
@@ -34,6 +41,37 @@ public class StockReportTable extends javax.swing.JFrame {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
         }
+        
+        // Hide the ID column
+        TableColumn idColumn = jTable1.getColumnModel().getColumn(0);
+        idColumn.setMinWidth(0);
+        idColumn.setMaxWidth(0);
+        idColumn.setPreferredWidth(0);
+        idColumn.setResizable(false);
+
+        int lastColumnIndex = jTable1.getColumnModel().getColumnCount() - 1;
+        TableColumn actionColumn = jTable1.getColumnModel().getColumn(lastColumnIndex);
+        actionColumn.setCellRenderer(new ButtonRenderer());
+        actionColumn.setCellEditor(new ButtonEditor(new JCheckBox()) {
+            @Override
+            public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+                Component c = super.getTableCellEditorComponent(table, value, isSelected, row, column);
+
+                for (java.awt.event.ActionListener al : button.getActionListeners()) {
+                    button.removeActionListener(al);
+                }
+
+                button.addActionListener(e -> {
+                    int modelRow = table.convertRowIndexToModel(row);
+                    Object rawId = table.getModel().getValueAt(modelRow, 0);
+                    Long id = Long.valueOf(rawId.toString());
+                    System.out.println("ID: " + id);
+
+                    NavigationManager.getInstance().openFrame(new StockReportView(id), StockReportTable.this);
+                });
+                return c;
+            }
+        });
     }
 
     /**
@@ -56,6 +94,11 @@ public class StockReportTable extends javax.swing.JFrame {
         setMinimumSize(new java.awt.Dimension(1000, 800));
         setResizable(false);
         setSize(new java.awt.Dimension(1000, 800));
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowActivated(java.awt.event.WindowEvent evt) {
+                formWindowActivated(evt);
+            }
+        });
         getContentPane().add(navBarSample2, java.awt.BorderLayout.NORTH);
 
         jPanel2.setMinimumSize(new java.awt.Dimension(1000, 0));
@@ -125,6 +168,11 @@ public class StockReportTable extends javax.swing.JFrame {
         // TODO add your handling code here:
         NavigationManager.getInstance().openFrame(new StockReportNew(), this);
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
+        // TODO add your handling code here:
+        updateTable();
+    }//GEN-LAST:event_formWindowActivated
 
     /**
      * @param args the command line arguments

@@ -490,8 +490,7 @@ public class FinancialReportNew extends javax.swing.JFrame {
             System.out.println("The payment list is empty or null.");
             JOptionPane.showMessageDialog(this, "Nothing To Report.", "No Data", JOptionPane.INFORMATION_MESSAGE);
         } else {
-            FinancialReportRepo frr = new FinancialReportRepo();
-            FinancialReportItemRepo frri = new FinancialReportItemRepo();
+            
             Date selectedDate = reportDateField.getDate();
             LocalDate reportDate = selectedDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
             
@@ -505,7 +504,7 @@ public class FinancialReportNew extends javax.swing.JFrame {
                     descriptionField.getText(),
                     null                           
                 );
-                frr.create(newFinancialReport);
+                new FinancialReportRepo().create(newFinancialReport);
                 
                 // get new created fr ID
                 Long newlyCreatedFinancialReportId = newFinancialReport.getId();
@@ -516,6 +515,7 @@ public class FinancialReportNew extends javax.swing.JFrame {
                 }
                 
                 // Add the financial report item
+                FinancialReportItemRepo frri = new FinancialReportItemRepo();
                 for (Payment payment : filteredPayments) {
                     frri.create(new FinancialReportItem(
                             null,

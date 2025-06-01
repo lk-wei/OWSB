@@ -4,8 +4,25 @@
  */
 package gui;
 
-import sample.*;
+import component.ButtonEditor;
+import component.ButtonRenderer;
+import domain.StockReport;
+import domain.StockReportItem;
+import function.NavigationManager;
+import gui.table.StockReportTable;
+import java.awt.Component;
+import java.io.IOException;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JCheckBox;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
+import repository.FinancialReportRepo;
+import repository.StockReportItemRepo;
+import repository.StockReportRepo;
 
 /**
  *
@@ -16,21 +33,71 @@ public class StockReportView extends javax.swing.JFrame {
      * Creates new form DashBoardSample
      */
     private DefaultTableModel tableModel;
+    private Long viewId;
+    private StockReport report;
     
-    public StockReportView() {
+    public StockReportView(Long viewId) {
+        this.viewId = viewId;
+        
         initComponents();
         this.setLocationRelativeTo(null); //this will center your frame
         
-        initTableModel();
+        setView();
     }
     
     // Custom Methods
-    
-    private void initTableModel() {
-        tableModel = (DefaultTableModel) jTable2.getModel();
-        tableModel.setRowCount(0);
+    private void setView() {
+        StockReportRepo srr = new StockReportRepo();
+        StockReportItemRepo srir = new StockReportItemRepo();
         
-        tableModel.addRow(new Object[]{"", "", "", ""});
+        try {
+            report = srr.getById(viewId);
+            
+            if (this.report == null) {
+                return;
+            }
+            
+            reportCodeField.setText(report.getReportCode());
+            descriptionField.setText(report.getDescription());
+            reportDateField.setText(String.valueOf(report.getCreationDate()));
+            
+            jTable2.setModel(srir.getTableModel(viewId));
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Input Error", JOptionPane.ERROR_MESSAGE);
+        } catch (IOException ex) {
+            Logger.getLogger(FinancialReportNew.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        // Hide the ID column
+        TableColumn idColumn = jTable2.getColumnModel().getColumn(0);
+        idColumn.setMinWidth(0);
+        idColumn.setMaxWidth(0);
+        idColumn.setPreferredWidth(0);
+        idColumn.setResizable(false);
+
+        int lastColumnIndex = jTable2.getColumnModel().getColumnCount() - 1;
+        TableColumn actionColumn = jTable2.getColumnModel().getColumn(lastColumnIndex);
+        actionColumn.setCellRenderer(new ButtonRenderer());
+        actionColumn.setCellEditor(new ButtonEditor(new JCheckBox()) {
+            @Override
+            public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+                Component c = super.getTableCellEditorComponent(table, value, isSelected, row, column);
+
+                for (java.awt.event.ActionListener al : button.getActionListeners()) {
+                    button.removeActionListener(al);
+                }
+
+                button.addActionListener(e -> {
+                    int modelRow = table.convertRowIndexToModel(row);
+                    Object rawId = table.getModel().getValueAt(modelRow, 0);
+                    Long id = Long.valueOf(rawId.toString());
+                    System.out.println("ID: " + id);
+
+//                    NavigationManager.getInstance().openFrame(new StockReportView(id), StockReportTable.this);
+                });
+                return c;
+            }
+        });
     }
 
     /**
@@ -42,40 +109,30 @@ public class StockReportView extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         inputPanel = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        jTextField3 = new javax.swing.JTextField();
-        jTextField4 = new javax.swing.JTextField();
+        reportCodeField = new javax.swing.JTextField();
+        reportDateField = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        jTextField7 = new javax.swing.JTextField();
-        addItemBtn = new javax.swing.JButton();
+        descriptionField = new javax.swing.JTextField();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        jScrollPane2.setViewportView(jTable1);
+        backBtn = new javax.swing.JButton();
+        editBtn = new javax.swing.JButton();
+        deleteBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(800, 600));
         setResizable(false);
         setSize(new java.awt.Dimension(800, 600));
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowActivated(java.awt.event.WindowEvent evt) {
+                formWindowActivated(evt);
+            }
+        });
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel1.setFocusable(false);
@@ -85,7 +142,7 @@ public class StockReportView extends javax.swing.JFrame {
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Edit Stock Report");
+        jLabel1.setText("View Stock Report");
         jLabel1.setToolTipText("");
         jLabel1.setMaximumSize(new java.awt.Dimension(800, 100));
         jLabel1.setMinimumSize(new java.awt.Dimension(800, 100));
@@ -100,29 +157,17 @@ public class StockReportView extends javax.swing.JFrame {
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel6.setText("Date");
 
-        jTextField3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        reportCodeField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
-        jTextField4.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        reportDateField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel3.setText("Description");
 
-        jTextField7.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jTextField7.addActionListener(new java.awt.event.ActionListener() {
+        descriptionField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        descriptionField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField7ActionPerformed(evt);
-            }
-        });
-
-        addItemBtn.setText("+ Add");
-        addItemBtn.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                addItemBtnMouseClicked(evt);
-            }
-        });
-        addItemBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addItemBtnActionPerformed(evt);
+                descriptionFieldActionPerformed(evt);
             }
         });
 
@@ -131,7 +176,7 @@ public class StockReportView extends javax.swing.JFrame {
                 {null, null, null, null, null}
             },
             new String [] {
-                "", "Supplier", "Date", "Amount", ""
+                "", "", "", "", ""
             }
         ) {
             Class[] types = new Class [] {
@@ -154,26 +199,21 @@ public class StockReportView extends javax.swing.JFrame {
             inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(inputPanelLayout.createSequentialGroup()
                 .addGap(75, 75, 75)
-                .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 650, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, inputPanelLayout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(descriptionField, javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(inputPanelLayout.createSequentialGroup()
-                        .addComponent(addItemBtn)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(inputPanelLayout.createSequentialGroup()
-                        .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 650, Short.MAX_VALUE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, inputPanelLayout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addComponent(jTextField7, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(inputPanelLayout.createSequentialGroup()
-                                .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel2)
-                                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel6))))
-                        .addGap(75, 75, 75))))
+                        .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addComponent(reportCodeField, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(reportDateField, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel6))))
+                .addGap(75, 75, 75))
         );
         inputPanelLayout.setVerticalGroup(
             inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -183,33 +223,46 @@ public class StockReportView extends javax.swing.JFrame {
                     .addComponent(jLabel6))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(reportCodeField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(reportDateField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(34, 34, 34)
-                .addComponent(addItemBtn)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(descriptionField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(63, 63, 63)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jButton1.setBackground(new java.awt.Color(255, 0, 51));
-        jButton1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("Back");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        backBtn.setBackground(new java.awt.Color(153, 153, 153));
+        backBtn.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        backBtn.setForeground(new java.awt.Color(255, 255, 255));
+        backBtn.setText("Back");
+        backBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                backBtnActionPerformed(evt);
             }
         });
 
-        jButton2.setBackground(new java.awt.Color(51, 153, 255));
-        jButton2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jButton2.setForeground(new java.awt.Color(255, 255, 255));
-        jButton2.setText("Update");
+        editBtn.setBackground(new java.awt.Color(51, 153, 255));
+        editBtn.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        editBtn.setForeground(new java.awt.Color(255, 255, 255));
+        editBtn.setText("Edit");
+        editBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editBtnActionPerformed(evt);
+            }
+        });
+
+        deleteBtn.setBackground(new java.awt.Color(255, 0, 51));
+        deleteBtn.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        deleteBtn.setForeground(new java.awt.Color(255, 255, 255));
+        deleteBtn.setText("Delete");
+        deleteBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteBtnActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -219,12 +272,14 @@ public class StockReportView extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 800, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(inputPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(5, 5, 5))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jButton1)
+                .addGap(73, 73, 73)
+                .addComponent(deleteBtn)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(backBtn)
                 .addGap(18, 18, 18)
-                .addComponent(jButton2)
+                .addComponent(editBtn)
                 .addGap(75, 75, 75))
         );
         jPanel1Layout.setVerticalGroup(
@@ -234,9 +289,11 @@ public class StockReportView extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(inputPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 498, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(backBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(editBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(deleteBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(150, Short.MAX_VALUE))
         );
 
@@ -245,22 +302,63 @@ public class StockReportView extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+        NavigationManager.getInstance().goBack();
+    }//GEN-LAST:event_backBtnActionPerformed
 
-    private void addItemBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_addItemBtnMouseClicked
-        tableModel.addRow(new Object[]{"", "", "", ""});
-        jTable2.scrollRectToVisible(jTable2.getCellRect(tableModel.getRowCount()-1, 0, true));
-    }//GEN-LAST:event_addItemBtnMouseClicked
-
-    private void addItemBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addItemBtnActionPerformed
+    private void descriptionFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_descriptionFieldActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_addItemBtnActionPerformed
+    }//GEN-LAST:event_descriptionFieldActionPerformed
 
-    private void jTextField7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField7ActionPerformed
+    private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBtnActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField7ActionPerformed
+        int confirm = JOptionPane.showConfirmDialog(
+            this,
+            "Are you sure you want to delete this stock report? This Action is Irreversible",
+            "Confirm Deletion",
+            JOptionPane.YES_NO_OPTION);
+
+        System.out.println(report.getId());
+
+        if (report == null) {
+            JOptionPane.showMessageDialog(this, "Report not found. It may have already been deleted.", "Not Found", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        if (confirm == JOptionPane.YES_OPTION) {
+
+            try {
+                new StockReportRepo().delete(report);
+                
+                // Delete all items of the report
+                StockReportItemRepo frir = new StockReportItemRepo();
+                List<StockReportItem> items = frir.getByStockReportId(viewId);
+                
+                for(StockReportItem item : items){
+                    frir.delete(item);
+                }
+                
+                JOptionPane.showMessageDialog(this, "Stock report deleted successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+                NavigationManager.getInstance().goBack();
+            } catch (IOException ex) {
+                Logger.getLogger(FinancialReportView.class.getName()).log(Level.SEVERE, null, ex);
+                JOptionPane.showMessageDialog(this, "Failed to delete the report. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (IllegalArgumentException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Invalid Operation", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_deleteBtnActionPerformed
+
+    private void editBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editBtnActionPerformed
+        // TODO add your handling code here:
+        NavigationManager.getInstance().openFrame(new StockReportEdit(viewId), this);
+    }//GEN-LAST:event_editBtnActionPerformed
+
+    private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
+        // TODO add your handling code here:
+        setView();
+    }//GEN-LAST:event_formWindowActivated
 
     /**
      * @param args the command line arguments
@@ -547,27 +645,25 @@ public class StockReportView extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new StockReportView().setVisible(true);
+                new StockReportView(1L).setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton addItemBtn;
+    private javax.swing.JButton backBtn;
+    private javax.swing.JButton deleteBtn;
+    private javax.swing.JTextField descriptionField;
+    private javax.swing.JButton editBtn;
     private javax.swing.JPanel inputPanel;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField7;
+    private javax.swing.JTextField reportCodeField;
+    private javax.swing.JTextField reportDateField;
     // End of variables declaration//GEN-END:variables
 }

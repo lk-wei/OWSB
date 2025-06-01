@@ -4,14 +4,29 @@
  */
 package gui;
 
+import component.ButtonEditor;
+import component.ButtonRenderer;
 import domain.Item;
+import domain.StockReport;
+import domain.StockReportItem;
 import function.NavigationManager;
+import java.awt.Component;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
-import sample.*;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 import repository.ItemRepo;
+import repository.StockReportItemRepo;
+import repository.StockReportRepo;
 
 /**
  *
@@ -47,7 +62,6 @@ public class StockReportNew extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         inputPanel = new javax.swing.JPanel();
-        fetchStockBtn = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         reportCodeField = new javax.swing.JTextField();
@@ -62,7 +76,7 @@ public class StockReportNew extends javax.swing.JFrame {
         jPanel3 = new javax.swing.JPanel();
         dateField = new com.toedter.calendar.JDateChooser();
         jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        createBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(800, 600));
@@ -86,13 +100,6 @@ public class StockReportNew extends javax.swing.JFrame {
         inputPanel.setMaximumSize(new java.awt.Dimension(800, 600));
         inputPanel.setMinimumSize(new java.awt.Dimension(800, 600));
 
-        fetchStockBtn.setText("Fetch Stock");
-        fetchStockBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                fetchStockBtnActionPerformed(evt);
-            }
-        });
-
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel2.setText("Report Code");
 
@@ -105,15 +112,10 @@ public class StockReportNew extends javax.swing.JFrame {
         jLabel3.setText("Description");
 
         descriptionField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        descriptionField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                descriptionFieldActionPerformed(evt);
-            }
-        });
 
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null}
+
             },
             new String [] {
                 "", "", "", ""
@@ -190,16 +192,15 @@ public class StockReportNew extends javax.swing.JFrame {
                                 .addGap(271, 271, 271))
                             .addComponent(dateField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(inputPanelLayout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(inputPanelLayout.createSequentialGroup()
                         .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel4)
-                            .addComponent(functionChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(fetchStockBtn)))
+                            .addComponent(jLabel3)
+                            .addGroup(inputPanelLayout.createSequentialGroup()
+                                .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel4)
+                                    .addComponent(functionChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addGap(75, 75, 75))
         );
         inputPanelLayout.setVerticalGroup(
@@ -219,12 +220,9 @@ public class StockReportNew extends javax.swing.JFrame {
                     .addGroup(inputPanelLayout.createSequentialGroup()
                         .addComponent(descriptionField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(inputPanelLayout.createSequentialGroup()
-                                .addComponent(jLabel4)
-                                .addGap(6, 6, 6)
-                                .addComponent(functionChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(fetchStockBtn, javax.swing.GroupLayout.Alignment.TRAILING)))
+                        .addComponent(jLabel4)
+                        .addGap(6, 6, 6)
+                        .addComponent(functionChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(7, 7, 7)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -241,10 +239,15 @@ public class StockReportNew extends javax.swing.JFrame {
             }
         });
 
-        jButton2.setBackground(new java.awt.Color(102, 204, 0));
-        jButton2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jButton2.setForeground(new java.awt.Color(255, 255, 255));
-        jButton2.setText("Create");
+        createBtn.setBackground(new java.awt.Color(102, 204, 0));
+        createBtn.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        createBtn.setForeground(new java.awt.Color(255, 255, 255));
+        createBtn.setText("Create");
+        createBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                createBtnActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -259,7 +262,7 @@ public class StockReportNew extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jButton1)
                 .addGap(18, 18, 18)
-                .addComponent(jButton2)
+                .addComponent(createBtn)
                 .addGap(75, 75, 75))
         );
         jPanel1Layout.setVerticalGroup(
@@ -271,7 +274,7 @@ public class StockReportNew extends javax.swing.JFrame {
                 .addGap(7, 7, 7)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(createBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(149, Short.MAX_VALUE))
         );
 
@@ -284,29 +287,134 @@ public class StockReportNew extends javax.swing.JFrame {
         NavigationManager.getInstance().goBack();
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void descriptionFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_descriptionFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_descriptionFieldActionPerformed
-
     private void functionChooserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_functionChooserActionPerformed
         // TODO add your handling code here:
-        
-    }//GEN-LAST:event_functionChooserActionPerformed
-
-    private void fetchStockBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fetchStockBtnActionPerformed
-        // clear description
-        descriptionField.setText("");
-
+        // TODO add your handling code here:
         ItemRepo itemRepo = new ItemRepo();
         stockToReport = new ArrayList<>();
         int year, month; // For monthly/yearly
 
-        String reportType = (String) functionChooser.getSelectedItem(); // Assuming functionChooser is your JComboBox
+        String reportType = (String) functionChooser.getSelectedItem();
+        try {
+            switch (reportType) {
+                case "Low Stock":
+                    jTable2.setModel(itemRepo.getLowStockTableModel());
+                    break;
 
+                case "All":
+                    jTable2.setModel(itemRepo.getTableModel());
+                    break;
 
-            
-    }//GEN-LAST:event_fetchStockBtnActionPerformed
+                case "Choose":
+                default:
+                    // Set an empty model with no data and default columns
+                    jTable2.setModel(new javax.swing.table.DefaultTableModel(
+                        new Object[][] {}, // empty data
+                        new String[] {"", "Item Code", "Name", "Current Stock", "Minimum Stock", "Unit Cost", "Details"} // placeholder column names
+                    ));
+                    break;
+            }
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Input Error", JOptionPane.ERROR_MESSAGE);
+        } catch (IOException ex) {
+            Logger.getLogger(StockReportNew.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        configTable();
+        
+    }//GEN-LAST:event_functionChooserActionPerformed
 
+    private void createBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createBtnActionPerformed
+        // TODO add your handling code here:
+        DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
+
+        if (model.getRowCount() > 0) {
+            Date selectedDate = dateField.getDate();
+            LocalDate reportDate = selectedDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+            try {
+                // create object
+                StockReport newReport = new StockReport(
+                        null,
+                        reportCodeField.getText(),
+                        1L, // change to current user
+                        reportDate,
+                        descriptionField.getText(),
+                        new ArrayList<>()
+                );
+                new StockReportRepo().create(newReport);
+                
+                // get new created fr ID
+                Long newlyCreatedlReportId = newReport.getId();
+                if (newlyCreatedlReportId == null) {
+                    JOptionPane.showMessageDialog(this, "Failed to create stock report header or retrieve its ID.", "Save Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                
+                // create stock report item
+                for (int row = 0; row < model.getRowCount(); row++) {
+                    // get required values from table
+                    Long itemId = Long.valueOf(model.getValueAt(row, 0).toString());
+                    String itemCode = model.getValueAt(row, 1).toString();
+                    String itemName = model.getValueAt(row, 2).toString();
+                    int stockLevel = Integer.parseInt(model.getValueAt(row, 3).toString());
+
+                    new StockReportItemRepo().create(new StockReportItem(
+                            null,
+                            newlyCreatedlReportId,
+                            itemId,
+                            itemCode,
+                            itemName,
+                            stockLevel
+                    ));
+                }      
+                
+                JOptionPane.showMessageDialog(null, "Stock Report Created successfully!");
+                NavigationManager.getInstance().goBack();
+                
+            } catch (IOException ex) {
+                Logger.getLogger(StockReportNew.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            System.out.println("The Stock list is empty or null.");
+            JOptionPane.showMessageDialog(this, "Nothing To Report.", "No Data", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }//GEN-LAST:event_createBtnActionPerformed
+    
+    private void configTable(){
+        // Hide the ID column
+        TableColumn idColumn = jTable2.getColumnModel().getColumn(0);
+        idColumn.setMinWidth(0);
+        idColumn.setMaxWidth(0);
+        idColumn.setPreferredWidth(0);
+        idColumn.setResizable(false);
+        
+        // add action button
+        int lastColumnIndex = jTable2.getColumnModel().getColumnCount() - 1;
+        TableColumn actionColumn = jTable2.getColumnModel().getColumn(lastColumnIndex);
+        actionColumn.setCellRenderer(new ButtonRenderer());
+        actionColumn.setCellEditor(new ButtonEditor(new JCheckBox()) {
+            @Override
+            public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+                Component c = super.getTableCellEditorComponent(table, value, isSelected, row, column);
+
+                for (java.awt.event.ActionListener al : button.getActionListeners()) {
+                    button.removeActionListener(al);
+                }
+
+                button.addActionListener(e -> {
+                    int modelRow = table.convertRowIndexToModel(row);
+                    Object rawId = table.getModel().getValueAt(modelRow, 0);
+                    Long id = Long.valueOf(rawId.toString());
+                    System.out.println("ID: " + id);
+
+                    NavigationManager.getInstance().openFrame(new ItemView(), StockReportNew.this);
+                });
+                return c;
+            }
+        });
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -406,13 +514,12 @@ public class StockReportNew extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton createBtn;
     private com.toedter.calendar.JDateChooser dateField;
     private javax.swing.JTextField descriptionField;
-    private javax.swing.JButton fetchStockBtn;
     private javax.swing.JComboBox<String> functionChooser;
     private javax.swing.JPanel inputPanel;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

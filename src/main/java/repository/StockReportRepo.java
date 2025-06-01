@@ -71,15 +71,15 @@ public class StockReportRepo extends MasterRepo<StockReport> {
     }
     
     // load payments when needed
-    public List<StockUpdate> getItemsForReport(Long stockReportId) throws IOException {
-        StockReportItemRepo sriRepo = new StockReportItemRepo();
-        StockUpdateRepo suRepo = new StockUpdateRepo();
-        List<StockUpdate> su = new ArrayList<>();
-        
-        
-        for (StockReportItem item : sriRepo.getByStockReportId(stockReportId)) {
-            su.add(suRepo.getByStockUpdateId(item.getStockUpdateId()));
-        }
-        return su;
-    }
+//    public List<StockUpdate> getItemsForReport(Long stockReportId) throws IOException {
+//        StockReportItemRepo sriRepo = new StockReportItemRepo();
+//        StockUpdateRepo suRepo = new StockUpdateRepo();
+//        List<StockUpdate> su = new ArrayList<>();
+//        
+//        
+//        for (StockReportItem item : sriRepo.getByStockReportId(stockReportId)) {
+//            su.add(suRepo.getByStockUpdateId(item.getStockUpdateId()));
+//        }
+//        return su;
+//    }
 }
