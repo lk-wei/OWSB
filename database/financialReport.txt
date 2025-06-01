@@ -1,10 +1,10 @@
-1|FIN-001|101|2023-01-15|Monthly financial report for January
-2|FIN-002|102|2023-02-15|Monthly financial report for February
-3|FIN-003|103|2023-03-15|Monthly financial report for March
-4|FIN-004|101|2023-04-15|Monthly financial report for April
-5|FIN-005|104|2023-05-15|Monthly financial report for May
-6|FIN-006|105|2023-06-15|Monthly financial report for June
-7|FIN-007|102|2023-07-15|Monthly financial report for July
-8|FIN-008|103|2023-08-15|Monthly financial report for August
-9|FIN-009|101|2023-09-15|Monthly financial report for September
-10|FIN-010|104|2023-10-15|Monthly financial report for October
+1|FIN-001|1|2023-01-15|Monthly financial report for January edited
+2|FIN-002|2|2023-02-15|Monthly financial report for February
+3|FIN-003|3|2023-03-15|Monthly financial report for March
+4|FIN-004|1|2023-04-15|Monthly financial report for April
+5|FIN-005|4|2023-05-15|Monthly financial report for May
+6|FIN-006|1|2023-06-15|Monthly financial report for June
+7|FIN-007|1|2023-07-15|Monthly financial report for July
+8|FIN-008|3|2023-08-15|Monthly financial report for August
+9|FIN-009|1|2023-09-15|Monthly financial report for September
+10|FIN-010|4|2023-10-15|Monthly financial report for October
