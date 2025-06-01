@@ -12,7 +12,7 @@ import javax.swing.table.DefaultTableModel;
 public class FinancialReportItemRepo extends MasterRepo<FinancialReportItem> {
     
     public FinancialReportItemRepo() {
-        super(Path.of("database/financialReport.txt"));
+        super(Path.of("database/financialReportItem.txt"));
     }
     
     // Custom methods
@@ -26,11 +26,11 @@ public class FinancialReportItemRepo extends MasterRepo<FinancialReportItem> {
         return itemList;
     }
     
-    public DefaultTableModel getTableModel() throws IOException {
-        String[] columnNames = {"Payment Number", "Date", "Supplier Code", "Supplier Name", "Amount", ""};
+    public DefaultTableModel getTableModel(Long id) throws IOException {
+        String[] columnNames = {"Payment Number", "Date", "Supplier Code", "Supplier Name", "Amount", "Action"};
         DefaultTableModel model = new DefaultTableModel(columnNames, 0);
         
-        for (FinancialReportItem item : getAll()) {
+        for (FinancialReportItem item : getByFinancialReportId(id)) {
             Payment py = new PaymentRepo().getPaymentById(item.getPaymentId());
             Supplier s = new SupplierRepo().getSupplierById(py.getSupplierId());
             

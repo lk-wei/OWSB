@@ -28,8 +28,8 @@ public class ButtonEditor extends DefaultCellEditor {
             @Override
             public void actionPerformed(ActionEvent e) {
                 fireEditingStopped();
-                String item = table.getModel().getValueAt(row, 1).toString();
-                JOptionPane.showMessageDialog(button, "Clicked on: " + item);
+//                String item = table.getModel().getValueAt(row, 1).toString();
+//                JOptionPane.showMessageDialog(button, "Clicked on: " + item);
             }
         });
     }
