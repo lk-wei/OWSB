@@ -9,6 +9,7 @@ import component.ButtonRenderer;
 import domain.User;
 import function.FrontendPermissionManager;
 import function.NavigationManager;
+import function.UserSession;
 import gui.FinancialReportNew;
 import gui.FinancialReportView;
 import java.awt.Component;
@@ -27,11 +28,14 @@ public class FinancialReportTable extends javax.swing.JFrame {
     /**
      * Creates new form DashBoardSample
      */
-    User currentUser = new User();
+    private User currentUser;
     
     public FinancialReportTable() {
+         // get lgged in user
+        currentUser = UserSession.getInstance().getCurrentUser();
+        currentUser = new User(); // delete when done
+        currentUser.setRole("IM"); // delete when done
         
-        currentUser.setRole("AD");
         initComponents();
         
         FrontendPermissionManager.applyButtonPermissions(

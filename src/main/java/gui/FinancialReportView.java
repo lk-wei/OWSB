@@ -7,7 +7,10 @@ package gui;
 import domain.FinancialReport;
 import domain.FinancialReportItem;
 import domain.Payment;
+import domain.User;
+import function.FrontendPermissionManager;
 import function.NavigationManager;
+import function.UserSession;
 import java.io.IOException;
 import java.text.DateFormatSymbols;
 import java.time.LocalDate;
@@ -35,12 +38,28 @@ public class FinancialReportView extends javax.swing.JFrame {
     private DefaultTableModel tableModel;
     private Long viewId;
     private FinancialReport report; 
-    
+    private User currentUser;
+
     public FinancialReportView(Long viewId) {
+        // get lgged in user
+        currentUser = UserSession.getInstance().getCurrentUser();
+        currentUser = new User(); // delete when done
+        currentUser.setRole("IM"); // delete when done
+        
         this.viewId = viewId;
         
         initComponents();
         this.setLocationRelativeTo(null); //this will center your frame
+        
+        FrontendPermissionManager.applyButtonPermissions(
+                currentUser,
+                "fr",
+                null,      
+                editBtn,      
+                deleteBtn
+        );
+        
+        System.out.println(currentUser.getRole());
         
         setView();
     }
@@ -399,7 +418,7 @@ public class FinancialReportView extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-//                new FinancialReportView().setVisible(true);
+                new FinancialReportView(1L).setVisible(true);
             }
         });
     }

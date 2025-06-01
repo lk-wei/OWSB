@@ -8,7 +8,10 @@ import component.ButtonEditor;
 import component.ButtonRenderer;
 import domain.StockReport;
 import domain.StockReportItem;
+import domain.User;
+import function.FrontendPermissionManager;
 import function.NavigationManager;
+import function.UserSession;
 import gui.table.StockReportTable;
 import java.awt.Component;
 import java.io.IOException;
@@ -35,12 +38,26 @@ public class StockReportView extends javax.swing.JFrame {
     private DefaultTableModel tableModel;
     private Long viewId;
     private StockReport report;
+    private User currentUser;
     
     public StockReportView(Long viewId) {
+        // get lgged in user
+        currentUser = UserSession.getInstance().getCurrentUser();
+        currentUser = new User(); // delete when done
+        currentUser.setRole("AD"); // delete when done
+        
         this.viewId = viewId;
         
         initComponents();
         this.setLocationRelativeTo(null); //this will center your frame
+        
+        FrontendPermissionManager.applyButtonPermissions(
+                currentUser,
+                "sr",
+                null,      
+                editBtn,      
+                deleteBtn    
+        );
         
         setView();
     }
