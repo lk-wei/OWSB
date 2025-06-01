@@ -5,6 +5,7 @@
 package gui;
 
 import domain.FinancialReport;
+import domain.FinancialReportItem;
 import domain.Payment;
 import function.NavigationManager;
 import java.io.IOException;

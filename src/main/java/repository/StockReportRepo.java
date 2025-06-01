@@ -28,16 +28,17 @@ public class StockReportRepo extends MasterRepo<StockReport> {
     }
     
     public DefaultTableModel getTableModel() throws IOException {
-        String[] columnNames = {"Report Number", "Description", "Date", "Created By", ""};
+        String[] columnNames = {"","Report Number", "Description", "Date", "Created By", ""};
         DefaultTableModel model = new DefaultTableModel(columnNames, 0);
         
         for (StockReport report : getAll()) {
             model.addRow(new Object[]{
+                report.getId(),
                 report.getReportCode(),
                 report.getDescription(),
                 report.getCreationDate(),
                 report.getCreatedBy(),
-                "" // Action 
+                "View" // Action 
             });
         }
         return model;
