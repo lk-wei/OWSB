@@ -4,11 +4,19 @@
  */
 package gui.table;
 
+import component.ButtonEditor;
+import component.ButtonRenderer;
 import domain.User;
 import function.FrontendPermissionManager;
+import function.NavigationManager;
 import gui.StockUpdateNew;
+import gui.StockUpdateView;
+import java.awt.Component;
 import java.io.IOException;
+import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.table.TableColumn;
 import repository.StockUpdateRepo;
 
 /**
@@ -24,7 +32,7 @@ public class StockUpdateTable extends javax.swing.JFrame {
     
     public StockUpdateTable() {
         
-        currentUser.setRole("FM");
+        currentUser.setRole("IM");
         
         initComponents();
         
@@ -49,6 +57,37 @@ public class StockUpdateTable extends javax.swing.JFrame {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
         }
+        
+        // Hide the ID column
+        TableColumn idColumn = jTable1.getColumnModel().getColumn(0);
+        idColumn.setMinWidth(0);
+        idColumn.setMaxWidth(0);
+        idColumn.setPreferredWidth(0);
+        idColumn.setResizable(false);
+        
+        int lastColumnIndex = jTable1.getColumnModel().getColumnCount() - 1;
+        TableColumn actionColumn = jTable1.getColumnModel().getColumn(lastColumnIndex);
+        actionColumn.setCellRenderer(new ButtonRenderer());
+        actionColumn.setCellEditor(new ButtonEditor(new JCheckBox()) {
+            @Override
+            public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+                Component c = super.getTableCellEditorComponent(table, value, isSelected, row, column);
+
+                for (java.awt.event.ActionListener al : button.getActionListeners()) {
+                    button.removeActionListener(al);
+                }
+
+                button.addActionListener(e -> {
+                    int modelRow = table.convertRowIndexToModel(row);
+                    Object rawId = table.getModel().getValueAt(modelRow, 0);
+                    Long id = Long.valueOf(rawId.toString());
+                    System.out.println("ID: " + id);
+
+                    NavigationManager.getInstance().openFrame(new StockUpdateView(id), StockUpdateTable.this);
+                });
+                return c;
+            }
+        });
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -80,17 +119,17 @@ public class StockUpdateTable extends javax.swing.JFrame {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Stock Update Code", "Date ", "Updated By", "Title 4"
+                "", "Stock Update Code", "Date ", "Updated By", ""
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.Long.class, java.lang.Object.class
+                java.lang.Object.class, java.lang.String.class, java.lang.String.class, java.lang.Long.class, java.lang.Object.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -103,6 +142,7 @@ public class StockUpdateTable extends javax.swing.JFrame {
             jTable1.getColumnModel().getColumn(1).setResizable(false);
             jTable1.getColumnModel().getColumn(2).setResizable(false);
             jTable1.getColumnModel().getColumn(3).setResizable(false);
+            jTable1.getColumnModel().getColumn(4).setResizable(false);
         }
 
         newButton.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -143,12 +183,7 @@ public class StockUpdateTable extends javax.swing.JFrame {
 
     private void newButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newButtonActionPerformed
         // TODO add your handling code here:
-        // Open SecondFrame
-        StockUpdateNew second = new StockUpdateNew();
-        second.setVisible(true);
-
-        // Close or hide current frame (optional)
-        this.dispose(); // or this.setVisible(false);
+        NavigationManager.getInstance().openFrame(new StockUpdateNew(), this);
     }//GEN-LAST:event_newButtonActionPerformed
 
     /**

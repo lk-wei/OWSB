@@ -23,24 +23,21 @@ public class DailySaleRepo extends MasterRepo<DailySale>{
     
     
     // UI method
+    // DailySaleTable
     public DefaultTableModel getTableModel() throws IOException {
-        DefaultTableModel model = new DefaultTableModel(
-            new Object[][]{},
-            // These column names must match what's in your JFrame
-            new String[]{"Sale Code", "Sale Date", "Recorded By", ""}
-        );
-
-        List<DailySale> dailysales = getAll(); 
-        UserRepo userRepo = new UserRepo();    
-
-        for (DailySale dailysale : dailysales) {
-            User user = userRepo.getUserById(dailysale.getRecordedById());
+        
+        String[] columnNames = {"", "Sale Code", "Sale Date", "Recorded By", ""};
+        DefaultTableModel model = new DefaultTableModel(columnNames, 0);
+        
+        for (DailySale sale : getAll()){
+            User u = new UserRepo().getById(sale.getRecordedById());
             
             model.addRow(new Object[]{
-                dailysale.getSaleCode(),    // Sale Code
-                dailysale.getSaleDate(),   // Sale Date
-                user.getFullName(),  // Recorded By
-                ""                        // Empty column (action buttons?)
+                sale.getId(),    
+                sale.getSaleCode(),  
+                sale.getSaleDate(),
+                u.getFullName(),
+                "View"  //Action                        
             });
         }
         return model;

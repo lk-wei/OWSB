@@ -8,6 +8,7 @@ import component.ButtonEditor;
 import component.ButtonRenderer;
 import domain.DailySale;
 import domain.Item;
+import function.NavigationManager;
 import gui.table.DailySaleTable;
 import java.awt.Component;
 import java.util.List;
@@ -155,7 +156,7 @@ public class DailySaleNew extends javax.swing.JFrame {
         codeField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel3.setText("Description");
+        jLabel3.setText("Recorded By");
 
         descriptionField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
@@ -320,9 +321,10 @@ public class DailySaleNew extends javax.swing.JFrame {
             }
             
             JOptionPane.showMessageDialog(null, "Daily Sale added successfully!");
-            codeField.setText("");
-            dateField.setDate(null);
-            descriptionField.setText("");
+//            codeField.setText("");
+//            dateField.setDate(null);
+//            descriptionField.setText("");
+            NavigationManager.getInstance().goBack();
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(null, "Please enter valid numbers for stock and unit cost.");
         } catch (IOException ex) {

@@ -4,15 +4,28 @@
  */
 package gui;
 
+import component.ButtonEditor;
+import component.ButtonRenderer;
+import domain.Item;
 import domain.StockUpdate;
+import function.NavigationManager;
 import gui.table.StockUpdateTable;
+import java.awt.Component;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import sample.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
+import repository.ItemRepo;
 import repository.StockUpdateRepo;
 
 /**
@@ -24,22 +37,54 @@ public class StockUpdateNew extends javax.swing.JFrame {
      * Creates new form DashBoardSample
      */
     private DefaultTableModel tableModel;
+    protected List<StockItem> itemList = new ArrayList<>();
     
     public StockUpdateNew() {
         initComponents();
+        tableModel = (DefaultTableModel) itemTable.getModel(); // <--- CORRECTED LINE
         this.setLocationRelativeTo(null); //this will center your frame
-        
-        initTableModel();
     }
     
     // Custom Methods
     
-    private void initTableModel() {
-        tableModel = (DefaultTableModel) jTable2.getModel();
-        tableModel.setRowCount(0);
+    public void updateTable() throws IOException {
+        removeAllRows();
+        ItemRepo ir = new ItemRepo();
         
-        tableModel.addRow(new Object[]{"", "", "", ""});
+        for (StockItem item : itemList) {
+            System.out.println(item.itemId);
+            Item i = ir.getById(item.itemId);
+            System.out.println(i.getItemName());
+            
+            tableModel.addRow(new Object[]{i.getItemName(), i.getItemName(), item.quantity, "Delete"});
+            
+            System.out.println("table updated");
+            System.out.println(i.getItemName());
+        }
+        
+        TableColumn actionColumn = itemTable.getColumnModel().getColumn(3);
+        actionColumn.setCellRenderer(new ButtonRenderer());
+        actionColumn.setCellEditor(new ButtonEditor(new JCheckBox()){
+            @Override
+            public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column){
+                Component c = super.getTableCellEditorComponent(table, value, isSelected, row, column);
+                
+                button.addActionListener(e -> {
+                    // add button function here
+                    String name = table.getValueAt(row, 1).toString();
+                    JOptionPane.showMessageDialog(table, "Editing: " + name);
+                });
+                return c;
+            }
+        });
     }
+    
+    private void removeAllRows() {
+        while (tableModel.getRowCount() > 0) {
+            tableModel.removeRow(0);
+        }
+    }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -61,7 +106,7 @@ public class StockUpdateNew extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         addItemBtn = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
+        itemTable = new javax.swing.JTable();
         cancelButton = new javax.swing.JButton();
         createButton = new javax.swing.JButton();
         jLabel7 = new javax.swing.JLabel();
@@ -122,25 +167,22 @@ public class StockUpdateNew extends javax.swing.JFrame {
                 addItemBtnMouseClicked(evt);
             }
         });
-
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null}
-            },
-            new String [] {
-                "Item Code", "Quantity", "Title 3"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.Integer.class, java.lang.Object.class
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
+        addItemBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addItemBtnActionPerformed(evt);
             }
         });
-        jTable2.setShowGrid(true);
-        jScrollPane3.setViewportView(jTable2);
+
+        itemTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null}
+            },
+            new String [] {
+                "Item Code", "Name", "Quantity", "Action"
+            }
+        ));
+        itemTable.setShowGrid(true);
+        jScrollPane3.setViewportView(itemTable);
 
         cancelButton.setBackground(new java.awt.Color(255, 0, 51));
         cancelButton.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
@@ -275,7 +317,7 @@ public class StockUpdateNew extends javax.swing.JFrame {
 
     private void addItemBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_addItemBtnMouseClicked
         tableModel.addRow(new Object[]{"", "", "", ""});
-        jTable2.scrollRectToVisible(jTable2.getCellRect(tableModel.getRowCount()-1, 0, true));
+        itemTable.scrollRectToVisible(itemTable.getCellRect(tableModel.getRowCount()-1, 0, true));
     }//GEN-LAST:event_addItemBtnMouseClicked
 
     private void createButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createButtonActionPerformed
@@ -285,7 +327,7 @@ public class StockUpdateNew extends javax.swing.JFrame {
         try {
             Date selectedDate = dateField.getDate();
             // When merge, this field will automatically get the current user id
-            Long updatedById = Long.parseLong(userIdField.getText());
+            Long updatedById = 1L; // need to change to current user ID
 
             // Check for null to avoid NullPointerException
             if (selectedDate == null) {
@@ -296,28 +338,41 @@ public class StockUpdateNew extends javax.swing.JFrame {
             // Convert Date to LocalDate
             LocalDate date = selectedDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
             
-            StockUpdate newStockUpdate = new StockUpdate(
+            for(StockItem i : itemList){
+                StockUpdate newStockUpdate = new StockUpdate(
                         null,
                         codeField.getText(),
                         descriptionField.getText(),
-                        Long.parseLong("10"),
-                        0,
+                        i.itemId,
+                        i.quantity,
                         date,
-                        updatedById,
-                        null
-            );
-            stockUpdateRepo.create(newStockUpdate);
+                        updatedById
+                );
+                
+                stockUpdateRepo.create(newStockUpdate);
+            }
+            
             JOptionPane.showMessageDialog(null, "Stock Update added successfully!");
-            codeField.setText("");
-            descriptionField.setText("");
-            dateField.setDate(null);
-            userIdField.setText("");
+//            codeField.setText("");
+//            descriptionField.setText("");
+//            dateField.setDate(null);
+//            userIdField.setText("");
+            NavigationManager.getInstance().goBack();
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(null, "Please enter valid numbers for stock and unit cost.");
         } catch (IOException ex) {
             
         }
     }//GEN-LAST:event_createButtonActionPerformed
+
+    private void addItemBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addItemBtnActionPerformed
+        // TODO add your handling code here:
+        try {
+            new StockUpdateItem(this).setVisible(true);
+        } catch (IOException ex) {
+            Logger.getLogger(DailySaleNew.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_addItemBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -384,7 +439,22 @@ public class StockUpdateNew extends javax.swing.JFrame {
             }
         });
     }
-
+    
+    public class StockItem{
+        private long itemId;
+        private int quantity;
+        
+        public StockItem(Long itemId, int quantity){
+            this.itemId = itemId;
+            this.quantity = quantity;
+        }
+    }
+    
+    public void addToList(Long id, int quantity){
+        itemList.add(new StockItem(id, quantity));
+        System.out.println("added to list" + id + "" +quantity);
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addItemBtn;
     private javax.swing.JButton cancelButton;
@@ -393,6 +463,7 @@ public class StockUpdateNew extends javax.swing.JFrame {
     private com.toedter.calendar.JDateChooser dateField;
     private javax.swing.JTextArea descriptionField;
     private javax.swing.JPanel inputPanel;
+    private javax.swing.JTable itemTable;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -403,7 +474,6 @@ public class StockUpdateNew extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable2;
     private javax.swing.JTextField userIdField;
     // End of variables declaration//GEN-END:variables
 }
