@@ -7,6 +7,7 @@ package gui;
 import domain.DailySale;
 import domain.Item;
 import domain.User;
+import function.ManageStock;
 import function.NavigationManager;
 import gui.table.DailySaleTable;
 import java.io.IOException;
@@ -298,10 +299,12 @@ public class DailySaleView extends javax.swing.JFrame {
     private void editButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editButtonActionPerformed
         // TODO add your handling code here:
         NavigationManager.getInstance().openFrame(new DailySaleEdit(viewId), this);
+        this.dispose();
     }//GEN-LAST:event_editButtonActionPerformed
 
     private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
         // TODO add your handling code here:
+        ManageStock manageStock = new ManageStock();
         int confirm = JOptionPane.showConfirmDialog(
                 this,
                 "Are you sure you want to delete this sale record? This Action is Irreversible",
@@ -318,6 +321,8 @@ public class DailySaleView extends javax.swing.JFrame {
         if (confirm == JOptionPane.YES_OPTION) {
             DailySaleRepo dsr = new DailySaleRepo();
             try {
+                manageStock.addStockQuantity(sale.getId());
+                
                 dsr.delete(sale); 
                 JOptionPane.showMessageDialog(this, "Sale record deleted successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
                 NavigationManager.getInstance().goBack();

@@ -7,6 +7,7 @@ package gui;
 import domain.Item;
 import domain.StockUpdate;
 import domain.User;
+import function.ManageStock;
 import function.NavigationManager;
 import gui.table.StockUpdateTable;
 import java.io.IOException;
@@ -312,12 +313,15 @@ public class StockUpdateEdit extends javax.swing.JFrame {
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
         // TODO add your handling code here:
+        ManageStock manageStock = new ManageStock();
         int qty = (Integer) quantitySpinner.getValue();
         
         toEdit.setQuantity(qty);
         toEdit.setDescription(descriptionField.getText());
         
         try {
+            manageStock.editStockUpdateQuantity(viewId, qty);
+            
             new StockUpdateRepo().update(toEdit);
             
             JOptionPane.showMessageDialog(null, "Update Record Updated successfully!");
