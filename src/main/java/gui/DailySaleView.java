@@ -4,8 +4,19 @@
  */
 package gui;
 
+import domain.DailySale;
+import domain.Item;
+import domain.User;
+import function.NavigationManager;
 import gui.table.DailySaleTable;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import repository.DailySaleRepo;
+import repository.ItemRepo;
+import repository.UserRepo;
 
 /**
  *
@@ -16,23 +27,47 @@ public class DailySaleView extends javax.swing.JFrame {
      * Creates new form DashBoardSample
      */
     private DefaultTableModel tableModel;
+    private Long viewId;
+    private DailySale sale;
     
-    public DailySaleView() {
+    public DailySaleView(Long viewId) {
+        this.viewId = viewId;
+        
         initComponents();
         this.setLocationRelativeTo(null); //this will center your frame
         
-        initTableModel();
+        setView();
     }
     
     // Custom Methods
     
-    private void initTableModel() {
-        tableModel = (DefaultTableModel) jTable2.getModel();
-        tableModel.setRowCount(0);
+    private void setView(){
+        DailySaleRepo dsr = new DailySaleRepo();
         
-        tableModel.addRow(new Object[]{"", "", "", ""});
-    }
+        try {
+            sale = dsr.getById(viewId);
+            User u = new UserRepo().getById(sale.getRecordedById());
+            Item i = new ItemRepo().getById(sale.getItemId());
+            
+            if (this.sale == null){
+                return;
+            }
+            
+            saleCodeField.setText(sale.getSaleCode());
+            saleDateField.setText(String.valueOf(sale.getSaleDate()));
+            itemCodeField.setText(i.getItemCode());
+            itemNameField.setText(i.getItemName());
+            quantitySoldField.setText(String.valueOf(sale.getQuantitySold()));
+            recordedByField.setText(u.getFullName());
+            
 
+        }catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Input Error", JOptionPane.ERROR_MESSAGE);
+        } catch (IOException ex) {
+            Logger.getLogger(DailySaleNew.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -49,16 +84,19 @@ public class DailySaleView extends javax.swing.JFrame {
         inputPanel = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        jTextField3 = new javax.swing.JTextField();
-        jTextField4 = new javax.swing.JTextField();
+        saleCodeField = new javax.swing.JTextField();
+        saleDateField = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        jTextField7 = new javax.swing.JTextField();
-        addItemBtn = new javax.swing.JButton();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
+        itemCodeField = new javax.swing.JTextField();
         cancelButton = new javax.swing.JButton();
         deleteButton = new javax.swing.JButton();
         editButton = new javax.swing.JButton();
+        jLabel7 = new javax.swing.JLabel();
+        itemNameField = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        quantitySoldField = new javax.swing.JTextField();
+        recordedByField = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -99,51 +137,24 @@ public class DailySaleView extends javax.swing.JFrame {
         jLabel2.setText("Sale Code");
 
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel6.setText("Sale Date");
+        jLabel6.setText("Item Name");
 
-        jTextField3.setEditable(false);
-        jTextField3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        saleCodeField.setEditable(false);
+        saleCodeField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
-        jTextField4.setEditable(false);
-        jTextField4.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        saleDateField.setEditable(false);
+        saleDateField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel3.setText("Recorded By");
+        jLabel3.setText("Item Code");
 
-        jTextField7.setEditable(false);
-        jTextField7.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-
-        addItemBtn.setText("+ Add");
-        addItemBtn.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                addItemBtnMouseClicked(evt);
-            }
-        });
-
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null}
-            },
-            new String [] {
-                "Item Code", "Quantity Sold", "Title 3"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.Integer.class, java.lang.Object.class
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-        });
-        jTable2.setEnabled(false);
-        jTable2.setShowGrid(true);
-        jScrollPane3.setViewportView(jTable2);
+        itemCodeField.setEditable(false);
+        itemCodeField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         cancelButton.setBackground(new java.awt.Color(0, 255, 0));
         cancelButton.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         cancelButton.setForeground(new java.awt.Color(255, 255, 255));
-        cancelButton.setText("Cancel");
+        cancelButton.setText("Back");
         cancelButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cancelButtonActionPerformed(evt);
@@ -154,6 +165,11 @@ public class DailySaleView extends javax.swing.JFrame {
         deleteButton.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         deleteButton.setForeground(new java.awt.Color(255, 255, 255));
         deleteButton.setText("Delete");
+        deleteButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteButtonActionPerformed(evt);
+            }
+        });
 
         editButton.setBackground(new java.awt.Color(0, 102, 255));
         editButton.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
@@ -165,6 +181,24 @@ public class DailySaleView extends javax.swing.JFrame {
             }
         });
 
+        jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel7.setText("Sale Date");
+
+        itemNameField.setEditable(false);
+        itemNameField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+
+        jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel4.setText("Quantity Sold");
+
+        quantitySoldField.setEditable(false);
+        quantitySoldField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+
+        recordedByField.setEditable(false);
+        recordedByField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+
+        jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel5.setText("Recorded By");
+
         javax.swing.GroupLayout inputPanelLayout = new javax.swing.GroupLayout(inputPanel);
         inputPanel.setLayout(inputPanelLayout);
         inputPanelLayout.setHorizontalGroup(
@@ -172,57 +206,64 @@ public class DailySaleView extends javax.swing.JFrame {
             .addGroup(inputPanelLayout.createSequentialGroup()
                 .addGap(75, 75, 75)
                 .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2)
                     .addGroup(inputPanelLayout.createSequentialGroup()
-                        .addComponent(addItemBtn)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, inputPanelLayout.createSequentialGroup()
-                        .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 650, Short.MAX_VALUE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, inputPanelLayout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addComponent(jTextField7, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(inputPanelLayout.createSequentialGroup()
-                                .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jTextField3)
-                                    .addComponent(jLabel2))
-                                .addGap(50, 50, 50)
-                                .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(quantitySoldField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
+                                .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(saleCodeField, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(itemCodeField, javax.swing.GroupLayout.Alignment.LEADING))
+                            .addComponent(jLabel4))
+                        .addGap(54, 54, 54)
+                        .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel5)
+                            .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGroup(inputPanelLayout.createSequentialGroup()
+                                    .addComponent(cancelButton)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(editButton))
+                                .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jLabel7)
                                     .addComponent(jLabel6)
-                                    .addComponent(jTextField4)))
-                            .addGroup(inputPanelLayout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(cancelButton)
-                                .addGap(18, 18, 18)
-                                .addComponent(editButton)
-                                .addGap(18, 18, 18)
-                                .addComponent(deleteButton)))
-                        .addGap(75, 75, 75))))
+                                    .addComponent(saleDateField, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
+                                    .addComponent(itemNameField)
+                                    .addComponent(recordedByField)))))
+                    .addComponent(deleteButton))
+                .addContainerGap(71, Short.MAX_VALUE))
         );
         inputPanelLayout.setVerticalGroup(
             inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, inputPanelLayout.createSequentialGroup()
                 .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(jLabel6))
+                    .addComponent(jLabel7))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(saleDateField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(saleCodeField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(jLabel3)
+                .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(addItemBtn)
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(itemCodeField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(itemNameField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel5))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(quantitySoldField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(recordedByField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(editButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(93, Short.MAX_VALUE))
+                    .addComponent(editButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(457, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -244,26 +285,50 @@ public class DailySaleView extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, 800));
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, 680));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
         // TODO add your handling code here:
-        DailySaleTable second = new DailySaleTable();
-        second.setVisible(true);
-        this.dispose();
+        NavigationManager.getInstance().goBack();
     }//GEN-LAST:event_cancelButtonActionPerformed
-
-    private void addItemBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_addItemBtnMouseClicked
-        tableModel.addRow(new Object[]{"", "", "", ""});
-        jTable2.scrollRectToVisible(jTable2.getCellRect(tableModel.getRowCount()-1, 0, true));
-    }//GEN-LAST:event_addItemBtnMouseClicked
 
     private void editButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editButtonActionPerformed
         // TODO add your handling code here:
+        NavigationManager.getInstance().openFrame(new DailySaleEdit(viewId), this);
     }//GEN-LAST:event_editButtonActionPerformed
+
+    private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
+        // TODO add your handling code here:
+        int confirm = JOptionPane.showConfirmDialog(
+                this,
+                "Are you sure you want to delete this sale record? This Action is Irreversible",
+                "Confirm Deletion",
+                JOptionPane.YES_NO_OPTION);
+        
+        System.out.println(sale.getId());
+        
+        if (sale == null) {
+            JOptionPane.showMessageDialog(this, "Sale record not found. It may have already been deleted.", "Not Found", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            DailySaleRepo dsr = new DailySaleRepo();
+            try {
+                dsr.delete(sale); 
+                JOptionPane.showMessageDialog(this, "Sale record deleted successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+                NavigationManager.getInstance().goBack();
+            } catch (IOException ex) {
+                Logger.getLogger(DailySaleView.class.getName()).log(Level.SEVERE, null, ex);
+                JOptionPane.showMessageDialog(this, "Failed to delete the sale record. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (IllegalArgumentException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Invalid Operation", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_deleteButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -326,28 +391,31 @@ public class DailySaleView extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new DailySaleView().setVisible(true);
+//                new DailySaleView().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton addItemBtn;
     private javax.swing.JButton cancelButton;
     private javax.swing.JButton deleteButton;
     private javax.swing.JButton editButton;
     private javax.swing.JPanel inputPanel;
+    private javax.swing.JTextField itemCodeField;
+    private javax.swing.JTextField itemNameField;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField7;
+    private javax.swing.JTextField quantitySoldField;
+    private javax.swing.JTextField recordedByField;
+    private javax.swing.JTextField saleCodeField;
+    private javax.swing.JTextField saleDateField;
     // End of variables declaration//GEN-END:variables
 }

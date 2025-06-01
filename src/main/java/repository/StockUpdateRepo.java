@@ -23,6 +23,7 @@ public class StockUpdateRepo extends MasterRepo<StockUpdate>{
         super(Path.of("database/stockUpdate.txt"));
     }
     
+    // Needed?
     // match id get with the id stored in txt file
     public StockUpdate getByStockUpdateId(Long suid) throws IOException{
         List<String> lines = Files.readAllLines(filePath);
@@ -38,29 +39,48 @@ public class StockUpdateRepo extends MasterRepo<StockUpdate>{
     }
     
     // UI method
-   public DefaultTableModel getTableModel() throws IOException {
-        DefaultTableModel model = new DefaultTableModel(
-            new Object[][]{},
-            // These column names must match what's in your JFrame
-            new String[]{"Stock Update Code", "Date", "Updated By", ""}
-        );
-
-        List<StockUpdate> stockupdates = getAll(); 
-        UserRepo userRepo = new UserRepo();    
-
-        for (StockUpdate stockupdate : stockupdates) {
-            User user = userRepo.getById(stockupdate.getUpdatedById());
+    public DefaultTableModel getTableModel() throws IOException {
+        
+        String[] columnNames = {"", "Stock Update Code", "Date", "Updated By", ""};
+        DefaultTableModel model = new DefaultTableModel(columnNames, 0);
+        
+        for (StockUpdate update : getAll()){
+            User u = new UserRepo().getById(update.getUpdatedById());
             
             model.addRow(new Object[]{
-                stockupdate.getStockUpdateCode(),   
-                stockupdate.getDate(),   
-                user != null ? user.getFullName() : "Unknown", // avoid null pointer
-                ""
+                update.getId(),    
+                update.getStockUpdateCode(),  
+                update.getDate(),
+                u.getFullName(),
+                "View"  //Action                        
             });
         }
-
         return model;
     }
+    
+//   public DefaultTableModel getTableModel() throws IOException {
+//        DefaultTableModel model = new DefaultTableModel(
+//            new Object[][]{},
+//            // These column names must match what's in your JFrame
+//            new String[]{"Stock Update Code", "Date", "Updated By", ""}
+//        );
+//
+//        List<StockUpdate> stockupdates = getAll(); 
+//        UserRepo userRepo = new UserRepo();    
+//
+//        for (StockUpdate stockupdate : stockupdates) {
+//            User user = userRepo.getById(stockupdate.getUpdatedById());
+//            
+//            model.addRow(new Object[]{
+//                stockupdate.getStockUpdateCode(),   
+//                stockupdate.getDate(),   
+//                user != null ? user.getFullName() : "Unknown", // avoid null pointer
+//                ""
+//            });
+//        }
+//
+//        return model;
+//    }
 
     
     // convert object into string seperated by |

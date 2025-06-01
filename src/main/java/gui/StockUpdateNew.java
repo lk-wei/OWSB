@@ -8,6 +8,7 @@ import component.ButtonEditor;
 import component.ButtonRenderer;
 import domain.Item;
 import domain.StockUpdate;
+import function.NavigationManager;
 import gui.table.StockUpdateTable;
 import java.awt.Component;
 import java.io.IOException;
@@ -352,10 +353,11 @@ public class StockUpdateNew extends javax.swing.JFrame {
             }
             
             JOptionPane.showMessageDialog(null, "Stock Update added successfully!");
-            codeField.setText("");
-            descriptionField.setText("");
-            dateField.setDate(null);
-            userIdField.setText("");
+//            codeField.setText("");
+//            descriptionField.setText("");
+//            dateField.setDate(null);
+//            userIdField.setText("");
+            NavigationManager.getInstance().goBack();
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(null, "Please enter valid numbers for stock and unit cost.");
         } catch (IOException ex) {
