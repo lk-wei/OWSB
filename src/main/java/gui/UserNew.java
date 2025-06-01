@@ -4,6 +4,13 @@
  */
 package gui;
 
+import domain.User;
+import function.NavigationManager;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import repository.UserRepo;
 import sample.*;
 
 /**
@@ -36,14 +43,14 @@ public class UserNew extends javax.swing.JFrame {
         inputPanel = new javax.swing.JPanel();
         userNameLabel = new javax.swing.JLabel();
         passwordLabel = new javax.swing.JLabel();
-        addUserNameTextField = new javax.swing.JTextField();
-        addPasswordTextField = new javax.swing.JTextField();
+        usernameField = new javax.swing.JTextField();
+        passwordField = new javax.swing.JTextField();
         fullNameLabel = new javax.swing.JLabel();
-        addFullNameTextField = new javax.swing.JTextField();
+        fullNameField = new javax.swing.JTextField();
         roleLabel = new javax.swing.JLabel();
-        addRoleComboBox = new javax.swing.JComboBox<>();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        roleComboBox = new javax.swing.JComboBox<>();
+        cancelButton = new javax.swing.JButton();
+        createButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(600, 500));
@@ -61,20 +68,20 @@ public class UserNew extends javax.swing.JFrame {
         passwordLabel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         passwordLabel.setText("Password");
 
-        addUserNameTextField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        usernameField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
-        addPasswordTextField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        passwordField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         fullNameLabel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         fullNameLabel.setText("Full Name");
 
-        addFullNameTextField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        fullNameField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         roleLabel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         roleLabel.setText("Role");
 
-        addRoleComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SalesManager", "PurchaseManager", "Administrator", "InventoryManager", "FinanceManager" }));
-        addRoleComboBox.setSelectedIndex(-1);
+        roleComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SalesManager", "PurchaseManager", "Administrator", "InventoryManager", "FinanceManager" }));
+        roleComboBox.setSelectedIndex(-1);
 
         javax.swing.GroupLayout inputPanelLayout = new javax.swing.GroupLayout(inputPanel);
         inputPanel.setLayout(inputPanelLayout);
@@ -83,22 +90,18 @@ public class UserNew extends javax.swing.JFrame {
             .addGroup(inputPanelLayout.createSequentialGroup()
                 .addGap(75, 75, 75)
                 .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(addUserNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(usernameField, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(userNameLabel)
                     .addComponent(passwordLabel)
-                    .addComponent(addPasswordTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(passwordField, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
                 .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(inputPanelLayout.createSequentialGroup()
-                        .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(roleLabel)
-                            .addComponent(addRoleComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(75, 75, 75))
-                    .addGroup(inputPanelLayout.createSequentialGroup()
-                        .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(addFullNameTextField)
-                            .addComponent(fullNameLabel))
-                        .addGap(75, 75, 75))))
+                    .addComponent(roleLabel)
+                    .addComponent(roleComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(fullNameField)
+                        .addComponent(fullNameLabel)))
+                .addGap(75, 75, 75))
         );
         inputPanelLayout.setVerticalGroup(
             inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -107,31 +110,41 @@ public class UserNew extends javax.swing.JFrame {
                     .addGroup(inputPanelLayout.createSequentialGroup()
                         .addComponent(fullNameLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(addFullNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(fullNameField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(roleLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(addRoleComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(roleComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(inputPanelLayout.createSequentialGroup()
                         .addComponent(userNameLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(addUserNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(usernameField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(passwordLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(addPasswordTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(passwordField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(75, Short.MAX_VALUE))
         );
 
-        jButton1.setBackground(new java.awt.Color(255, 0, 51));
-        jButton1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("Cancel");
+        cancelButton.setBackground(new java.awt.Color(255, 0, 51));
+        cancelButton.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        cancelButton.setForeground(new java.awt.Color(255, 255, 255));
+        cancelButton.setText("Cancel");
+        cancelButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelButtonActionPerformed(evt);
+            }
+        });
 
-        jButton2.setBackground(new java.awt.Color(102, 204, 0));
-        jButton2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jButton2.setForeground(new java.awt.Color(255, 255, 255));
-        jButton2.setText("Create");
+        createButton.setBackground(new java.awt.Color(102, 204, 0));
+        createButton.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        createButton.setForeground(new java.awt.Color(255, 255, 255));
+        createButton.setText("Create");
+        createButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                createButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -141,9 +154,9 @@ public class UserNew extends javax.swing.JFrame {
             .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton1)
+                .addComponent(cancelButton)
                 .addGap(18, 18, 18)
-                .addComponent(jButton2)
+                .addComponent(createButton)
                 .addGap(75, 75, 75))
         );
         jPanel1Layout.setVerticalGroup(
@@ -154,8 +167,8 @@ public class UserNew extends javax.swing.JFrame {
                 .addComponent(inputPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(createButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(30, Short.MAX_VALUE))
         );
 
@@ -172,6 +185,54 @@ public class UserNew extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void createButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createButtonActionPerformed
+        // TODO add your handling code here:
+        if (usernameField.getText().trim().isEmpty() ||
+            passwordField.getText().trim().isEmpty() ||
+            fullNameField.getText().trim().isEmpty() ||
+            roleComboBox.getSelectedItem() == null || 
+            roleComboBox.getSelectedItem().toString().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Please fill in all the field.");
+            return;
+        }
+        
+        UserRepo userRepo = new UserRepo();
+        
+        try {
+            User existingUser = userRepo.getUserByUsername(usernameField.getText().trim());
+        
+            if (existingUser != null) {
+                // If the username exists in the file, show an error message
+                JOptionPane.showMessageDialog(null, "Username already exists! Please choose another username.");
+                return;
+            }
+            
+            User newUser = new User(
+                        null,
+                        usernameField.getText(),
+                        passwordField.getText(),
+                        fullNameField.getText(),
+                        userRepo.getRoleCode((String) roleComboBox.getSelectedItem())
+            );
+            
+            userRepo.create(newUser);
+            JOptionPane.showMessageDialog(null, "User added successfully!");
+            usernameField.setText("");
+            passwordField.setText("");
+            fullNameField.setText("");
+            roleComboBox.setSelectedIndex(-1);
+        } catch (IOException ex) {
+            Logger.getLogger(UserNew.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        
+    }//GEN-LAST:event_createButtonActionPerformed
+
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+        // TODO add your handling code here:
+        NavigationManager.getInstance().goBack();
+    }//GEN-LAST:event_cancelButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -216,18 +277,18 @@ public class UserNew extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField addFullNameTextField;
-    private javax.swing.JTextField addPasswordTextField;
-    private javax.swing.JComboBox<String> addRoleComboBox;
-    private javax.swing.JTextField addUserNameTextField;
+    private javax.swing.JButton cancelButton;
+    private javax.swing.JButton createButton;
+    private javax.swing.JTextField fullNameField;
     private javax.swing.JLabel fullNameLabel;
     private javax.swing.JPanel inputPanel;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JTextField passwordField;
     private javax.swing.JLabel passwordLabel;
+    private javax.swing.JComboBox<String> roleComboBox;
     private javax.swing.JLabel roleLabel;
     private javax.swing.JLabel userNameLabel;
+    private javax.swing.JTextField usernameField;
     // End of variables declaration//GEN-END:variables
 }

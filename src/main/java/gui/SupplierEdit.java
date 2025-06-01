@@ -4,6 +4,15 @@
  */
 package gui;
 
+import domain.Supplier;
+import function.NavigationManager;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import repository.ItemSupplierRepo;
+import repository.SupplierRepo;
 import sample.*;
 
 /**
@@ -14,13 +23,38 @@ public class SupplierEdit extends javax.swing.JFrame {
     /**
      * Creates new form DashBoardSample
      */
+    private DefaultTableModel tableModel;
+    private Long viewId;
+    private Supplier toEdit;
     
-    public SupplierEdit() {
+    public SupplierEdit(Long viewId) {
+        this.viewId = viewId;
+        
         initComponents();
         this.setLocationRelativeTo(null); //this will center your frame
+        
+        setView();
     }
     
     // Custom Methods
+    private void setView() {
+        SupplierRepo sr = new SupplierRepo();
+        ItemSupplierRepo isr = new ItemSupplierRepo();
+        
+        try {
+            toEdit = sr.getById(viewId);
+            codeField.setText(toEdit.getSupplierCode());
+            nameField.setText(toEdit.getSuppliername());
+            phoneField.setText(toEdit.getPhone());
+            emailField.setText(toEdit.getEmail());
+            
+            //jTable2.setModel(isr.getTableModel(viewId));
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Input Error", JOptionPane.ERROR_MESSAGE);
+        } catch (IOException ex) {
+            Logger.getLogger(FinancialReportNew.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -36,16 +70,16 @@ public class SupplierEdit extends javax.swing.JFrame {
         inputPanel = new javax.swing.JPanel();
         codeLabel = new javax.swing.JLabel();
         supplierNameLabel = new javax.swing.JLabel();
-        viewCodeTextField = new javax.swing.JTextField();
-        viewSupplierNameTextField = new javax.swing.JTextField();
+        codeField = new javax.swing.JTextField();
+        nameField = new javax.swing.JTextField();
         phoneLabel = new javax.swing.JLabel();
-        viewPhoneTextField = new javax.swing.JTextField();
+        phoneField = new javax.swing.JTextField();
         emailLabel = new javax.swing.JLabel();
-        viewEmailTextField = new javax.swing.JTextField();
+        emailField = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
-        ItemSupplierTable = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        jTable2 = new javax.swing.JTable();
+        backButton = new javax.swing.JButton();
+        updateButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(600, 500));
@@ -63,22 +97,22 @@ public class SupplierEdit extends javax.swing.JFrame {
         supplierNameLabel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         supplierNameLabel.setText("Name");
 
-        viewCodeTextField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        viewCodeTextField.setEnabled(false);
+        codeField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        codeField.setEnabled(false);
 
-        viewSupplierNameTextField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        nameField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         phoneLabel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         phoneLabel.setText("Phone");
 
-        viewPhoneTextField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        phoneField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         emailLabel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         emailLabel.setText("Email");
 
-        viewEmailTextField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        emailField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
-        ItemSupplierTable.setModel(new javax.swing.table.DefaultTableModel(
+        jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -94,7 +128,7 @@ public class SupplierEdit extends javax.swing.JFrame {
                 return types [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(ItemSupplierTable);
+        jScrollPane1.setViewportView(jTable2);
 
         javax.swing.GroupLayout inputPanelLayout = new javax.swing.GroupLayout(inputPanel);
         inputPanel.setLayout(inputPanelLayout);
@@ -107,8 +141,8 @@ public class SupplierEdit extends javax.swing.JFrame {
                     .addGroup(inputPanelLayout.createSequentialGroup()
                         .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(viewPhoneTextField, javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(viewCodeTextField, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(phoneField, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(codeField, javax.swing.GroupLayout.Alignment.LEADING)
                                 .addGroup(javax.swing.GroupLayout.Alignment.LEADING, inputPanelLayout.createSequentialGroup()
                                     .addComponent(codeLabel)
                                     .addGap(262, 262, 262)))
@@ -117,9 +151,9 @@ public class SupplierEdit extends javax.swing.JFrame {
                         .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(emailLabel)
                             .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(viewEmailTextField, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(emailField, javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(supplierNameLabel, javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(viewSupplierNameTextField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)))))
+                                .addComponent(nameField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)))))
                 .addGap(75, 75, 75))
         );
         inputPanelLayout.setVerticalGroup(
@@ -130,38 +164,48 @@ public class SupplierEdit extends javax.swing.JFrame {
                     .addComponent(supplierNameLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(viewCodeTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(viewSupplierNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(codeField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(nameField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(inputPanelLayout.createSequentialGroup()
                         .addComponent(phoneLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(viewPhoneTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(phoneField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(inputPanelLayout.createSequentialGroup()
                         .addComponent(emailLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(viewEmailTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(emailField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(75, Short.MAX_VALUE))
         );
 
-        jButton1.setBackground(new java.awt.Color(255, 0, 51));
-        jButton1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("Cancel");
-        jButton1.setMaximumSize(new java.awt.Dimension(84, 32));
-        jButton1.setMinimumSize(new java.awt.Dimension(84, 32));
-        jButton1.setPreferredSize(new java.awt.Dimension(84, 32));
+        backButton.setBackground(new java.awt.Color(255, 0, 51));
+        backButton.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        backButton.setForeground(new java.awt.Color(255, 255, 255));
+        backButton.setText("Back");
+        backButton.setMaximumSize(new java.awt.Dimension(84, 32));
+        backButton.setMinimumSize(new java.awt.Dimension(84, 32));
+        backButton.setPreferredSize(new java.awt.Dimension(84, 32));
+        backButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                backButtonActionPerformed(evt);
+            }
+        });
 
-        jButton2.setBackground(new java.awt.Color(102, 204, 0));
-        jButton2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jButton2.setForeground(new java.awt.Color(255, 255, 255));
-        jButton2.setText("Done");
-        jButton2.setMaximumSize(new java.awt.Dimension(83, 32));
-        jButton2.setMinimumSize(new java.awt.Dimension(83, 32));
-        jButton2.setPreferredSize(new java.awt.Dimension(83, 32));
+        updateButton.setBackground(new java.awt.Color(102, 204, 0));
+        updateButton.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        updateButton.setForeground(new java.awt.Color(255, 255, 255));
+        updateButton.setText("Update");
+        updateButton.setMaximumSize(new java.awt.Dimension(83, 32));
+        updateButton.setMinimumSize(new java.awt.Dimension(83, 32));
+        updateButton.setPreferredSize(new java.awt.Dimension(83, 32));
+        updateButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                updateButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -171,9 +215,9 @@ public class SupplierEdit extends javax.swing.JFrame {
             .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(backButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(updateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(75, 75, 75))
         );
         jPanel1Layout.setVerticalGroup(
@@ -184,8 +228,8 @@ public class SupplierEdit extends javax.swing.JFrame {
                 .addComponent(inputPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(backButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(updateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(30, Short.MAX_VALUE))
         );
 
@@ -202,6 +246,27 @@ public class SupplierEdit extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
+        // TODO add your handling code here:
+        NavigationManager.getInstance().goBack();
+    }//GEN-LAST:event_backButtonActionPerformed
+
+    private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateButtonActionPerformed
+        // TODO add your handling code here:
+        toEdit.setSuppliername(nameField.getText());
+        toEdit.setPhone(phoneField.getText());
+        toEdit.setEmail(emailField.getText());
+        
+        try {
+            new SupplierRepo().update(toEdit);
+            
+            JOptionPane.showMessageDialog(null, "Supplier Updated successfully!");
+            NavigationManager.getInstance().goBack();
+        } catch (IOException ex) {
+            Logger.getLogger(FinancialReportEdit.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_updateButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -296,26 +361,26 @@ public class SupplierEdit extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new SupplierEdit().setVisible(true);
+                new SupplierEdit(1L).setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTable ItemSupplierTable;
+    private javax.swing.JButton backButton;
+    private javax.swing.JTextField codeField;
     private javax.swing.JLabel codeLabel;
+    private javax.swing.JTextField emailField;
     private javax.swing.JLabel emailLabel;
     private javax.swing.JPanel inputPanel;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable jTable2;
+    private javax.swing.JTextField nameField;
+    private javax.swing.JTextField phoneField;
     private javax.swing.JLabel phoneLabel;
     private javax.swing.JLabel supplierNameLabel;
-    private javax.swing.JTextField viewCodeTextField;
-    private javax.swing.JTextField viewEmailTextField;
-    private javax.swing.JTextField viewPhoneTextField;
-    private javax.swing.JTextField viewSupplierNameTextField;
+    private javax.swing.JButton updateButton;
     // End of variables declaration//GEN-END:variables
 }
