@@ -4,10 +4,18 @@
  */
 package gui.table;
 
+import component.ButtonEditor;
+import component.ButtonRenderer;
 import domain.User;
 import function.FrontendPermissionManager;
+import function.NavigationManager;
+import gui.SupplierView;
+import java.awt.Component;
 import java.io.IOException;
+import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.table.TableColumn;
 import repository.SupplierRepo;
 
 /**
@@ -41,11 +49,42 @@ public class SupplierTable extends javax.swing.JFrame {
     private void updateTable() {
         SupplierRepo repo = new SupplierRepo();
         try {
-             supplierTable.setModel(repo.getTableModel());
+             jTable1.setModel(repo.getTableModel());
         } catch (IOException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
         }
+        
+        // Hide the ID column
+        TableColumn idColumn = jTable1.getColumnModel().getColumn(0);
+        idColumn.setMinWidth(0);
+        idColumn.setMaxWidth(0);
+        idColumn.setPreferredWidth(0);
+        idColumn.setResizable(false);
+
+        int lastColumnIndex = jTable1.getColumnModel().getColumnCount() - 1;
+        TableColumn actionColumn = jTable1.getColumnModel().getColumn(lastColumnIndex);
+        actionColumn.setCellRenderer(new ButtonRenderer());
+        actionColumn.setCellEditor(new ButtonEditor(new JCheckBox()) {
+            @Override
+            public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+                Component c = super.getTableCellEditorComponent(table, value, isSelected, row, column);
+
+                for (java.awt.event.ActionListener al : button.getActionListeners()) {
+                    button.removeActionListener(al);
+                }
+
+                button.addActionListener(e -> {
+                    int modelRow = table.convertRowIndexToModel(row);
+                    Object rawId = table.getModel().getValueAt(modelRow, 0);
+                    Long id = Long.valueOf(rawId.toString());
+                    System.out.println("ID: " + id);
+
+                    NavigationManager.getInstance().openFrame(new SupplierView(id), SupplierTable.this);
+                });
+                return c;
+            }
+        });
     }
 
     /**
@@ -61,7 +100,7 @@ public class SupplierTable extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        supplierTable = new javax.swing.JTable();
+        jTable1 = new javax.swing.JTable();
         newButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -76,7 +115,7 @@ public class SupplierTable extends javax.swing.JFrame {
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Supplier");
 
-        supplierTable.setModel(new javax.swing.table.DefaultTableModel(
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null},
                 {null, null, null, null, null},
@@ -95,11 +134,10 @@ public class SupplierTable extends javax.swing.JFrame {
                 return types [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(supplierTable);
+        jScrollPane1.setViewportView(jTable1);
 
         newButton.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         newButton.setText("New +");
-        newButton.setActionCommand("New +");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -183,8 +221,8 @@ public class SupplierTable extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable jTable1;
     private sample.NavBarSample navBarSample2;
     private javax.swing.JButton newButton;
-    private javax.swing.JTable supplierTable;
     // End of variables declaration//GEN-END:variables
 }

@@ -4,10 +4,19 @@
  */
 package gui.table;
 
+import component.ButtonEditor;
+import component.ButtonRenderer;
 import domain.User;
 import function.FrontendPermissionManager;
+import function.NavigationManager;
+import gui.UserNew;
+import gui.UserView;
+import java.awt.Component;
 import java.io.IOException;
+import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.table.TableColumn;
 import repository.UserRepo;
 
 /**
@@ -46,6 +55,37 @@ public class UserTable extends javax.swing.JFrame {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
         }
+        
+        // Hide the ID column
+        TableColumn idColumn = userTable.getColumnModel().getColumn(0);
+        idColumn.setMinWidth(0);
+        idColumn.setMaxWidth(0);
+        idColumn.setPreferredWidth(0);
+        idColumn.setResizable(false);
+
+        int lastColumnIndex = userTable.getColumnModel().getColumnCount() - 1;
+        TableColumn actionColumn = userTable.getColumnModel().getColumn(lastColumnIndex);
+        actionColumn.setCellRenderer(new ButtonRenderer());
+        actionColumn.setCellEditor(new ButtonEditor(new JCheckBox()) {
+            @Override
+            public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+                Component c = super.getTableCellEditorComponent(table, value, isSelected, row, column);
+
+                for (java.awt.event.ActionListener al : button.getActionListeners()) {
+                    button.removeActionListener(al);
+                }
+
+                button.addActionListener(e -> {
+                    int modelRow = table.convertRowIndexToModel(row);
+                    Object rawId = table.getModel().getValueAt(modelRow, 0);
+                    Long id = Long.valueOf(rawId.toString());
+                    System.out.println("ID: " + id);
+
+                    NavigationManager.getInstance().openFrame(new UserView(id), UserTable.this);
+                });
+                return c;
+            }
+        });
     }
 
     /**
@@ -99,6 +139,11 @@ public class UserTable extends javax.swing.JFrame {
 
         newButton.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         newButton.setText("New +");
+        newButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                newButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -127,6 +172,11 @@ public class UserTable extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void newButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newButtonActionPerformed
+        // TODO add your handling code here:
+        NavigationManager.getInstance().openFrame(new UserNew(), this);
+    }//GEN-LAST:event_newButtonActionPerformed
 
     /**
      * @param args the command line arguments

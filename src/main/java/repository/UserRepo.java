@@ -50,7 +50,7 @@ public class UserRepo extends MasterRepo<User>{
         DefaultTableModel model = new DefaultTableModel(
             new Object[][]{},
             // These column names must match what's in your JFrame
-            new String[]{"Username", "Full Name", "Role", ""}
+            new String[]{"", "Username", "Full Name", "Role", ""}
         );
 
         List<User> users = getAll(); 
@@ -58,16 +58,50 @@ public class UserRepo extends MasterRepo<User>{
 
         for (User user : users) {
             model.addRow(new Object[]{
+                user.getId(),
                 user.getUserName(),    
                 user.getFullName(),   
                 user.getRole(), 
-                ""                        // Empty column (action buttons?)
+                "View"   // Action
             });
         }
         return model;
     }
-
     
+    public String getRoleCode(String role) {
+        switch(role) {
+            case "SalesManager":
+                return "SM";
+            case "PurchaseManager":
+                return "PM";
+            case "Administrator":
+                return "AD";
+            case "InventoryManager":
+                return "IM";
+            case "FinanceManager":
+                return "FM";
+            default:
+                return "";
+        }
+    }
+    
+    public String getRoleByCode(String roleCode) {
+        switch(roleCode) {
+            case "SM": 
+                return "SalesManager";
+            case "PM": 
+                return "PurchaseManager";
+            case "AD": 
+                return "Administrator";
+            case "IM": 
+                return "InventoryManager";
+            case "FM": 
+                return "FinanceManager";
+            default: 
+                return "";
+        }
+    }
+
    // Converts User object to pipe-delimited string
     @Override
     protected String objectToString(User user) {

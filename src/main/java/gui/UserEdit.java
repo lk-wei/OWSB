@@ -4,6 +4,13 @@
  */
 package gui;
 
+import domain.User;
+import function.NavigationManager;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import repository.UserRepo;
 import sample.*;
 
 /**
@@ -14,13 +21,39 @@ public class UserEdit extends javax.swing.JFrame {
     /**
      * Creates new form DashBoardSample
      */
+    private Long viewId;
+    private User toEdit;
     
-    public UserEdit() {
+    public UserEdit(Long viewId) {
+        this.viewId = viewId;
+        
         initComponents();
         this.setLocationRelativeTo(null); //this will center your frame
+        
+        setView();
     }
     
     // Custom Methods
+    
+    private void setView() {
+        UserRepo ur = new UserRepo();
+        
+        try {
+            toEdit = ur.getById(viewId);
+            usernameField.setText(toEdit.getUserName());
+            fullNameField.setText(toEdit.getFullName());
+            passwordField.setText(toEdit.getPassword());
+            // Set the selected role in the roleComboBox based on the user's role
+            String userRole = toEdit.getRole(); // Get the role code (e.g., "SM")
+            String role = ur.getRoleByCode(userRole); // Convert the role code to the full role name
+            roleComboBox.setSelectedItem(role);
+
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Input Error", JOptionPane.ERROR_MESSAGE);
+        } catch (IOException ex) {
+            Logger.getLogger(FinancialReportNew.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -36,14 +69,14 @@ public class UserEdit extends javax.swing.JFrame {
         inputPanel = new javax.swing.JPanel();
         userNameLabel = new javax.swing.JLabel();
         passwordLabel = new javax.swing.JLabel();
-        editUserNameTextField = new javax.swing.JTextField();
-        editPasswordTextField = new javax.swing.JTextField();
+        usernameField = new javax.swing.JTextField();
+        passwordField = new javax.swing.JTextField();
         fullNameLabel = new javax.swing.JLabel();
-        editFullNameTextField = new javax.swing.JTextField();
+        fullNameField = new javax.swing.JTextField();
         roleLabel = new javax.swing.JLabel();
-        editRoleComboBox = new javax.swing.JComboBox<>();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        roleComboBox = new javax.swing.JComboBox<>();
+        backButton = new javax.swing.JButton();
+        updateButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(600, 500));
@@ -61,20 +94,20 @@ public class UserEdit extends javax.swing.JFrame {
         passwordLabel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         passwordLabel.setText("Password");
 
-        editUserNameTextField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        usernameField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
-        editPasswordTextField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        passwordField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         fullNameLabel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         fullNameLabel.setText("Full Name");
 
-        editFullNameTextField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        fullNameField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         roleLabel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         roleLabel.setText("Role");
 
-        editRoleComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SalesManager", "PurchaseManager", "Administrator", "InventoryManager", "FinanceManager" }));
-        editRoleComboBox.setSelectedIndex(-1);
+        roleComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SalesManager", "PurchaseManager", "Administrator", "InventoryManager", "FinanceManager" }));
+        roleComboBox.setSelectedIndex(-1);
 
         javax.swing.GroupLayout inputPanelLayout = new javax.swing.GroupLayout(inputPanel);
         inputPanel.setLayout(inputPanelLayout);
@@ -83,17 +116,17 @@ public class UserEdit extends javax.swing.JFrame {
             .addGroup(inputPanelLayout.createSequentialGroup()
                 .addGap(75, 75, 75)
                 .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(editUserNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(usernameField, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(userNameLabel)
                     .addComponent(passwordLabel)
-                    .addComponent(editPasswordTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(passwordField, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
                 .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(editFullNameTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
+                        .addComponent(fullNameField, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
                         .addComponent(fullNameLabel))
                     .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(editRoleComboBox, 0, 300, Short.MAX_VALUE)
+                        .addComponent(roleComboBox, 0, 300, Short.MAX_VALUE)
                         .addComponent(roleLabel)))
                 .addGap(75, 75, 75))
         );
@@ -104,37 +137,47 @@ public class UserEdit extends javax.swing.JFrame {
                     .addGroup(inputPanelLayout.createSequentialGroup()
                         .addComponent(userNameLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(editUserNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(usernameField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(inputPanelLayout.createSequentialGroup()
                         .addComponent(fullNameLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(editFullNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(fullNameField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(inputPanelLayout.createSequentialGroup()
                         .addComponent(passwordLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(editPasswordTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(passwordField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(inputPanelLayout.createSequentialGroup()
                         .addComponent(roleLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(editRoleComboBox)))
+                        .addComponent(roleComboBox)))
                 .addGap(75, 75, 75))
         );
 
-        jButton1.setBackground(new java.awt.Color(255, 0, 51));
-        jButton1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("Cancel");
+        backButton.setBackground(new java.awt.Color(255, 0, 51));
+        backButton.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        backButton.setForeground(new java.awt.Color(255, 255, 255));
+        backButton.setText("Back");
+        backButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                backButtonActionPerformed(evt);
+            }
+        });
 
-        jButton2.setBackground(new java.awt.Color(102, 204, 0));
-        jButton2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jButton2.setForeground(new java.awt.Color(255, 255, 255));
-        jButton2.setText("Done");
-        jButton2.setMaximumSize(new java.awt.Dimension(83, 32));
-        jButton2.setMinimumSize(new java.awt.Dimension(83, 32));
-        jButton2.setPreferredSize(new java.awt.Dimension(83, 32));
+        updateButton.setBackground(new java.awt.Color(102, 204, 0));
+        updateButton.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        updateButton.setForeground(new java.awt.Color(255, 255, 255));
+        updateButton.setText("Update");
+        updateButton.setMaximumSize(new java.awt.Dimension(83, 32));
+        updateButton.setMinimumSize(new java.awt.Dimension(83, 32));
+        updateButton.setPreferredSize(new java.awt.Dimension(83, 32));
+        updateButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                updateButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -144,9 +187,9 @@ public class UserEdit extends javax.swing.JFrame {
             .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton1)
+                .addComponent(backButton)
                 .addGap(18, 18, 18)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(updateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(75, 75, 75))
         );
         jPanel1Layout.setVerticalGroup(
@@ -157,8 +200,8 @@ public class UserEdit extends javax.swing.JFrame {
                 .addComponent(inputPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(backButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(updateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(30, Short.MAX_VALUE))
         );
 
@@ -175,6 +218,33 @@ public class UserEdit extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
+        // TODO add your handling code here:
+        NavigationManager.getInstance().goBack();
+    }//GEN-LAST:event_backButtonActionPerformed
+
+    private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateButtonActionPerformed
+        // TODO add your handling code here:
+        // Get the selected role from the combo box
+        String selectedRole = (String) roleComboBox.getSelectedItem();
+        // Get the role code using the getRoleCode method
+        String roleCode = new UserRepo().getRoleCode(selectedRole);
+        
+        toEdit.setUserName(usernameField.getText());
+        toEdit.setFullName(fullNameField.getText());
+        toEdit.setPassword(passwordField.getText());
+        toEdit.setRole(roleCode);
+        
+        try {
+            new UserRepo().update(toEdit);
+            
+            JOptionPane.showMessageDialog(null, "User Updated successfully!");
+            NavigationManager.getInstance().goBack();
+        } catch (IOException ex) {
+            Logger.getLogger(FinancialReportEdit.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_updateButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -237,24 +307,24 @@ public class UserEdit extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new UserEdit().setVisible(true);
+                new UserEdit(1L).setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField editFullNameTextField;
-    private javax.swing.JTextField editPasswordTextField;
-    private javax.swing.JComboBox<String> editRoleComboBox;
-    private javax.swing.JTextField editUserNameTextField;
+    private javax.swing.JButton backButton;
+    private javax.swing.JTextField fullNameField;
     private javax.swing.JLabel fullNameLabel;
     private javax.swing.JPanel inputPanel;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JTextField passwordField;
     private javax.swing.JLabel passwordLabel;
+    private javax.swing.JComboBox<String> roleComboBox;
     private javax.swing.JLabel roleLabel;
+    private javax.swing.JButton updateButton;
     private javax.swing.JLabel userNameLabel;
+    private javax.swing.JTextField usernameField;
     // End of variables declaration//GEN-END:variables
 }

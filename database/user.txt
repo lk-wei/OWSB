@@ -7,4 +7,4 @@
 7|purchasemgr02|buysecure|Grace Lau|PM
 8|salesmgr02|rootadmin|Henry Goh|SM
 9|inventory02|stockpass|Ivy Chew|IM
-10|finance02|money123|Jason Yip|FM
+10|money|money123|Jason Yip|PM

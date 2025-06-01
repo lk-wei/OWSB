@@ -53,7 +53,7 @@ public class SupplierRepo extends MasterRepo<Supplier>{
         DefaultTableModel model = new DefaultTableModel(
             new Object[][]{},
             // These column names must match what's in your JFrame
-            new String[]{"Code", "Name", "Email", "Phone", ""}
+            new String[]{"", "Code", "Name", "Email", "Phone", ""}
         );
 
         List<Supplier> suppliers = getAll(); 
@@ -61,11 +61,12 @@ public class SupplierRepo extends MasterRepo<Supplier>{
 
         for (Supplier supplier : suppliers) {
             model.addRow(new Object[]{
+                supplier.getId(),
                 supplier.getSupplierCode(),
                 supplier.getSuppliername(),
                 supplier.getEmail(),
                 supplier.getPhone(),
-                ""                  // Empty column (action buttons?)
+                "View"   //  Action
             });
         }
         return model;
