@@ -1,4 +1,4 @@
-1|admin1|password123|Alice Tan|AD
+1|admin1|123|Alice Tan|AD
 2|purchase1|password123|Bob Lee|PM
 3|sales1|password123|Catherine Wong|SM
 4|inventory1|password123|Daniel Ng|IM

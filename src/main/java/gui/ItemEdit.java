@@ -10,9 +10,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-import repository.FinancialReportRepo;
 import repository.ItemRepo;
-import sample.*;
 
 /**
  *
