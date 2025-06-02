@@ -9,6 +9,7 @@ import component.ButtonRenderer;
 import domain.User;
 import function.FrontendPermissionManager;
 import function.NavigationManager;
+import function.UserSession;
 import gui.DailySaleNew;
 import gui.DailySaleView;
 import java.awt.Component;
@@ -28,11 +29,17 @@ public class DailySaleTable extends javax.swing.JFrame {
      * Creates new form DashBoardSample
      */
     
-    User currentUser = new User();
+    private User currentUser;
+    
+    // Delete this after done
+//    User currentUser = new User();
     
     public DailySaleTable() {
-
-        currentUser.setRole("SM");
+        
+        this.currentUser = UserSession.getInstance().getCurrentUser();
+        
+        // Delete this after done
+//        currentUser.setRole("SM");
 
         initComponents();
         

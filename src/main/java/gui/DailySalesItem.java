@@ -205,7 +205,7 @@ public class DailySalesItem extends javax.swing.JFrame {
 
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
         Item selectedItem = (Item) jComboBox1.getSelectedItem();
-        System.out.println(selectedItem.getId());
+//        System.out.println(selectedItem.getId());
         int qty = (Integer) quantitySpinner.getValue();
         
         // Check if quantity is greater than 0
@@ -213,7 +213,7 @@ public class DailySalesItem extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Quantity must be greater than zero.");
             return;
         }
-        System.out.println(qty);
+//        System.out.println(qty);
         mainframe.addToList(selectedItem.getId(), qty);
         try {
             mainframe.updateTable();

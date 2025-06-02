@@ -8,8 +8,10 @@ import component.ButtonEditor;
 import component.ButtonRenderer;
 import domain.Item;
 import domain.StockUpdate;
+import domain.User;
 import function.ManageStock;
 import function.NavigationManager;
+import function.UserSession;
 import gui.table.DailySaleTable;
 import gui.table.StockUpdateTable;
 import java.awt.Component;
@@ -20,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JCheckBox;
@@ -41,8 +44,12 @@ public class StockUpdateNew extends javax.swing.JFrame {
      */
     private DefaultTableModel tableModel;
     protected List<StockItem> itemList = new ArrayList<>();
+    private User currentUser;
     
     public StockUpdateNew() {
+        // get logged in user
+        currentUser = UserSession.getInstance().getCurrentUser();
+        
         initComponents();
         tableModel = (DefaultTableModel) itemTable.getModel(); // <--- CORRECTED LINE
         this.setLocationRelativeTo(null); //this will center your frame
@@ -55,17 +62,23 @@ public class StockUpdateNew extends javax.swing.JFrame {
         ItemRepo ir = new ItemRepo();
         
         for (StockItem item : itemList) {
-            System.out.println(item.itemId);
+//            System.out.println(item.itemId);
             Item i = ir.getById(item.itemId);
-            System.out.println(i.getItemName());
+//            System.out.println(i.getItemName());
             
-            tableModel.addRow(new Object[]{i.getItemName(), i.getItemName(), item.quantity, "Delete"});
+            tableModel.addRow(new Object[]{i.getId(), i.getItemCode(), i.getItemName(), item.quantity, "Delete"});
             
-            System.out.println("table updated");
-            System.out.println(i.getItemName());
+//            System.out.println("table updated");
+//            System.out.println(i.getItemName());
         }
         
-        TableColumn actionColumn = itemTable.getColumnModel().getColumn(3);
+        TableColumn idColumn = itemTable.getColumnModel().getColumn(0);
+        idColumn.setMinWidth(0);
+        idColumn.setMaxWidth(0);
+        idColumn.setPreferredWidth(0);
+        idColumn.setResizable(false);
+        
+        TableColumn actionColumn = itemTable.getColumnModel().getColumn(4);
         actionColumn.setCellRenderer(new ButtonRenderer());
         actionColumn.setCellEditor(new ButtonEditor(new JCheckBox()){
             @Override
@@ -73,9 +86,22 @@ public class StockUpdateNew extends javax.swing.JFrame {
                 Component c = super.getTableCellEditorComponent(table, value, isSelected, row, column);
                 
                 button.addActionListener(e -> {
-                    // add button function here
-                    String name = table.getValueAt(row, 1).toString();
-                    JOptionPane.showMessageDialog(table, "Editing: " + name);
+
+                    fireEditingStopped();
+
+                    Object rawId = table.getModel().getValueAt(row, 0);
+                 
+                    Long id = Long.valueOf(rawId.toString());                   
+                                        
+                    for(StockItem i : itemList){
+                        if(Objects.equals(i.itemId, id)){
+                            itemList.remove(i);
+//                            System.out.println("Removed id: "+ id );
+                            break;
+                        }
+                    }
+                    
+                    tableModel.removeRow(row);
                 });
                 return c;
             }
@@ -104,7 +130,6 @@ public class StockUpdateNew extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         inputPanel = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
         codeField = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         addItemBtn = new javax.swing.JButton();
@@ -113,7 +138,6 @@ public class StockUpdateNew extends javax.swing.JFrame {
         cancelButton = new javax.swing.JButton();
         createButton = new javax.swing.JButton();
         jLabel7 = new javax.swing.JLabel();
-        userIdField = new javax.swing.JTextField();
         dateField = new com.toedter.calendar.JDateChooser();
         jScrollPane1 = new javax.swing.JScrollPane();
         descriptionField = new javax.swing.JTextArea();
@@ -156,9 +180,6 @@ public class StockUpdateNew extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel2.setText("Stock Update Code");
 
-        jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel6.setText("Updated By");
-
         codeField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -178,13 +199,18 @@ public class StockUpdateNew extends javax.swing.JFrame {
 
         itemTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null}
+                {null, null, null, null, null}
             },
             new String [] {
-                "Item Code", "Name", "Quantity", "Action"
+                "", "Item Code", "Name", "Quantity", "Action"
             }
         ));
         itemTable.setShowGrid(true);
+        TableColumn idColumn = itemTable.getColumnModel().getColumn(0);
+        idColumn.setMinWidth(0);
+        idColumn.setMaxWidth(0);
+        idColumn.setPreferredWidth(0);
+        idColumn.setResizable(false);
         jScrollPane3.setViewportView(itemTable);
 
         cancelButton.setBackground(new java.awt.Color(255, 0, 51));
@@ -210,8 +236,6 @@ public class StockUpdateNew extends javax.swing.JFrame {
         jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel7.setText("Date");
 
-        userIdField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-
         descriptionField.setColumns(20);
         descriptionField.setRows(5);
         jScrollPane1.setViewportView(descriptionField);
@@ -234,27 +258,19 @@ public class StockUpdateNew extends javax.swing.JFrame {
                                 .addGap(18, 18, 18)
                                 .addComponent(createButton))
                             .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(inputPanelLayout.createSequentialGroup()
-                                .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addGroup(inputPanelLayout.createSequentialGroup()
-                                        .addComponent(jLabel3)
-                                        .addGap(278, 278, 278))
-                                    .addGroup(inputPanelLayout.createSequentialGroup()
-                                        .addComponent(jScrollPane1)
-                                        .addGap(50, 50, 50)))
-                                .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(userIdField)
-                                    .addGroup(inputPanelLayout.createSequentialGroup()
-                                        .addComponent(jLabel6)
-                                        .addGap(0, 0, Short.MAX_VALUE))))
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, inputPanelLayout.createSequentialGroup()
                                 .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(codeField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(50, 50, 50)
-                                .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel7)
-                                    .addComponent(dateField, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addComponent(jScrollPane1)
+                                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, inputPanelLayout.createSequentialGroup()
+                                            .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                                .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addComponent(codeField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addGap(50, 50, 50)
+                                            .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addComponent(jLabel7)
+                                                .addComponent(dateField, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                                 .addGap(0, 0, Short.MAX_VALUE)))
                         .addGap(75, 75, 75))))
         );
@@ -269,13 +285,9 @@ public class StockUpdateNew extends javax.swing.JFrame {
                     .addComponent(codeField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(dateField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
-                .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel6)
-                    .addComponent(jLabel3))
+                .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(userIdField, javax.swing.GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(addItemBtn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -284,7 +296,7 @@ public class StockUpdateNew extends javax.swing.JFrame {
                 .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(createButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(167, 167, 167))
+                .addGap(78, 78, 78))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -306,7 +318,7 @@ public class StockUpdateNew extends javax.swing.JFrame {
                 .addContainerGap(32, Short.MAX_VALUE))
         );
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, 780));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -330,9 +342,18 @@ public class StockUpdateNew extends javax.swing.JFrame {
         ItemRepo ir = new ItemRepo();
         
         try {
+            String stockUpdateCode = codeField.getText().trim();
+            if (stockUpdateCode.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Please enter stock update code.");
+                return;
+            }
+            
             Date selectedDate = dateField.getDate();
             // When merge, this field will automatically get the current user id
-            Long updatedById = 1L; // need to change to current user ID
+//            Long updatedById = 1L; // need delete and change to current user ID
+            
+            // change to current user ID
+            Long updatedById = currentUser.getId();
 
             // Check for null to avoid NullPointerException
             if (selectedDate == null) {
@@ -360,8 +381,7 @@ public class StockUpdateNew extends javax.swing.JFrame {
             for(StockItem i : itemList){
                 StockUpdate newStockUpdate = new StockUpdate(
                         null,
-                        codeField.getText(),
-//                        descriptionField.getText(),
+                        stockUpdateCode,
                         description,
                         i.itemId,
                         i.quantity,
@@ -379,11 +399,6 @@ public class StockUpdateNew extends javax.swing.JFrame {
             }
             
             JOptionPane.showMessageDialog(null, "Stock Update added successfully!");
-//            codeField.setText("");
-//            descriptionField.setText("");
-//            dateField.setDate(null);
-//            userIdField.setText("");
-//            NavigationManager.getInstance().goBack();
             NavigationManager.getInstance().openFrame(new StockUpdateTable(), this);
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(null, "Please enter valid numbers for stock and unit cost.");
@@ -479,7 +494,7 @@ public class StockUpdateNew extends javax.swing.JFrame {
     
     public void addToList(Long id, int quantity){
         itemList.add(new StockItem(id, quantity));
-        System.out.println("added to list" + id + "" +quantity);
+//        System.out.println("added to list" + id + "" +quantity);
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -494,13 +509,11 @@ public class StockUpdateNew extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTextField userIdField;
     // End of variables declaration//GEN-END:variables
 }

@@ -311,7 +311,7 @@ public class DailySaleView extends javax.swing.JFrame {
                 "Confirm Deletion",
                 JOptionPane.YES_NO_OPTION);
         
-        System.out.println(sale.getId());
+//        System.out.println(sale.getId());
         
         if (sale == null) {
             JOptionPane.showMessageDialog(this, "Sale record not found. It may have already been deleted.", "Not Found", JOptionPane.WARNING_MESSAGE);

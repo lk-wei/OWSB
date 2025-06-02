@@ -8,6 +8,7 @@ import component.ButtonEditor;
 import component.ButtonRenderer;
 import domain.DailySale;
 import domain.Item;
+import domain.User;
 import function.NavigationManager;
 import gui.table.DailySaleTable;
 import java.awt.Component;
@@ -17,8 +18,6 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JCheckBox;
@@ -29,6 +28,9 @@ import javax.swing.table.TableColumn;
 import repository.DailySaleRepo;
 import repository.ItemRepo;
 import function.ManageStock;
+import function.UserSession;
+import java.util.Objects;
+import repository.UserRepo;
 
 /**
  *
@@ -40,9 +42,13 @@ public class DailySaleNew extends javax.swing.JFrame {
      */
     private DefaultTableModel tableModel;
     protected List<SalesItem> itemList = new ArrayList<>();
+    private User currentUser;
     
     // In DailySaleNew.java constructor
     public DailySaleNew() {
+        // get logged in user
+        currentUser = UserSession.getInstance().getCurrentUser();
+        
         initComponents(); // Initializes itemTable
         tableModel = (DefaultTableModel) itemTable.getModel();
         this.setLocationRelativeTo(null);
@@ -56,17 +62,18 @@ public class DailySaleNew extends javax.swing.JFrame {
         ItemRepo ir = new ItemRepo();
 
         for (SalesItem item : itemList) {
-            System.out.println(item.itemId);
             Item i = ir.getById(item.itemId);
-            System.out.println(i.getItemName());
 
-            tableModel.addRow(new Object[]{i.getItemName(), i.getItemName(), item.quantity, "Delete"});
+            tableModel.addRow(new Object[]{i.getId(), i.getItemCode(), i.getItemName(), item.quantity, "Delete"});
             
-            System.out.println("table updated");
-            System.out.println(i.getItemName());
         }
+        TableColumn idColumn = itemTable.getColumnModel().getColumn(0);
+        idColumn.setMinWidth(0);
+        idColumn.setMaxWidth(0);
+        idColumn.setPreferredWidth(0);
+        idColumn.setResizable(false);
         
-        TableColumn actionColumn = itemTable.getColumnModel().getColumn(3);
+        TableColumn actionColumn = itemTable.getColumnModel().getColumn(4);
         actionColumn.setCellRenderer(new ButtonRenderer());
         actionColumn.setCellEditor(new ButtonEditor(new JCheckBox()) {
             @Override
@@ -75,8 +82,22 @@ public class DailySaleNew extends javax.swing.JFrame {
 
                 button.addActionListener(e -> {
                     // add button function here
-                    String name = table.getValueAt(row, 1).toString();
-                    JOptionPane.showMessageDialog(table, "Editing: " + name);
+
+                    fireEditingStopped();
+                    
+                    Object rawId = table.getModel().getValueAt(row, 0);
+                 
+                    Long id = Long.valueOf(rawId.toString());
+                                      
+                    for(SalesItem i : itemList){
+                        if(Objects.equals(i.itemId, id)){
+                            itemList.remove(i);
+//                            System.out.println("Removed id: "+ id );
+                            break;
+                        }
+                    }
+                    
+                    tableModel.removeRow(row);
                 });
                 return c;
             }
@@ -106,8 +127,6 @@ public class DailySaleNew extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         codeField = new javax.swing.JTextField();
-        jLabel3 = new javax.swing.JLabel();
-        descriptionField = new javax.swing.JTextField();
         addItemBtn = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
         itemTable = new javax.swing.JTable();
@@ -158,11 +177,6 @@ public class DailySaleNew extends javax.swing.JFrame {
 
         codeField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
-        jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel3.setText("Recorded By");
-
-        descriptionField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-
         addItemBtn.setText("+ Add");
         addItemBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -172,13 +186,18 @@ public class DailySaleNew extends javax.swing.JFrame {
 
         itemTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null}
+                {null, null, null, null, null}
             },
             new String [] {
-                "Item Code", "Name", "Quantity Sold", "Action"
+                "", "Item Code", "Name", "Quantity Sold", "Action"
             }
         ));
         itemTable.setShowGrid(true);
+        TableColumn idColumn = itemTable.getColumnModel().getColumn(0);
+        idColumn.setMinWidth(0);
+        idColumn.setMaxWidth(0);
+        idColumn.setPreferredWidth(0);
+        idColumn.setResizable(false);
         jScrollPane3.setViewportView(itemTable);
 
         cancelButton.setBackground(new java.awt.Color(255, 0, 51));
@@ -219,10 +238,6 @@ public class DailySaleNew extends javax.swing.JFrame {
                                 .addGap(18, 18, 18)
                                 .addComponent(createButton))
                             .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 650, Short.MAX_VALUE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, inputPanelLayout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addComponent(descriptionField, javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(inputPanelLayout.createSequentialGroup()
                                 .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel2)
@@ -243,21 +258,17 @@ public class DailySaleNew extends javax.swing.JFrame {
                 .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(inputPanelLayout.createSequentialGroup()
                         .addComponent(dateField, javax.swing.GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE)
-                        .addGap(44, 44, 44))
+                        .addGap(47, 47, 47))
                     .addGroup(inputPanelLayout.createSequentialGroup()
                         .addComponent(codeField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jLabel3)))
-                .addComponent(descriptionField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(addItemBtn)
-                .addGap(18, 18, 18)
+                        .addComponent(addItemBtn)))
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(createButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(315, 315, 315))
+                .addGap(542, 542, 542))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -296,11 +307,21 @@ public class DailySaleNew extends javax.swing.JFrame {
         DailySaleRepo dailySaleRepo = new DailySaleRepo();
         ManageStock manageStock = new ManageStock();
         ItemRepo ir = new ItemRepo();
+        ;
         
         try {
+            String saleCode = codeField.getText().trim();
+            if (saleCode.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Please enter sale code.");
+                return;
+            }
+                 
             Date selectedDate = dateField.getDate();
             // When merge, this field will automatically get the current user id
-            Long recordedById = 1L; // need to change to currnt user ID
+//            Long recordedById = 2L; // delete and need to change to currnt user ID
+            
+            // change to current user ID
+            Long recordedById = currentUser.getId();
 
             // Check for null to avoid NullPointerException
             if (selectedDate == null) {
@@ -320,7 +341,7 @@ public class DailySaleNew extends javax.swing.JFrame {
                 for (SalesItem i : itemList) {
                     DailySale newDailySale = new DailySale(
                         null,
-                        codeField.getText(),
+                        saleCode,
                         i.itemId,
                         saleDate,
                         i.quantity,
@@ -337,8 +358,6 @@ public class DailySaleNew extends javax.swing.JFrame {
                 }
 
             JOptionPane.showMessageDialog(null, "Daily Sale added successfully!");
-            //NavigationManager.getInstance().goBack();
-            //this.dispose();
             NavigationManager.getInstance().openFrame(new DailySaleTable(), this);
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(null, "Please enter valid numbers for stock and unit cost.");
@@ -418,7 +437,7 @@ public class DailySaleNew extends javax.swing.JFrame {
     
     public void addToList(Long id, int quantity){
         itemList.add(new SalesItem(id, quantity));
-        System.out.println("added to list" + id + "" +quantity);
+//        System.out.println("added to list" + id + "" +quantity);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -427,12 +446,10 @@ public class DailySaleNew extends javax.swing.JFrame {
     private javax.swing.JTextField codeField;
     private javax.swing.JButton createButton;
     private com.toedter.calendar.JDateChooser dateField;
-    private javax.swing.JTextField descriptionField;
     private javax.swing.JPanel inputPanel;
     private javax.swing.JTable itemTable;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane2;

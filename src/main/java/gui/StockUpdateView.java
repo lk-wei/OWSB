@@ -9,6 +9,7 @@ import domain.StockUpdate;
 import domain.User;
 import function.ManageStock;
 import function.NavigationManager;
+import function.UserSession;
 import gui.table.StockUpdateTable;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -31,8 +32,15 @@ public class StockUpdateView extends javax.swing.JFrame {
     private DefaultTableModel tableModel;
     private Long viewId;
     private StockUpdate update;
+//    private User currentUser;
     
     public StockUpdateView(Long viewId) {
+        // get logged user
+//        currentUser = UserSession.getInstance().getCurrentUser();
+//        currentUser = new User();
+//        currentUser.setRole("FM");
+        
+        
         this.viewId = viewId;
         
         initComponents();
@@ -343,7 +351,7 @@ public class StockUpdateView extends javax.swing.JFrame {
                 "Confirm Deletion",
                 JOptionPane.YES_NO_OPTION);
         
-        System.out.println(update.getId());
+//        System.out.println(update.getId());
         
         if (update == null) {
             JOptionPane.showMessageDialog(this, "Update record not found. It may have already been deleted.", "Not Found", JOptionPane.WARNING_MESSAGE);
@@ -357,7 +365,6 @@ public class StockUpdateView extends javax.swing.JFrame {
                 
                 sur.delete(update); 
                 JOptionPane.showMessageDialog(this, "Update record deleted successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
-//                NavigationManager.getInstance().goBack();
                 NavigationManager.getInstance().openFrame(new StockUpdateTable(), this);
             } catch (IOException ex) {
                 Logger.getLogger(StockUpdateView.class.getName()).log(Level.SEVERE, null, ex);
