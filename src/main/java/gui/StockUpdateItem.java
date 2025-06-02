@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import repository.ItemRepo;
 
 /**
@@ -204,9 +205,15 @@ public class StockUpdateItem extends javax.swing.JFrame {
 
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
         Item selectedItem = (Item) jComboBox1.getSelectedItem();
-        System.out.println(selectedItem.getId());
+//        System.out.println(selectedItem.getId());
         int qty = (Integer) quantitySpinner.getValue();
-        System.out.println(qty);
+        
+        // Check if quantity is greater than 0
+        if (qty <= 0) {
+            JOptionPane.showMessageDialog(null, "Quantity must be greater than zero.");
+            return;
+        }
+//        System.out.println(qty);
         mainframe.addToList(selectedItem.getId(), qty);
         try {
             mainframe.updateTable();

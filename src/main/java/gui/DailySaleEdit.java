@@ -304,7 +304,7 @@ public class DailySaleEdit extends javax.swing.JFrame {
             
             
             JOptionPane.showMessageDialog(null, "Sale Record Updated successfully!");
-            NavigationManager.getInstance().goBack();
+            NavigationManager.getInstance().openFrame(new DailySaleTable(), this);
         } catch (IOException ex) {
             Logger.getLogger(DailySaleEdit.class.getName()).log(Level.SEVERE, null, ex);
         }

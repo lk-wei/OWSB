@@ -9,6 +9,7 @@ import component.ButtonRenderer;
 import domain.User;
 import function.FrontendPermissionManager;
 import function.NavigationManager;
+import function.UserSession;
 import gui.StockUpdateNew;
 import gui.StockUpdateView;
 import java.awt.Component;
@@ -28,11 +29,17 @@ public class StockUpdateTable extends javax.swing.JFrame {
      * Creates new form DashBoardSample
      */
     
-    User currentUser = new User();
+    private User currentUser;
+    
+    // Delete this when done
+//    User currentUser = new User();
     
     public StockUpdateTable() {
         
-        currentUser.setRole("IM");
+        this.currentUser = UserSession.getInstance().getCurrentUser();
+        
+        // Delete this when done
+//        currentUser.setRole("IM");
         
         initComponents();
         
@@ -81,7 +88,7 @@ public class StockUpdateTable extends javax.swing.JFrame {
                     int modelRow = table.convertRowIndexToModel(row);
                     Object rawId = table.getModel().getValueAt(modelRow, 0);
                     Long id = Long.valueOf(rawId.toString());
-                    System.out.println("ID: " + id);
+//                    System.out.println("ID: " + id);
 
                     NavigationManager.getInstance().openFrame(new StockUpdateView(id), StockUpdateTable.this);
                 });

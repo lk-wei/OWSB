@@ -325,7 +325,7 @@ public class StockUpdateEdit extends javax.swing.JFrame {
             new StockUpdateRepo().update(toEdit);
             
             JOptionPane.showMessageDialog(null, "Update Record Updated successfully!");
-            NavigationManager.getInstance().goBack();
+            NavigationManager.getInstance().openFrame(new StockUpdateTable(), this);
         } catch (IOException ex) {
             Logger.getLogger(StockUpdateEdit.class.getName()).log(Level.SEVERE, null, ex);
         }
