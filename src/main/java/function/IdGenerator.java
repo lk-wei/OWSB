@@ -14,20 +14,25 @@ import java.util.List;
  * @author Kang Wei
  */
 public class IdGenerator {
-    private static int getLastId(Path filePath) throws IOException { // get last id for id generate
-        List<String> lines = Files.readAllLines(filePath);
-        if (lines.isEmpty()) {
-            System.out.println("no record exist");
-            return 0;
-        }
-        String lastLine = lines.get(lines.size() - 1);
-        String[] data = lastLine.split("\\|");
-        return Integer.parseInt(data[0]);
-    }
 
+    private static int getLastId(Path filePath) throws IOException {
+        List<String> lines = Files.readAllLines(filePath);
+
+        // Search backwards for the last non-empty line
+        for (int i = lines.size() - 1; i >= 0; i--) {
+            String line = lines.get(i).trim();
+            if (!line.isEmpty()) {
+                String[] data = line.split("\\|");
+                return Integer.parseInt(data[0]);
+            }
+        }
+
+        System.out.println("No record exists");
+        return 0;
+    }
+    
     //Use By zw
     public static Long getNewId(Path filePath) throws IOException {
         return Long.valueOf(getLastId(filePath) + 1);
     }
-
 }

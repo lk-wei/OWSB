@@ -103,18 +103,18 @@ public class FinancialReportNew extends javax.swing.JFrame {
         clearPanel = new javax.swing.JPanel();
         fetchPaymentBtn = new javax.swing.JButton();
         reportDateField = new com.toedter.calendar.JDateChooser();
+        totalField = new javax.swing.JTextField();
+        jLabel12 = new javax.swing.JLabel();
         cancelButton = new javax.swing.JButton();
         createButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setMinimumSize(new java.awt.Dimension(800, 600));
+        setMinimumSize(new java.awt.Dimension(800, 800));
         setResizable(false);
-        setSize(new java.awt.Dimension(800, 600));
-        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        setSize(new java.awt.Dimension(800, 800));
 
         jPanel1.setFocusable(false);
         jPanel1.setMaximumSize(null);
-        jPanel1.setMinimumSize(null);
         jPanel1.setPreferredSize(new java.awt.Dimension(800, 800));
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
@@ -319,9 +319,41 @@ public class FinancialReportNew extends javax.swing.JFrame {
                         .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(fetchPaymentBtn)
                             .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(6, 6, 6)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        totalField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+
+        jLabel12.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel12.setText("Total: RM");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 823, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addComponent(jLabel12)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(totalField, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(inputPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(inputPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 498, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(21, 21, 21)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(totalField, javax.swing.GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE)
+                    .addComponent(jLabel12)))
         );
 
         cancelButton.setBackground(new java.awt.Color(255, 0, 51));
@@ -339,36 +371,28 @@ public class FinancialReportNew extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 760, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(40, 40, 40))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addComponent(cancelButton)
                 .addGap(18, 18, 18)
                 .addComponent(createButton)
                 .addGap(75, 75, 75))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 823, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(inputPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 0, Short.MAX_VALUE))
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(inputPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 498, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(createButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(150, Short.MAX_VALUE))
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 660, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(40, 40, 40)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(createButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
-
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 760, 660));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -451,6 +475,13 @@ public class FinancialReportNew extends javax.swing.JFrame {
         } catch (IOException ex) {
             Logger.getLogger(FinancialReportNew.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        // Set total amount
+        Double totalAmount = 0.0;
+        for (Payment payment : filteredPayments) {
+            totalAmount += payment.getPaymentAmount();
+        }
+        totalField.setText(String.valueOf(totalAmount));
     }//GEN-LAST:event_fetchPaymentBtnActionPerformed
 
     private void createButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createButtonActionPerformed
@@ -459,8 +490,7 @@ public class FinancialReportNew extends javax.swing.JFrame {
             System.out.println("The payment list is empty or null.");
             JOptionPane.showMessageDialog(this, "Nothing To Report.", "No Data", JOptionPane.INFORMATION_MESSAGE);
         } else {
-            FinancialReportRepo frr = new FinancialReportRepo();
-            FinancialReportItemRepo frri = new FinancialReportItemRepo();
+            
             Date selectedDate = reportDateField.getDate();
             LocalDate reportDate = selectedDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
             
@@ -474,7 +504,7 @@ public class FinancialReportNew extends javax.swing.JFrame {
                     descriptionField.getText(),
                     null                           
                 );
-                frr.create(newFinancialReport);
+                new FinancialReportRepo().create(newFinancialReport);
                 
                 // get new created fr ID
                 Long newlyCreatedFinancialReportId = newFinancialReport.getId();
@@ -485,6 +515,7 @@ public class FinancialReportNew extends javax.swing.JFrame {
                 }
                 
                 // Add the financial report item
+                FinancialReportItemRepo frri = new FinancialReportItemRepo();
                 for (Payment payment : filteredPayments) {
                     frri.create(new FinancialReportItem(
                             null,
@@ -574,29 +605,45 @@ public class FinancialReportNew extends javax.swing.JFrame {
     private javax.swing.JPanel clearPanel;
     private javax.swing.JButton createButton;
     private com.toedter.calendar.JDateChooser customFromDate;
+    private com.toedter.calendar.JDateChooser customFromDate1;
     private com.toedter.calendar.JDateChooser customToDate;
+    private com.toedter.calendar.JDateChooser customToDate1;
     private javax.swing.JPanel datePanel;
+    private javax.swing.JPanel datePanel1;
     private javax.swing.JTextField descriptionField;
+    private javax.swing.JTextField descriptionField1;
     private javax.swing.JButton fetchPaymentBtn;
     private javax.swing.JComboBox<String> functionChooser;
+    private javax.swing.JComboBox<String> functionChooser1;
     private javax.swing.JPanel inputPanel;
+    private javax.swing.JPanel inputPanel1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private com.toedter.calendar.JMonthChooser jMonthChooser1;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTable jTable2;
+    private javax.swing.JTable jTable3;
     private com.toedter.calendar.JYearChooser jYearChooser1;
     private com.toedter.calendar.JYearChooser jYearChooser2;
     private javax.swing.JPanel monthPanel;
     private javax.swing.JTextField reportCodeField;
+    private javax.swing.JTextField reportCodeField1;
     private com.toedter.calendar.JDateChooser reportDateField;
+    private javax.swing.JTextField totalField;
     private javax.swing.JPanel yearPanel;
     // End of variables declaration//GEN-END:variables
 }

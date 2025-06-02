@@ -4,8 +4,19 @@
  */
 package gui.table;
 
+import component.ButtonEditor;
+import component.ButtonRenderer;
+import domain.User;
+import function.FrontendPermissionManager;
+import function.NavigationManager;
+import gui.UserNew;
+import gui.UserView;
+import java.awt.Component;
 import java.io.IOException;
+import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.table.TableColumn;
 import repository.UserRepo;
 
 /**
@@ -16,9 +27,21 @@ public class UserTable extends javax.swing.JFrame {
     /**
      * Creates new form DashBoardSample
      */
+    User currentUser = new User();
     
     public UserTable() {
+        
+        currentUser.setRole("AD");
         initComponents();
+        
+        FrontendPermissionManager.applyButtonPermissions(
+                currentUser,
+                "u",
+                newButton,      
+                null,      
+                null    
+        );
+        
         updateTable();
         this.setLocationRelativeTo(null); //this will center your frame
     }
@@ -32,6 +55,37 @@ public class UserTable extends javax.swing.JFrame {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
         }
+        
+        // Hide the ID column
+        TableColumn idColumn = userTable.getColumnModel().getColumn(0);
+        idColumn.setMinWidth(0);
+        idColumn.setMaxWidth(0);
+        idColumn.setPreferredWidth(0);
+        idColumn.setResizable(false);
+
+        int lastColumnIndex = userTable.getColumnModel().getColumnCount() - 1;
+        TableColumn actionColumn = userTable.getColumnModel().getColumn(lastColumnIndex);
+        actionColumn.setCellRenderer(new ButtonRenderer());
+        actionColumn.setCellEditor(new ButtonEditor(new JCheckBox()) {
+            @Override
+            public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+                Component c = super.getTableCellEditorComponent(table, value, isSelected, row, column);
+
+                for (java.awt.event.ActionListener al : button.getActionListeners()) {
+                    button.removeActionListener(al);
+                }
+
+                button.addActionListener(e -> {
+                    int modelRow = table.convertRowIndexToModel(row);
+                    Object rawId = table.getModel().getValueAt(modelRow, 0);
+                    Long id = Long.valueOf(rawId.toString());
+                    System.out.println("ID: " + id);
+
+                    NavigationManager.getInstance().openFrame(new UserView(id), UserTable.this);
+                });
+                return c;
+            }
+        });
     }
 
     /**
@@ -48,7 +102,7 @@ public class UserTable extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         userTable = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
+        newButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(1000, 800));
@@ -83,8 +137,13 @@ public class UserTable extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(userTable);
 
-        jButton1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jButton1.setText("Add");
+        newButton.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        newButton.setText("New +");
+        newButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                newButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -94,7 +153,7 @@ public class UserTable extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(50, 50, 50)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton1)
+                    .addComponent(newButton)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 900, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(50, Short.MAX_VALUE))
         );
@@ -103,7 +162,7 @@ public class UserTable extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(12, 12, 12)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(newButton, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 550, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 73, Short.MAX_VALUE))
@@ -113,6 +172,11 @@ public class UserTable extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void newButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newButtonActionPerformed
+        // TODO add your handling code here:
+        NavigationManager.getInstance().openFrame(new UserNew(), this);
+    }//GEN-LAST:event_newButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -157,11 +221,11 @@ public class UserTable extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private sample.NavBarSample navBarSample2;
+    private javax.swing.JButton newButton;
     private javax.swing.JTable userTable;
     // End of variables declaration//GEN-END:variables
 }

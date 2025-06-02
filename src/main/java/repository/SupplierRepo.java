@@ -4,6 +4,8 @@
  */
 package repository;
 
+import domain.Item;
+import domain.ItemSupplier;
 import domain.Supplier;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -53,7 +55,7 @@ public class SupplierRepo extends MasterRepo<Supplier>{
         DefaultTableModel model = new DefaultTableModel(
             new Object[][]{},
             // These column names must match what's in your JFrame
-            new String[]{"Code", "Name", "Email", "Phone", ""}
+            new String[]{"", "Code", "Name", "Email", "Phone", ""}
         );
 
         List<Supplier> suppliers = getAll(); 
@@ -61,11 +63,12 @@ public class SupplierRepo extends MasterRepo<Supplier>{
 
         for (Supplier supplier : suppliers) {
             model.addRow(new Object[]{
+                supplier.getId(),
                 supplier.getSupplierCode(),
                 supplier.getSuppliername(),
                 supplier.getEmail(),
                 supplier.getPhone(),
-                ""                  // Empty column (action buttons?)
+                "View"   //  Action
             });
         }
         return model;
@@ -99,6 +102,19 @@ public class SupplierRepo extends MasterRepo<Supplier>{
                 new ArrayList<>()
 
         );
+    }
+    
+    // load payments when needed
+    public List<Item> getItemsForSupplier(Long supplierId) throws IOException {
+        ItemSupplierRepo isr = new ItemSupplierRepo();
+        ItemRepo ir = new ItemRepo();
+//        Payment payment = new Payment();
+        List<Item> items = new ArrayList<>();
+        
+        for (ItemSupplier item : isr.getBySupplierId(supplierId)) {
+            items.add(ir.getById(item.getItemId()));
+        }
+        return items;
     }
 
 }

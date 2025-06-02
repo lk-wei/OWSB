@@ -28,16 +28,17 @@ public class StockReportRepo extends MasterRepo<StockReport> {
     }
     
     public DefaultTableModel getTableModel() throws IOException {
-        String[] columnNames = {"Report Number", "Description", "Date", "Created By", ""};
+        String[] columnNames = {"","Report Number", "Description", "Date", "Created By", ""};
         DefaultTableModel model = new DefaultTableModel(columnNames, 0);
         
         for (StockReport report : getAll()) {
             model.addRow(new Object[]{
+                report.getId(),
                 report.getReportCode(),
                 report.getDescription(),
                 report.getCreationDate(),
                 report.getCreatedBy(),
-                "" // Action 
+                "View" // Action 
             });
         }
         return model;
@@ -70,15 +71,15 @@ public class StockReportRepo extends MasterRepo<StockReport> {
     }
     
     // load payments when needed
-    public List<StockUpdate> getItemsForReport(Long stockReportId) throws IOException {
-        StockReportItemRepo sriRepo = new StockReportItemRepo();
-        StockUpdateRepo suRepo = new StockUpdateRepo();
-        List<StockUpdate> su = new ArrayList<>();
-        
-        
-        for (StockReportItem item : sriRepo.getByStockReportId(stockReportId)) {
-            su.add(suRepo.getByStockUpdateId(item.getStockUpdateId()));
-        }
-        return su;
-    }
+//    public List<StockUpdate> getItemsForReport(Long stockReportId) throws IOException {
+//        StockReportItemRepo sriRepo = new StockReportItemRepo();
+//        StockUpdateRepo suRepo = new StockUpdateRepo();
+//        List<StockUpdate> su = new ArrayList<>();
+//        
+//        
+//        for (StockReportItem item : sriRepo.getByStockReportId(stockReportId)) {
+//            su.add(suRepo.getByStockUpdateId(item.getStockUpdateId()));
+//        }
+//        return su;
+//    }
 }

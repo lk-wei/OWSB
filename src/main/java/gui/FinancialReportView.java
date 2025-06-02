@@ -5,8 +5,12 @@
 package gui;
 
 import domain.FinancialReport;
+import domain.FinancialReportItem;
 import domain.Payment;
+import domain.User;
+import function.FrontendPermissionManager;
 import function.NavigationManager;
+import function.UserSession;
 import java.io.IOException;
 import java.text.DateFormatSymbols;
 import java.time.LocalDate;
@@ -34,12 +38,28 @@ public class FinancialReportView extends javax.swing.JFrame {
     private DefaultTableModel tableModel;
     private Long viewId;
     private FinancialReport report; 
-    
+    private User currentUser;
+
     public FinancialReportView(Long viewId) {
+        // get lgged in user
+        currentUser = UserSession.getInstance().getCurrentUser();
+        currentUser = new User(); // delete when done
+        currentUser.setRole("IM"); // delete when done
+        
         this.viewId = viewId;
         
         initComponents();
         this.setLocationRelativeTo(null); //this will center your frame
+        
+        FrontendPermissionManager.applyButtonPermissions(
+                currentUser,
+                "fr",
+                null,      
+                editBtn,      
+                deleteBtn
+        );
+        
+        System.out.println(currentUser.getRole());
         
         setView();
     }
@@ -60,11 +80,6 @@ public class FinancialReportView extends javax.swing.JFrame {
             reportCodeField.setText(report.getReportCode());
             descriptionField.setText(report.getDescription());
             reportDateField.setText(String.valueOf(report.getCreationDate()));
-//            
-//            LocalDate localDate = report.getCreationDate(); // example date
-//            Date date = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
-//
-//            reportDateField.setDate(date);
             
             jTable2.setModel(frr.getTableModel(viewId));
         } catch (IllegalArgumentException e) {
@@ -310,9 +325,17 @@ public class FinancialReportView extends javax.swing.JFrame {
         }
 
         if (confirm == JOptionPane.YES_OPTION) {
-            FinancialReportRepo fr = new FinancialReportRepo();
             try {
-                fr.delete(report); 
+                new FinancialReportRepo().delete(report); 
+                
+                // Delete all items of the report
+                FinancialReportItemRepo frir = new FinancialReportItemRepo();
+                List<FinancialReportItem> items = frir.getByFinancialReportId(viewId);
+                
+                for(FinancialReportItem item : items){
+                    frir.delete(item);
+                }
+                
                 JOptionPane.showMessageDialog(this, "Financial report deleted successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
                 NavigationManager.getInstance().goBack();
             } catch (IOException ex) {
@@ -395,7 +418,7 @@ public class FinancialReportView extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-//                new FinancialReportView().setVisible(true);
+                new FinancialReportView(1L).setVisible(true);
             }
         });
     }

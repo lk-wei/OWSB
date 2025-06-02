@@ -37,6 +37,22 @@ public class PurchaseRequisitionItemRepo extends MasterRepo<PurchaseRequisitionI
         }
         return null;
     }
+    
+    public List<PurchaseRequisitionItem> getItemsByRequisitionId(long requisitionId) throws IOException {
+        List<String> lines = Files.readAllLines(filePath);
+        List<PurchaseRequisitionItem> items = new ArrayList<>();
+
+        for (String line : lines) {
+            PurchaseRequisitionItem item = stringToObject(line);
+            if (item.getPurchaseRequisitionId() == requisitionId) {
+                items.add(item);  // Add the item if it belongs to the correct PurchaseRequisition
+            }
+        }
+
+        return items;  // Return the list of items for this PurchaseRequisition
+    }
+
+    
 
     // Convert object to string for file storage
     @Override
@@ -54,7 +70,7 @@ public class PurchaseRequisitionItemRepo extends MasterRepo<PurchaseRequisitionI
     // Convert string to object
     @Override
     protected PurchaseRequisitionItem stringToObject(String line) {
-        String[] parts = line.split("|");
+        String[] parts = line.split("\\|");
         PurchaseRequisitionItem item = new PurchaseRequisitionItem();
         item.setId(Long.valueOf(parts[0]));
         item.setPurchaseRequisitionId(Long.valueOf(parts[1]));

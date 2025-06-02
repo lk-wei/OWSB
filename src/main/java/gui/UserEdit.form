@@ -49,9 +49,9 @@
               <Component id="jLabel1" alignment="0" max="32767" attributes="0"/>
               <Group type="102" alignment="1" attributes="0">
                   <EmptySpace max="32767" attributes="0"/>
-                  <Component id="jButton1" min="-2" max="-2" attributes="0"/>
+                  <Component id="backButton" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
-                  <Component id="jButton2" min="-2" max="-2" attributes="0"/>
+                  <Component id="updateButton" min="-2" pref="95" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="75" max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -64,8 +64,8 @@
                   <Component id="inputPanel" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="jButton1" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
-                      <Component id="jButton2" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
+                      <Component id="backButton" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
+                      <Component id="updateButton" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace pref="30" max="32767" attributes="0"/>
               </Group>
@@ -91,19 +91,19 @@
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="75" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="editUserNameTextField" alignment="0" min="-2" pref="300" max="-2" attributes="0"/>
+                          <Component id="usernameField" alignment="0" min="-2" pref="300" max="-2" attributes="0"/>
                           <Component id="userNameLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="passwordLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="editPasswordTextField" alignment="0" min="-2" pref="300" max="-2" attributes="0"/>
+                          <Component id="passwordField" alignment="0" min="-2" pref="300" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace pref="50" max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                              <Component id="editFullNameTextField" alignment="0" pref="300" max="32767" attributes="0"/>
+                              <Component id="fullNameField" alignment="0" pref="300" max="32767" attributes="0"/>
                               <Component id="fullNameLabel" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                              <Component id="editRoleComboBox" pref="300" max="32767" attributes="0"/>
+                              <Component id="roleComboBox" pref="300" max="32767" attributes="0"/>
                               <Component id="roleLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
@@ -118,12 +118,12 @@
                           <Group type="102" attributes="0">
                               <Component id="userNameLabel" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="editUserNameTextField" min="-2" pref="35" max="-2" attributes="0"/>
+                              <Component id="usernameField" min="-2" pref="35" max="-2" attributes="0"/>
                           </Group>
                           <Group type="102" attributes="0">
                               <Component id="fullNameLabel" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="editFullNameTextField" min="-2" pref="35" max="-2" attributes="0"/>
+                              <Component id="fullNameField" min="-2" pref="35" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
@@ -131,13 +131,13 @@
                           <Group type="102" attributes="0">
                               <Component id="passwordLabel" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="editPasswordTextField" min="-2" pref="35" max="-2" attributes="0"/>
+                              <Component id="passwordField" min="-2" pref="35" max="-2" attributes="0"/>
                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                           </Group>
                           <Group type="102" attributes="0">
                               <Component id="roleLabel" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="editRoleComboBox" max="32767" attributes="0"/>
+                              <Component id="roleComboBox" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace min="-2" pref="75" max="-2" attributes="0"/>
@@ -162,14 +162,14 @@
                 <Property name="text" type="java.lang.String" value="Password"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JTextField" name="editUserNameTextField">
+            <Component class="javax.swing.JTextField" name="usernameField">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Segoe UI" size="14" style="0"/>
                 </Property>
               </Properties>
             </Component>
-            <Component class="javax.swing.JTextField" name="editPasswordTextField">
+            <Component class="javax.swing.JTextField" name="passwordField">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Segoe UI" size="14" style="0"/>
@@ -184,7 +184,7 @@
                 <Property name="text" type="java.lang.String" value="Full Name"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JTextField" name="editFullNameTextField">
+            <Component class="javax.swing.JTextField" name="fullNameField">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Segoe UI" size="14" style="0"/>
@@ -199,7 +199,7 @@
                 <Property name="text" type="java.lang.String" value="Role"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JComboBox" name="editRoleComboBox">
+            <Component class="javax.swing.JComboBox" name="roleComboBox">
               <Properties>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                   <StringArray count="5">
@@ -218,7 +218,7 @@
             </Component>
           </SubComponents>
         </Container>
-        <Component class="javax.swing.JButton" name="jButton1">
+        <Component class="javax.swing.JButton" name="backButton">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="33" green="0" red="ff" type="rgb"/>
@@ -229,10 +229,13 @@
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="ff" green="ff" red="ff" type="rgb"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Cancel"/>
+            <Property name="text" type="java.lang.String" value="Back"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="backButtonActionPerformed"/>
+          </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="jButton2">
+        <Component class="javax.swing.JButton" name="updateButton">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="0" green="cc" red="66" type="rgb"/>
@@ -243,7 +246,7 @@
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="ff" green="ff" red="ff" type="rgb"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Done"/>
+            <Property name="text" type="java.lang.String" value="Update"/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[83, 32]"/>
             </Property>
@@ -254,6 +257,9 @@
               <Dimension value="[83, 32]"/>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="updateButtonActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>

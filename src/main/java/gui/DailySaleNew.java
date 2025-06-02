@@ -44,7 +44,7 @@ public class DailySaleNew extends javax.swing.JFrame {
     // In DailySaleNew.java constructor
     public DailySaleNew() {
         initComponents(); // Initializes itemTable
-        tableModel = (DefaultTableModel) itemTable.getModel(); // <--- CORRECTED LINE
+        tableModel = (DefaultTableModel) itemTable.getModel();
         this.setLocationRelativeTo(null);
     }
     

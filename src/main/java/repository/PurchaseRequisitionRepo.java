@@ -39,7 +39,7 @@ public class PurchaseRequisitionRepo extends MasterRepo<PurchaseRequisition>{
         }
         return null;
     }
-    
+        
     public DefaultTableModel getTableModel() throws IOException {
         DefaultTableModel model = new DefaultTableModel(
             new Object[][]{},
@@ -58,10 +58,16 @@ public class PurchaseRequisitionRepo extends MasterRepo<PurchaseRequisition>{
         List<PurchaseRequisition> reports = getAll();
         SupplierRepo supplierRepo = new SupplierRepo();
         UserRepo userRepo = new UserRepo();
+        PurchaseRequisitionItemRepo itemRepo = new PurchaseRequisitionItemRepo();  // Add this to load items
 
         for (PurchaseRequisition report : reports) {
-            for (PurchaseRequisitionItem item : report.getItem()) {
-                User user = userRepo.getUserById(report.getId());
+            // Fetch and assign items to the current PurchaseRequisition
+            List<PurchaseRequisitionItem> items = itemRepo.getItemsByRequisitionId(report.getId());  // Method to fetch items for this PR
+            report.setItem(items);  // Set the items in the PurchaseRequisition object
+
+            // Now that the items are set, we can process them
+            for (PurchaseRequisitionItem item : items) {
+                User user = userRepo.getUserById(report.getRequestedById());
                 Supplier supplierObj = supplierRepo.getSupplierById(item.getSupplierId());
 
                 model.addRow(new Object[]{
@@ -70,7 +76,7 @@ public class PurchaseRequisitionRepo extends MasterRepo<PurchaseRequisition>{
                     report.getRequestDate(),
                     report.getRequiredDate(),
                     supplierObj.getSupplierCode(),
-                    supplierObj.getSuppliername(),// or supplier name
+                    supplierObj.getSuppliername(), // or supplier name
                     report.getStatus(),
                     ""
                 });
@@ -78,8 +84,9 @@ public class PurchaseRequisitionRepo extends MasterRepo<PurchaseRequisition>{
         }
 
         return model;
-    }
+    }    
 
+ 
     // Convert object to string for file storage
     @Override
     protected String objectToString(PurchaseRequisition pr) {
@@ -95,19 +102,22 @@ public class PurchaseRequisitionRepo extends MasterRepo<PurchaseRequisition>{
     // Convert string to object
     @Override
     protected PurchaseRequisition stringToObject(String line) {
-        String[] parts = line.split(",");
+        String[] parts = line.split("\\|");
         PurchaseRequisition pr = new PurchaseRequisition();
         PurchaseRequisitionItemRepo prir = new PurchaseRequisitionItemRepo();
+
         pr.setId(Long.parseLong(parts[0]));
         pr.setPurchaseRequisitionCode(parts[1]);
         pr.setRequestedById(Long.valueOf(parts[2]));
         pr.setRequestDate(LocalDate.parse(parts[3]));
         pr.setRequiredDate(LocalDate.parse(parts[4]));
         pr.setStatus(String.valueOf(parts[5]));
+
+        // Print statement to check data loading
+        System.out.println("Loading Purchase Requisition: " + pr.getId() + ", Items: " + pr.getItem());
+
         return pr;
-        
     }
-    
     
     
 }
