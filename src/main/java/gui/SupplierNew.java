@@ -365,7 +365,7 @@ public class SupplierNew extends javax.swing.JFrame implements ItemSelectionList
         try {
             new SupplierItem(this, this).setVisible(true);
         } catch (IOException ex) {
-            Logger.getLogger(DailySaleNew.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SupplierNew.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_addItemBtnActionPerformed
 

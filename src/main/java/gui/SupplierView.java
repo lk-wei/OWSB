@@ -64,7 +64,7 @@ public class SupplierView extends javax.swing.JFrame {
         } catch (IllegalArgumentException e) {
             JOptionPane.showMessageDialog(this, e.getMessage(), "Input Error", JOptionPane.ERROR_MESSAGE);
         } catch (IOException ex) {
-            Logger.getLogger(FinancialReportNew.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SupplierNew.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         // Hide the ID column
