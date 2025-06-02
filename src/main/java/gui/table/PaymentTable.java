@@ -8,9 +8,12 @@ import component.ButtonEditor;
 import component.ButtonRenderer;
 import function.NavigationManager;
 import gui.FinancialReportView;
+import gui.PaymentNew;
 import gui.PaymentView;
 import java.awt.Component;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -67,7 +70,11 @@ public class PaymentTable extends javax.swing.JFrame {
                     Long id = Long.valueOf(rawId.toString());
                     System.out.println("ID: " + id);
 
-                    NavigationManager.getInstance().openFrame(new PaymentView(id), PaymentTable.this);
+                    try {
+                        NavigationManager.getInstance().openFrame(new PaymentView(id), PaymentTable.this);
+                    } catch (IOException ex) {
+                        Logger.getLogger(PaymentTable.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 });
                 return c;
             }
@@ -89,12 +96,17 @@ public class PaymentTable extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
+        newBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(1000, 800));
         setResizable(false);
         setSize(new java.awt.Dimension(1000, 800));
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowActivated(java.awt.event.WindowEvent evt) {
+                formWindowActivated(evt);
+            }
+        });
         getContentPane().add(navBarSample2, java.awt.BorderLayout.NORTH);
 
         jPanel2.setMinimumSize(new java.awt.Dimension(1000, 0));
@@ -116,8 +128,13 @@ public class PaymentTable extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(jTable1);
 
-        jButton1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jButton1.setText("Button");
+        newBtn.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        newBtn.setText("+ New");
+        newBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                newBtnActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -127,7 +144,7 @@ public class PaymentTable extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(50, 50, 50)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton1)
+                    .addComponent(newBtn)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 900, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(50, Short.MAX_VALUE))
         );
@@ -136,7 +153,7 @@ public class PaymentTable extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(12, 12, 12)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(newBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 550, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 73, Short.MAX_VALUE))
@@ -146,6 +163,20 @@ public class PaymentTable extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
+        // TODO add your handling code here:
+        updateTable();
+    }//GEN-LAST:event_formWindowActivated
+
+    private void newBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newBtnActionPerformed
+        try {
+            // TODO add your handling code here:
+            NavigationManager.getInstance().openFrame(new PaymentNew(), this);
+        } catch (IOException ex) {
+            Logger.getLogger(PaymentTable.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_newBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -190,11 +221,11 @@ public class PaymentTable extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     private sample.NavBarSample navBarSample2;
+    private javax.swing.JButton newBtn;
     // End of variables declaration//GEN-END:variables
 }

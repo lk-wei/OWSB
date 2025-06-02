@@ -408,7 +408,7 @@ public class StockReportNew extends javax.swing.JFrame {
                     Long id = Long.valueOf(rawId.toString());
                     System.out.println("ID: " + id);
 
-                    NavigationManager.getInstance().openFrame(new ItemView(), StockReportNew.this);
+                    NavigationManager.getInstance().openFrame(new ItemView(id), StockReportNew.this);
                 });
                 return c;
             }

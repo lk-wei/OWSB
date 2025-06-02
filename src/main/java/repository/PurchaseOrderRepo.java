@@ -38,6 +38,19 @@ public class PurchaseOrderRepo extends MasterRepo<PurchaseOrder>{
         return null;
     }
     
+    public List<PurchaseOrder> getBySupplierId(Long id) throws IOException {
+        List<String> lines = Files.readAllLines(filePath);
+        List<PurchaseOrder> poList = new ArrayList<>();
+
+        for (String line : lines) {
+            PurchaseOrder po = stringToObject(line);
+            if(Objects.equals(po.getSupplierId(), id)){
+                poList.add(po);
+            }
+        }
+        return poList;
+    }
+    
     public DefaultTableModel getTableModel() throws IOException {
     DefaultTableModel model = new DefaultTableModel(
         new Object[][]{},

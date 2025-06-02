@@ -360,6 +360,11 @@ public class SupplierNew extends javax.swing.JFrame implements ItemSelectionList
         }
     }//GEN-LAST:event_createButtonActionPerformed
 
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+        // TODO add your handling code here:
+        NavigationManager.getInstance().goBack();
+    }//GEN-LAST:event_cancelButtonActionPerformed
+
     private void addItemBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addItemBtnActionPerformed
         // TODO add your handling code here:
         try {
@@ -368,11 +373,6 @@ public class SupplierNew extends javax.swing.JFrame implements ItemSelectionList
             Logger.getLogger(DailySaleNew.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_addItemBtnActionPerformed
-
-    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
-        // TODO add your handling code here:
-        NavigationManager.getInstance().goBack();
-    }//GEN-LAST:event_cancelButtonActionPerformed
 
     @Override
     public void onItemSelected(Item item) {

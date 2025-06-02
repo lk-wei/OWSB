@@ -70,4 +70,9 @@ public class Supplier implements Identifiable<Long>{
     public void setPhone(String phone) {
         this.phone = phone;
     }
+    
+    @Override
+    public String toString() {
+        return suppliername;
+    }
 }

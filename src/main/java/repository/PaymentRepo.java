@@ -179,11 +179,11 @@ public class PaymentRepo extends MasterRepo<Payment> {
         return new Payment(
                 Long.valueOf(parts[0]), // id
                 parts[1], // paymentCode
-                
-                parts[2], 
-                LocalDate.parse(parts[3]), // paymentDate
-                Double.parseDouble(parts[4]), // totalAmount
-                Double.parseDouble(parts[5]) // paymentAmount
+                Long.valueOf(parts[2]),
+                parts[3], 
+                LocalDate.parse(parts[4]), // paymentDate
+                Double.parseDouble(parts[5]), // totalAmount
+                Double.parseDouble(parts[6]) // paymentAmount
         );
     }
 }

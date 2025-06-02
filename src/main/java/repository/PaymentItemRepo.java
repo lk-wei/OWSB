@@ -42,75 +42,58 @@ public class PaymentItemRepo extends MasterRepo<PaymentItem> {
     }
     // custom method
 
-    public PaymentItem getPaymentId(String paymentItemPO) throws IOException {
-        List<String> lines = Files.readAllLines(filePath);
-
-        for (String line : lines) {
-            PaymentItem pi = stringToObject(line);
-
-            if (pi.getPaymentId().equals(paymentItemPO)) {
-                return pi;
-            }
-        }
-        return null;
-    }
-
-
     public DefaultTableModel getTableModel(Long id) throws IOException {
-        String[] columnNames = {"","Payment Code", "Supplier Name", "Date", "Total Amount","Payment Amount", "Action"};
+        String[] columnNames = {"","PO Code", "Date", "Total Amount"};
         DefaultTableModel model = new DefaultTableModel(columnNames, 0);
 
         for (PaymentItem item : getByPaymentId(id)) {
             Payment py = new PaymentRepo().getPaymentById(item.getPaymentId());
-            PurchaseOrder po = new PurchaseOrderRepo().getOrderById(item.getPurchaseOrderId());
-            Supplier s = new SupplierRepo().getSupplierById(po.getSupplierId());
+            PurchaseOrder po = new PurchaseOrderRepo().getById(item.getPurchaseOrderId());
+            Supplier s = new SupplierRepo().getSupplierById(py.getSupplierId());
 
             model.addRow(new Object[]{
-                "",
-                py.getPaymentCode(),
-                s.getSuppliername(),
-                py.getPaymentDate().toString(),
-                py.getTotalAmount(),
-                py.getPaymentAmount(),
-                "" // Action 
+                item.getPurchaseOrderId(),
+                item.getPurchaseOrderCode(),
+                po.getOrderDate().toString(),
+                py.getTotalAmount()
             });
         }
         return model;
     }
 
-    public DefaultTableModel getTableModel2(List<Payment> filteredPaymentList) throws IOException {
-        DefaultTableModel model = new DefaultTableModel(
-                new Object[][]{},
-                // These column names must match what's in your JFrame
-                new String[]{"Payment Code", "Supplier Name", "Date", "Amount", ""}
-        );
-
-        if (filteredPaymentList != null) {
-            SupplierRepo supplierRepo = new SupplierRepo(); // Instance to fetch supplier details
-            for (Payment payment : filteredPaymentList) {    // Use the passed-in list
-                Supplier supp = (payment.getSupplierId() != null)
-                        ? supplierRepo.getSupplierById(payment.getSupplierId()) : null;
-                String supplierName = (supp != null) ? supp.getSuppliername() : "N/A";
-
-                model.addRow(new Object[]{
-                    payment.getPaymentCode(),
-                    supplierName,
-                    payment.getPaymentDate().toString(), // Or format the date as desired
-                    payment.getPaymentAmount(),
-                    Boolean.TRUE // Default "Include?" to true
-                });
-            }
-        }
-        return model;
-    }
+//    public DefaultTableModel getTableModel2(List<Payment> filteredPaymentList) throws IOException {
+//        DefaultTableModel model = new DefaultTableModel(
+//                new Object[][]{},
+//                // These column names must match what's in your JFrame
+//                new String[]{"Payment Code", "Supplier Name", "Date", "Amount", ""}
+//        );
+//
+//        if (filteredPaymentList != null) {
+//            SupplierRepo supplierRepo = new SupplierRepo(); // Instance to fetch supplier details
+//            for (Payment payment : filteredPaymentList) {    // Use the passed-in list
+//                Supplier supp = (payment.getSupplierId() != null)
+//                        ? supplierRepo.getSupplierById(payment.getSupplierId()) : null;
+//                String supplierName = (supp != null) ? supp.getSuppliername() : "N/A";
+//
+//                model.addRow(new Object[]{
+//                    payment.getPaymentCode(),
+//                    supplierName,
+//                    payment.getPaymentDate().toString(), // Or format the date as desired
+//                    payment.getPaymentAmount(),
+//                    Boolean.TRUE // Default "Include?" to true
+//                });
+//            }
+//        }
+//        return model;
+//    }
 
     // Converts User object to pipe-delimited string
     @Override
     protected String objectToString(PaymentItem pi) {
 
-        return String.join(",",
+        return String.join("|",
                 String.valueOf(pi.getId()),
-                String.valueOf(pi.getId()),
+                String.valueOf(pi.getPaymentId()),
                 pi.getPaymentCode(),
                 String.valueOf(pi.getId()),
                 String.valueOf(pi.getTotalAmount()),
@@ -124,13 +107,12 @@ public class PaymentItemRepo extends MasterRepo<PaymentItem> {
         String[] parts = line.split("\\|", -1);
         
         PaymentItem pi = new PaymentItem();
-        PurchaseOrder po = new PurchaseOrder();
 
-        pi.setId(Long.parseLong(parts[0]));
-        pi.setId(Long.parseLong(parts[1]));
+        pi.setId(Long.valueOf(parts[0]));
+        pi.setPaymentId(Long.valueOf(parts[1]));
         pi.setPaymentCode(String.valueOf(parts[2]));
-        pi.setId(Long.parseLong(parts[3]));
-        pi.setTotalAmount(Double.valueOf(parts[4]));
+        pi.setPurchaseOrderId(Long.valueOf(parts[3]));
+        pi.setTotalAmount(Double.parseDouble(parts[4]));
         pi.setPurchaseOrderCode(String.valueOf(parts[5]));
         return pi;
 

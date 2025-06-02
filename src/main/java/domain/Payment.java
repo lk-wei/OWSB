@@ -5,7 +5,6 @@
 package domain;
 
 import java.time.LocalDate;
-import javax.swing.table.TableModel;
 
 /**
  *
@@ -19,10 +18,8 @@ public class Payment implements Identifiable<Long>{
     private LocalDate paymentDate; 
     private double totalAmount;
     private double paymentAmount;
-    
-   
 
-    public Payment(Long id, String paymentCode, String supplierName, LocalDate paymentDate, double totalAmount, double paymentAmount) {
+    public Payment(Long id, String paymentCode, Long supplierId, String supplierName, LocalDate paymentDate, double totalAmount, double paymentAmount) {
         this.id = id;
         this.paymentCode = paymentCode;
         this.supplierId = supplierId;

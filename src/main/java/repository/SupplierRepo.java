@@ -89,8 +89,6 @@ public class SupplierRepo extends MasterRepo<Supplier>{
 
     @Override
     protected Supplier stringToObject(String line) {
-        
-        ItemSupplierRepo itemSupplierRepo = new ItemSupplierRepo();
         String[] parts = line.split("\\|", -1); // -1 keeps empty values
         
         return new Supplier(
