@@ -4,21 +4,54 @@
  */
 package gui;
 
+import domain.Item;
+import function.NavigationManager;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import repository.FinancialReportRepo;
+import repository.ItemRepo;
+import sample.*;
+
 /**
  *
  * @author zuwei
  */
 public class ItemEdit extends javax.swing.JFrame {
+
+    private Long viewId;
+    private Item item;
+    private Item toEdit;
+
     /**
      * Creates new form DashBoardSample
      */
-    
-    public ItemEdit() {
+    public ItemEdit(Long viewId) {
+        this.viewId = viewId;
         initComponents();
         this.setLocationRelativeTo(null); //this will center your frame
+        setView();
     }
-    
+
     // Custom Methods
+    private void setView() {
+        ItemRepo Ir = new ItemRepo();
+
+        try {
+            toEdit = Ir.getById(viewId);
+            ItemNameField.setText(toEdit.getItemName());
+            ItemCodeField.setText(toEdit.getItemCode());
+            CurrentStockField.setText(String.valueOf(toEdit.getCurrentStock())); // For int or double, use String.valueOf()
+            MinStockField.setText(String.valueOf(toEdit.getMinStock()));
+            UnitCostField.setText(String.valueOf(toEdit.getUnitCost())); // Or Double.toString(item.getUnitCost()) for double
+
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Input Error", JOptionPane.ERROR_MESSAGE);
+        } catch (IOException ex) {
+            Logger.getLogger(FinancialReportNew.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -34,14 +67,14 @@ public class ItemEdit extends javax.swing.JFrame {
         inputPanel = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        jTextField3 = new javax.swing.JTextField();
-        jTextField4 = new javax.swing.JTextField();
+        ItemCodeField = new javax.swing.JTextField();
+        ItemNameField = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        jTextField5 = new javax.swing.JTextField();
+        MinStockField = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
-        jTextField6 = new javax.swing.JTextField();
-        jTextField8 = new javax.swing.JTextField();
+        UnitCostField = new javax.swing.JTextField();
+        CurrentStockField = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
 
@@ -49,6 +82,11 @@ public class ItemEdit extends javax.swing.JFrame {
         setMinimumSize(new java.awt.Dimension(600, 500));
         setResizable(false);
         setSize(new java.awt.Dimension(800, 600));
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowActivated(java.awt.event.WindowEvent evt) {
+                formWindowActivated(evt);
+            }
+        });
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -61,14 +99,16 @@ public class ItemEdit extends javax.swing.JFrame {
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel6.setText("Item Name");
 
-        jTextField3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jTextField3.addActionListener(new java.awt.event.ActionListener() {
+        ItemCodeField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        ItemCodeField.setEnabled(false);
+        ItemCodeField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField3ActionPerformed(evt);
+                ItemCodeFieldActionPerformed(evt);
             }
         });
 
-        jTextField4.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        ItemNameField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        ItemNameField.setEnabled(false);
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel3.setText("Current Stock");
@@ -76,14 +116,14 @@ public class ItemEdit extends javax.swing.JFrame {
         jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel5.setText("Unit Cost");
 
-        jTextField5.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        MinStockField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel7.setText("Min Stock");
 
-        jTextField6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        UnitCostField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
-        jTextField8.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        CurrentStockField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         javax.swing.GroupLayout inputPanelLayout = new javax.swing.GroupLayout(inputPanel);
         inputPanel.setLayout(inputPanelLayout);
@@ -92,21 +132,21 @@ public class ItemEdit extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, inputPanelLayout.createSequentialGroup()
                 .addGap(78, 78, 78)
                 .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jTextField4)
+                    .addComponent(ItemNameField)
                     .addGroup(inputPanelLayout.createSequentialGroup()
                         .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                 .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jTextField3, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
+                                .addComponent(ItemCodeField, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
                                 .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jTextField5, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE))
+                                .addComponent(MinStockField, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE))
                             .addComponent(jLabel6))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 67, Short.MAX_VALUE)
                         .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jLabel3)
                             .addComponent(jLabel5)
-                            .addComponent(jTextField6, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
-                            .addComponent(jTextField8))))
+                            .addComponent(UnitCostField, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
+                            .addComponent(CurrentStockField))))
                 .addGap(75, 75, 75))
         );
         inputPanelLayout.setVerticalGroup(
@@ -114,23 +154,23 @@ public class ItemEdit extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, inputPanelLayout.createSequentialGroup()
                 .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(ItemNameField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(jLabel3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(ItemCodeField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(CurrentStockField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(jLabel7))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(MinStockField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(UnitCostField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(53, Short.MAX_VALUE))
         );
 
@@ -138,6 +178,11 @@ public class ItemEdit extends javax.swing.JFrame {
         jButton1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jButton1.setForeground(new java.awt.Color(255, 255, 255));
         jButton1.setText("Cancel");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jButton2.setBackground(new java.awt.Color(102, 204, 0));
         jButton2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
@@ -189,13 +234,37 @@ public class ItemEdit extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
+    private void ItemCodeFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ItemCodeFieldActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField3ActionPerformed
+    }//GEN-LAST:event_ItemCodeFieldActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
+        int currentStock = Integer.parseInt(CurrentStockField.getText());
+        int minStock = Integer.parseInt(MinStockField.getText());
+        double unitCost = Double.parseDouble(UnitCostField.getText());
+
+        toEdit.setCurrentStock(currentStock);
+        toEdit.setMinStock(minStock);
+        toEdit.setUnitCost(unitCost);
+
+        try {
+            new ItemRepo().update(toEdit);
+
+            JOptionPane.showMessageDialog(null, "Item Updated successfully!");
+            NavigationManager.getInstance().goBack();
+        } catch (IOException ex) {
+            Logger.getLogger(FinancialReportEdit.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        NavigationManager.getInstance().goBack();        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
+            // TODO add your handling code here:
+    }//GEN-LAST:event_formWindowActivated
 
     /**
      * @param args the command line arguments
@@ -258,12 +327,17 @@ public class ItemEdit extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new ItemEdit().setVisible(true);
+                new ItemEdit(1L).setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField CurrentStockField;
+    private javax.swing.JTextField ItemCodeField;
+    private javax.swing.JTextField ItemNameField;
+    private javax.swing.JTextField MinStockField;
+    private javax.swing.JTextField UnitCostField;
     private javax.swing.JPanel inputPanel;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
@@ -274,10 +348,5 @@ public class ItemEdit extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
-    private javax.swing.JTextField jTextField6;
-    private javax.swing.JTextField jTextField8;
     // End of variables declaration//GEN-END:variables
 }
