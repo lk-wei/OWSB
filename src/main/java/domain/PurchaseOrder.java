@@ -14,11 +14,11 @@ import java.util.List;
  */
 public class PurchaseOrder implements Identifiable<Long>{
     private Long id; // PK
-    private String purchaseOrderCode;
-    private Long purchaseRequisitionId; // FK to PurchaseRequisition
+    private String purchaseOrderCode; //
+    private Long purchaseRequisitionId; // FK to PurchaseRequisition//
     private Long createdById; // FK to User
-    private Long supplierId; // FK to Supplier
-    private LocalDate orderDate;
+    private Long supplierId; // FK to Supplier //
+    private LocalDate orderDate; 
     private LocalDate expectedDeliveryDate;
     private String status; // Draft/PendingApproval/Approved/Rejected/Shipped/Received
     private LocalDate approvalDate;

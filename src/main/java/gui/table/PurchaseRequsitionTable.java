@@ -4,12 +4,20 @@
  */
 package gui.table;
 
+import component.ButtonEditor;
+import component.ButtonRenderer;
 import domain.User;
 import function.FrontendPermissionManager;
+import function.NavigationManager;
 import gui.PurchaseRequisitionEdit;
 import gui.PurchaseRequisitionNew;
+import gui.PurchaseRequisitionView;
+import java.awt.Component;
 import java.io.IOException;
+import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.table.TableColumn;
 import repository.PurchaseRequisitionRepo;
 
 /**
@@ -26,7 +34,7 @@ public class PurchaseRequsitionTable extends javax.swing.JFrame {
         
         initComponents();
         
-        currentUser.setRole("PM");
+        currentUser.setRole("AD");
         FrontendPermissionManager.applyButtonPermissions(
                 currentUser,
                 "pr",
@@ -46,10 +54,49 @@ public class PurchaseRequsitionTable extends javax.swing.JFrame {
         PurchaseRequisitionRepo Prr = new PurchaseRequisitionRepo();
         try {
              jTable1.setModel(Prr.getTableModel());
+             // Hide the first column (ID column)
+        
+            // Hide the first column (ID column)
+            TableColumn idColumn = jTable1.getColumnModel().getColumn(0);
+            idColumn.setMinWidth(0);
+            idColumn.setMaxWidth(0);
+            idColumn.setPreferredWidth(0);
+            idColumn.setResizable(false);
+
+            // Add button renderer and editor for the last column (View Button)
+            int lastColumnIndex = jTable1.getColumnModel().getColumnCount() - 1;
+            TableColumn actionColumn = jTable1.getColumnModel().getColumn(lastColumnIndex);
+            actionColumn.setCellRenderer(new ButtonRenderer());
+            actionColumn.setCellEditor(new ButtonEditor(new JCheckBox()) {
+                @Override
+                public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+                    Component c = super.getTableCellEditorComponent(table, value, isSelected, row, column);
+
+                    // Remove previous action listeners to avoid multiple clicks
+                    for (java.awt.event.ActionListener al : button.getActionListeners()) {
+                        button.removeActionListener(al);
+                    }
+
+                    // Add new action listener
+                    button.addActionListener(e -> {
+                        int modelRow = table.convertRowIndexToModel(row);
+                        Object rawId = table.getModel().getValueAt(modelRow, 0);  // Get ID from the table (first column)
+                        Long id = Long.valueOf(rawId.toString());
+
+                        // Open PurchaseRequisitionView
+                        NavigationManager.getInstance().openFrame(new PurchaseRequisitionView(id), PurchaseRequsitionTable.this);  // Open the view page
+                    });
+                    return c;
+                }
+            });
+
         } catch (IOException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
         }
+        
+        
+        
     }
     /**
      * This method is called from within the constructor to initialize the form.

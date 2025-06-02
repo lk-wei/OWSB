@@ -5,6 +5,7 @@
 package domain;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 import java.util.List;
 
@@ -14,14 +15,16 @@ import java.util.List;
  */
 public class PurchaseRequisition implements Identifiable<Long>{
     private Long id; //PK
-    private String purchaseRequisitionCode;
+    private String purchaseRequisitionCode; //
     private Long requestedById; //FK to User
-    private LocalDate requestDate; 
-    private LocalDate requiredDate;
+    private LocalDate requestDate; //
+    private LocalDate requiredDate; //
     private String status;  //(Draft/Submitted/Approved/Rejected/ConvertedToPurchaseOrder)
     private List<PurchaseRequisitionItem> item;
+    private long purchaseRequisitionItemId;
     
     public PurchaseRequisition() {
+        this.item = new ArrayList<>();
     }
 
     public PurchaseRequisition(Long id, String purchaseRequisitionCode, Long requestedById, LocalDate requestDate, LocalDate requiredDate, String status) {
@@ -32,7 +35,8 @@ public class PurchaseRequisition implements Identifiable<Long>{
         this.requiredDate = requiredDate;
         this.status = status;
     }
-
+    
+    
     public Long getId() {
         return id;
     }
@@ -88,5 +92,14 @@ public class PurchaseRequisition implements Identifiable<Long>{
     public void setItem(List<PurchaseRequisitionItem> item){
         this.item = item;
     }
+
     
+    public long getPurchaseRequisitionItemId() {
+        return purchaseRequisitionItemId;
+    }
+
+    public void setPurchaseRequisitionItemId(long purchaseRequisitionItemId) {
+        this.purchaseRequisitionItemId = purchaseRequisitionItemId;
+    }
+
 }
