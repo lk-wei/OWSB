@@ -15,10 +15,10 @@ import java.util.List;
  */
 public class PurchaseRequisition implements Identifiable<Long>{
     private Long id; //PK
-    private String purchaseRequisitionCode;
+    private String purchaseRequisitionCode; //
     private Long requestedById; //FK to User
-    private LocalDate requestDate; 
-    private LocalDate requiredDate;
+    private LocalDate requestDate; //
+    private LocalDate requiredDate; //
     private String status;  //(Draft/Submitted/Approved/Rejected/ConvertedToPurchaseOrder)
     private List<PurchaseRequisitionItem> item;
     private long purchaseRequisitionItemId;

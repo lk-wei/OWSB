@@ -17,6 +17,8 @@ import gui.table.PurchaseRequsitionTable;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import sample.*;
 import javax.swing.table.DefaultTableModel;
 
@@ -60,26 +62,17 @@ public class PurchaseRequisitionNew extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         inputPanel = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        purchaseRequisitionCodeField = new javax.swing.JTextField();
-        requestedUserField = new javax.swing.JTextField();
+        codeField = new javax.swing.JTextField();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        cancelBtn = new javax.swing.JButton();
+        createBtn = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
-        statusField = new javax.swing.JTextField();
-        jLabel10 = new javax.swing.JLabel();
-        supplierCodeField = new javax.swing.JTextField();
-        jLabel11 = new javax.swing.JLabel();
-        quantityField = new javax.swing.JTextField();
-        jLabel12 = new javax.swing.JLabel();
         requestDateField = new com.toedter.calendar.JDateChooser();
         requiredDateField = new com.toedter.calendar.JDateChooser();
-        itemIdField = new javax.swing.JTextField();
+        addItemBtn = new javax.swing.JButton();
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -116,60 +109,40 @@ public class PurchaseRequisitionNew extends javax.swing.JFrame {
         inputPanel.setMaximumSize(new java.awt.Dimension(800, 600));
         inputPanel.setMinimumSize(new java.awt.Dimension(800, 600));
 
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel2.setText("Request By User:");
-
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel6.setText("Purchase Requisition Code:");
+        jLabel6.setText("PR Code");
 
-        purchaseRequisitionCodeField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-
-        requestedUserField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        codeField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null}
             },
             new String [] {
-                "PR Code", "Request by ", "Request Date", "Required Date", "Status", "Purchase Requisition Item Code", "Item ID", "Supplier Code", "Quantity"
+                "", "Item Code", "Name", "Qty", "Supplier Code", "Name", "Action"
             }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Long.class, java.lang.Long.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Long.class, java.lang.Long.class, java.lang.Long.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false, false
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
+        ));
         jTable2.setShowGrid(true);
         jScrollPane3.setViewportView(jTable2);
 
-        jButton1.setBackground(new java.awt.Color(255, 0, 51));
-        jButton1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("Cancel");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        cancelBtn.setBackground(new java.awt.Color(255, 0, 51));
+        cancelBtn.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        cancelBtn.setForeground(new java.awt.Color(255, 255, 255));
+        cancelBtn.setText("Cancel");
+        cancelBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                cancelBtnActionPerformed(evt);
             }
         });
 
-        jButton2.setBackground(new java.awt.Color(102, 204, 0));
-        jButton2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jButton2.setForeground(new java.awt.Color(255, 255, 255));
-        jButton2.setText("Create");
-        jButton2.setPreferredSize(new java.awt.Dimension(84, 32));
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        createBtn.setBackground(new java.awt.Color(102, 204, 0));
+        createBtn.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        createBtn.setForeground(new java.awt.Color(255, 255, 255));
+        createBtn.setText("Create");
+        createBtn.setPreferredSize(new java.awt.Dimension(84, 32));
+        createBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                createBtnActionPerformed(evt);
             }
         });
 
@@ -179,35 +152,10 @@ public class PurchaseRequisitionNew extends javax.swing.JFrame {
         jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel7.setText("Required Date");
 
-        jLabel8.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel8.setText("Status");
-
-        statusField.setEditable(false);
-        statusField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        statusField.setText("Pending");
-        statusField.addActionListener(new java.awt.event.ActionListener() {
+        addItemBtn.setText("+ Add");
+        addItemBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                statusFieldActionPerformed(evt);
-            }
-        });
-
-        jLabel10.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel10.setText("Item ID");
-
-        supplierCodeField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-
-        jLabel11.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel11.setText("Supplier ID");
-
-        quantityField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-
-        jLabel12.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel12.setText("Quantity");
-
-        itemIdField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        itemIdField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                itemIdFieldActionPerformed(evt);
+                addItemBtnActionPerformed(evt);
             }
         });
 
@@ -216,95 +164,55 @@ public class PurchaseRequisitionNew extends javax.swing.JFrame {
         inputPanelLayout.setHorizontalGroup(
             inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(inputPanelLayout.createSequentialGroup()
-                .addGap(75, 75, 75)
-                .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, inputPanelLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, inputPanelLayout.createSequentialGroup()
+                .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(inputPanelLayout.createSequentialGroup()
+                        .addGap(548, 548, 548)
+                        .addComponent(cancelBtn)
+                        .addGap(12, 12, 12)
+                        .addComponent(createBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(inputPanelLayout.createSequentialGroup()
+                        .addGap(412, 412, 412)
+                        .addComponent(requiredDateField, javax.swing.GroupLayout.PREFERRED_SIZE, 313, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(inputPanelLayout.createSequentialGroup()
+                        .addGap(75, 75, 75)
                         .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(inputPanelLayout.createSequentialGroup()
-                                .addComponent(jLabel6)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, inputPanelLayout.createSequentialGroup()
-                                .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(itemIdField, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(requestDateField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(purchaseRequisitionCodeField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE)
-                                    .addComponent(statusField, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, inputPanelLayout.createSequentialGroup()
-                                        .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                            .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jLabel10, javax.swing.GroupLayout.Alignment.LEADING))
-                                        .addGap(0, 0, Short.MAX_VALUE)))
-                                .addGap(50, 50, 50)))
+                            .addComponent(addItemBtn)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 650, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(inputPanelLayout.createSequentialGroup()
+                        .addGap(75, 75, 75)
                         .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(requestedUserField, javax.swing.GroupLayout.DEFAULT_SIZE, 313, Short.MAX_VALUE)
-                            .addComponent(requiredDateField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(supplierCodeField)
-                            .addGroup(inputPanelLayout.createSequentialGroup()
-                                .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel7)
-                                    .addComponent(jLabel2)
-                                    .addComponent(jLabel11))
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addGroup(inputPanelLayout.createSequentialGroup()
-                                .addComponent(jLabel12)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 233, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(quantityField))))
+                            .addComponent(jLabel6)
+                            .addComponent(codeField, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(37, 37, 37)
+                        .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel5)
+                            .addComponent(jLabel7)
+                            .addComponent(requestDateField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addGap(75, 75, 75))
         );
         inputPanelLayout.setVerticalGroup(
             inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, inputPanelLayout.createSequentialGroup()
+            .addGroup(inputPanelLayout.createSequentialGroup()
                 .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel6))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(purchaseRequisitionCodeField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(requestedUserField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                    .addComponent(jLabel6)
+                    .addComponent(jLabel5))
+                .addGap(6, 6, 6)
                 .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel5)
-                    .addComponent(jLabel7))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(requiredDateField, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(requestDateField, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, inputPanelLayout.createSequentialGroup()
-                        .addGap(32, 32, 32)
-                        .addComponent(statusField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(inputPanelLayout.createSequentialGroup()
+                        .addComponent(codeField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel7)
+                        .addGap(6, 6, 6)
+                        .addComponent(requiredDateField, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(23, 23, 23)
+                        .addComponent(addItemBtn)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(45, 45, 45)
                         .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(inputPanelLayout.createSequentialGroup()
-                                .addComponent(jLabel11)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(supplierCodeField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabel8))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(inputPanelLayout.createSequentialGroup()
-                        .addComponent(jLabel10)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(itemIdField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(inputPanelLayout.createSequentialGroup()
-                        .addComponent(jLabel12)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(quantityField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(55, 55, 55)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 45, Short.MAX_VALUE)
-                .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18))
+                            .addComponent(cancelBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(createBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(requestDateField, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -323,7 +231,7 @@ public class PurchaseRequisitionNew extends javax.swing.JFrame {
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(inputPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(23, Short.MAX_VALUE))
+                .addContainerGap(41, Short.MAX_VALUE))
         );
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
@@ -331,19 +239,19 @@ public class PurchaseRequisitionNew extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void cancelBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelBtnActionPerformed
         PurchaseRequsitionTable second = new PurchaseRequsitionTable();
         second.setVisible(true);
         this.dispose();
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_cancelBtnActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void createBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createBtnActionPerformed
         // File paths for both files
         Path prFilePath = Paths.get("database/purchaseRequisition.txt");
         Path prItemFilePath = Paths.get("database/purchaseRequisitionItem.txt");
 
         // Step 1: Get input fields
-        String prCode = purchaseRequisitionCodeField.getText();
+        String prCode = codeField.getText();
         String supplierIdText = supplierCodeField.getText(); // User inputs Supplier ID
         String itemId = itemIdField.getText(); // Item ID should not be editable
         String quantityText = quantityField.getText();
@@ -426,15 +334,17 @@ public class PurchaseRequisitionNew extends javax.swing.JFrame {
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "Error occurred while saving the purchase requisition: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_createBtnActionPerformed
 
-    private void statusFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_statusFieldActionPerformed
+    private void addItemBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addItemBtnActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_statusFieldActionPerformed
-
-    private void itemIdFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemIdFieldActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_itemIdFieldActionPerformed
+        try {
+            new SupplierItem(this, this).setVisible(true);
+        } catch (IOException ex) {
+            Logger.getLogger(DailySaleNew.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_addItemBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -535,30 +445,21 @@ public class PurchaseRequisitionNew extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton addItemBtn;
+    private javax.swing.JButton cancelBtn;
+    private javax.swing.JTextField codeField;
+    private javax.swing.JButton createBtn;
     private javax.swing.JPanel inputPanel;
-    private javax.swing.JTextField itemIdField;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;
-    private javax.swing.JTextField purchaseRequisitionCodeField;
-    private javax.swing.JTextField quantityField;
     private com.toedter.calendar.JDateChooser requestDateField;
-    private javax.swing.JTextField requestedUserField;
     private com.toedter.calendar.JDateChooser requiredDateField;
-    private javax.swing.JTextField statusField;
-    private javax.swing.JTextField supplierCodeField;
     // End of variables declaration//GEN-END:variables
 }
