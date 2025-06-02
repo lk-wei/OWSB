@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-import sample.*;
 import javax.swing.table.DefaultTableModel;
 import repository.ItemRepo;
 import repository.StockUpdateRepo;

@@ -4,8 +4,6 @@
  */
 package gui;
 
-import sample.*;
-
 /**
  *
  * @author zuwei

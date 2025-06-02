@@ -98,7 +98,7 @@ public class UserTable extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        navBarSample2 = new sample.NavBarSample();
+        navBarSample2 = new component.NavBarSample();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -235,7 +235,7 @@ public class UserTable extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private sample.NavBarSample navBarSample2;
+    private component.NavBarSample navBarSample2;
     private javax.swing.JButton newButton;
     private javax.swing.JTable userTable;
     // End of variables declaration//GEN-END:variables

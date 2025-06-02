@@ -4,13 +4,13 @@
  */
 package gui.dashboard;
 
+import component.NavBarSample;
 import function.NavigationManager;
 import gui.table.FinancialReportTable;
 import gui.table.PaymentTable;
 import gui.table.PurchaseOrderTable;
 import gui.table.PurchaseRequsitionTable;
 import gui.table.StockUpdateTable;
-import sample.*;
 import java.awt.BorderLayout;
 
 /**
@@ -58,7 +58,7 @@ public class FinanceManagerDashBoard extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        navBarSample1 = new sample.NavBarSample();
+        navBarSample1 = new component.NavBarSample();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         pages = new javax.swing.JPanel();
@@ -259,7 +259,7 @@ public class FinanceManagerDashBoard extends javax.swing.JFrame {
     private javax.swing.JButton financialReportBtn;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
-    private sample.NavBarSample navBarSample1;
+    private component.NavBarSample navBarSample1;
     private javax.swing.JPanel page1;
     private javax.swing.JPanel pages;
     private javax.swing.JButton paymentBtn;

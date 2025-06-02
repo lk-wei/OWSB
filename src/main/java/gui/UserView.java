@@ -13,7 +13,6 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import repository.UserRepo;
-import sample.*;
 
 /**
  *

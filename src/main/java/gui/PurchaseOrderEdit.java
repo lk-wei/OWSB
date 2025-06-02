@@ -14,7 +14,6 @@ import gui.table.PurchaseOrderTable;
 import java.io.IOException;
 import java.util.List;
 import javax.swing.JOptionPane;
-import sample.*;
 import javax.swing.table.DefaultTableModel;
 import repository.ItemRepo;
 import repository.PurchaseOrderItemRepo;

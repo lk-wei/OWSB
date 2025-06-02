@@ -28,7 +28,6 @@ import javax.swing.table.TableColumn;
 import repository.ItemRepo;
 import repository.ItemSupplierRepo;
 import repository.SupplierRepo;
-import sample.*;
 
 /**
  *

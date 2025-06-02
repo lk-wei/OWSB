@@ -4,12 +4,12 @@
  */
 package gui.dashboard;
 
+import component.NavBarSample;
 import function.NavigationManager;
 import gui.table.ItemTable;
 import gui.table.PurchaseOrderTable;
 import gui.table.PurchaseRequsitionTable;
 import gui.table.SupplierTable;
-import sample.*;
 import java.awt.BorderLayout;
 
 /**
@@ -59,7 +59,7 @@ public class PurchaseManagerDashboard extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        navBarSample1 = new sample.NavBarSample();
+        navBarSample1 = new component.NavBarSample();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         pages = new javax.swing.JPanel();
@@ -334,7 +334,7 @@ public class PurchaseManagerDashboard extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private sample.NavBarSample navBarSample1;
+    private component.NavBarSample navBarSample1;
     private javax.swing.JPanel page1;
     private javax.swing.JPanel page2;
     private javax.swing.JPanel pages;

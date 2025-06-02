@@ -28,7 +28,6 @@ import java.util.logging.Logger;
 import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
-import sample.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import repository.ItemRepo;

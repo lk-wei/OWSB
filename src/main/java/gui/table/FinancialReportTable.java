@@ -102,7 +102,7 @@ public class FinancialReportTable extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        navBarSample1 = new sample.NavBarSample();
+        navBarSample1 = new component.NavBarSample();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -262,7 +262,7 @@ public class FinancialReportTable extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
-    private sample.NavBarSample navBarSample1;
+    private component.NavBarSample navBarSample1;
     private javax.swing.JButton newButton;
     // End of variables declaration//GEN-END:variables
 }

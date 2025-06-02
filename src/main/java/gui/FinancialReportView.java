@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-import sample.*;
 import javax.swing.table.DefaultTableModel;
 import repository.FinancialReportItemRepo;
 import repository.FinancialReportRepo;

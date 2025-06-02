@@ -4,13 +4,13 @@
  */
 package gui.dashboard;
 
+import component.NavBarSample;
 import function.NavigationManager;
 import gui.table.DailySaleTable;
 import gui.table.ItemTable;
 import gui.table.PurchaseOrderTable;
 import gui.table.PurchaseRequsitionTable;
 import gui.table.SupplierTable;
-import sample.*;
 import java.awt.BorderLayout;
 
 /**

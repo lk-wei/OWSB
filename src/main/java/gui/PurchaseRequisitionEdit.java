@@ -5,7 +5,6 @@
 package gui;
 
 import gui.table.PurchaseRequsitionTable;
-import sample.*;
 import javax.swing.table.DefaultTableModel;
 
 /**

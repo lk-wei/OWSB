@@ -2,13 +2,15 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package sample;
+package component;
 
 import java.io.IOException;
 import javax.swing.JOptionPane;
 import javax.swing.table.TableColumn;
 import component.ButtonRenderer;
 import component.ButtonEditor;
+import domain.User;
+import function.UserSession;
 import java.awt.Component;
 import javax.swing.JCheckBox;
 import javax.swing.JTable;
@@ -23,10 +25,11 @@ public class AlertFrame extends javax.swing.JDialog {
     /**
      * Creates new form AlertFrame
      */
-    private String currentUserRole;
+    private User currentUser;
     
     public AlertFrame(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
+        currentUser = UserSession.getInstance().getCurrentUser();
         initComponents();
         this.setLocationRelativeTo(null);
         updateTable();
@@ -35,9 +38,8 @@ public class AlertFrame extends javax.swing.JDialog {
     private void updateTable() {
         AlertRepo repo = new AlertRepo();
         try {
-             jTable1.setModel(repo.getTableModel(currentUserRole));
+             jTable1.setModel(repo.getTableModel(currentUser.getRole()));
         } catch (IOException e) {
-            e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
         }
         

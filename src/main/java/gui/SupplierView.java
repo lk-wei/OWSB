@@ -16,7 +16,6 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import repository.ItemSupplierRepo;
 import repository.SupplierRepo;
-import sample.*;
 
 /**
  *
