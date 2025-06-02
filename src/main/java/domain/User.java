@@ -28,10 +28,12 @@ public class User implements Identifiable<Long>{
     }
 
     // Getters and Setters
+    @Override
     public Long getId() {
         return id;
     }
 
+    @Override
     public void setId(Long id) {
         this.id = id;
     }
