@@ -6,17 +6,17 @@ package gui;
 
 import component.ButtonEditor;
 import component.ButtonRenderer;
-import domain.Item;
 import domain.StockReport;
 import domain.StockReportItem;
+import domain.User;
 import function.NavigationManager;
+import function.UserSession;
 import java.awt.Component;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JCheckBox;
@@ -33,19 +33,64 @@ import repository.StockReportRepo;
  * @author Kang Wei
  */
 public class StockReportNew extends javax.swing.JFrame {
-    /**
+/**
      * Creates new form DashBoardSample
      */
-    private DefaultTableModel tableModel;
-    private List<Item> stockToReport;
+        private User currentUser;
     
     public StockReportNew() {
+         // get logged in user
+        currentUser = UserSession.getInstance().getCurrentUser();
+        currentUser = new User(); // delete when done
+        currentUser.setRole("AD"); // delete when done
+        
         initComponents();
         this.setLocationRelativeTo(null); //this will center your frame
         
     }
     
-    // Custom Methods
+    private boolean validateInputs() {
+        // Validate Report Code
+        String reportCode = reportCodeField.getText().trim();
+        if (reportCode.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Report Code cannot be empty.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+            reportCodeField.requestFocus();
+            return false;
+        }
+
+        // Validate Report Date
+        if (dateField.getDate() == null) {
+            JOptionPane.showMessageDialog(this, "Please select a Report Date.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+            dateField.requestFocus();
+            return false;
+        }
+
+        // Validate Description
+        String description = descriptionField.getText().trim();
+        if (description.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Description cannot be empty.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+            descriptionField.requestFocus();
+            return false;
+        }
+
+        // Validate Report Type selection
+        String reportType = (String) functionChooser.getSelectedItem();
+        if (reportType == null || "Choose".equals(reportType)) {
+            JOptionPane.showMessageDialog(this, "Please select a valid Report Type (e.g., Low Stock, All).", "Validation Error", JOptionPane.ERROR_MESSAGE);
+            functionChooser.requestFocus();
+            return false;
+        }
+
+        // Validate if JTable has data to report
+        DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
+        if (model.getRowCount() == 0) {
+            JOptionPane.showMessageDialog(this, "No items to report. Please select a Report Type to load data.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+            functionChooser.requestFocus(); // Or a button that loads data if separate
+            return false;
+        }
+
+        return true; // All validations passed
+    }
     
     
 
@@ -289,10 +334,7 @@ public class StockReportNew extends javax.swing.JFrame {
 
     private void functionChooserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_functionChooserActionPerformed
         // TODO add your handling code here:
-        // TODO add your handling code here:
         ItemRepo itemRepo = new ItemRepo();
-        stockToReport = new ArrayList<>();
-        int year, month; // For monthly/yearly
 
         String reportType = (String) functionChooser.getSelectedItem();
         try {
@@ -326,59 +368,60 @@ public class StockReportNew extends javax.swing.JFrame {
 
     private void createBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createBtnActionPerformed
         // TODO add your handling code here:
+        if (!validateInputs()) {
+            return; // If validation fails, stop further processing
+        }
+        
         DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
 
-        if (model.getRowCount() > 0) {
-            Date selectedDate = dateField.getDate();
-            LocalDate reportDate = selectedDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
-            try {
-                // create object
-                StockReport newReport = new StockReport(
-                        null,
-                        reportCodeField.getText(),
-                        1L, // change to current user
-                        reportDate,
-                        descriptionField.getText(),
-                        new ArrayList<>()
-                );
-                new StockReportRepo().create(newReport);
-                
-                // get new created fr ID
-                Long newlyCreatedlReportId = newReport.getId();
-                if (newlyCreatedlReportId == null) {
-                    JOptionPane.showMessageDialog(this, "Failed to create stock report header or retrieve its ID.", "Save Error", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-                
-                // create stock report item
-                for (int row = 0; row < model.getRowCount(); row++) {
-                    // get required values from table
-                    Long itemId = Long.valueOf(model.getValueAt(row, 0).toString());
-                    String itemCode = model.getValueAt(row, 1).toString();
-                    String itemName = model.getValueAt(row, 2).toString();
-                    int stockLevel = Integer.parseInt(model.getValueAt(row, 3).toString());
+        Date selectedDate = dateField.getDate();
+        LocalDate reportDate = selectedDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
-                    new StockReportItemRepo().create(new StockReportItem(
-                            null,
-                            newlyCreatedlReportId,
-                            itemId,
-                            itemCode,
-                            itemName,
-                            stockLevel
-                    ));
-                }      
-                
-                JOptionPane.showMessageDialog(null, "Stock Report Created successfully!");
-                NavigationManager.getInstance().goBack();
-                
-            } catch (IOException ex) {
-                Logger.getLogger(StockReportNew.class.getName()).log(Level.SEVERE, null, ex);
+        try {
+            // create object
+            StockReport newReport = new StockReport(
+                    null,
+                    reportCodeField.getText(),
+                    currentUser.getId(), // change to current user
+                    reportDate,
+                    descriptionField.getText(),
+                    new ArrayList<>()
+            );
+            new StockReportRepo().create(newReport);
+
+            // get new created fr ID
+            Long newlyCreatedlReportId = newReport.getId();
+            if (newlyCreatedlReportId == null) {
+                JOptionPane.showMessageDialog(this, "Failed to create stock report header or retrieve its ID.", "Save Error", JOptionPane.ERROR_MESSAGE);
+                return;
             }
-        } else {
-            System.out.println("The Stock list is empty or null.");
-            JOptionPane.showMessageDialog(this, "Nothing To Report.", "No Data", JOptionPane.INFORMATION_MESSAGE);
+
+            // create stock report item
+            for (int row = 0; row < model.getRowCount(); row++) {
+                // get required values from table
+                Long itemId = Long.valueOf(model.getValueAt(row, 0).toString());
+                String itemCode = model.getValueAt(row, 1).toString();
+                String itemName = model.getValueAt(row, 2).toString();
+                int stockLevel = Integer.parseInt(model.getValueAt(row, 3).toString());
+
+                new StockReportItemRepo().create(new StockReportItem(
+                        null,
+                        newlyCreatedlReportId,
+                        itemId,
+                        itemCode,
+                        itemName,
+                        stockLevel
+                ));
+            }      
+
+            JOptionPane.showMessageDialog(null, "Stock Report Created successfully!");
+            NavigationManager.getInstance().goBack();
+
+        } catch (IOException ex) {
+            Logger.getLogger(StockReportNew.class.getName()).log(Level.SEVERE, null, ex);
         }
+
     }//GEN-LAST:event_createBtnActionPerformed
     
     private void configTable(){

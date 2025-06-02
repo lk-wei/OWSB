@@ -6,6 +6,7 @@ package gui;
 
 import domain.*;
 import function.NavigationManager;
+import function.UserSession;
 import java.io.IOException;
 import java.text.DateFormatSymbols;
 import java.time.LocalDate;
@@ -16,10 +17,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-import sample.*;
 import javax.swing.table.DefaultTableModel;
 import repository.PaymentRepo;
-import repository.SupplierRepo;
 import repository.FinancialReportRepo;
 import repository.FinancialReportItemRepo;
 
@@ -33,8 +32,14 @@ public class FinancialReportNew extends javax.swing.JFrame {
      */
     private DefaultTableModel tableModel;
     private List<Payment> filteredPayments;
+    private User currentUser;
     
     public FinancialReportNew() {
+         // get lgged in user
+        currentUser = UserSession.getInstance().getCurrentUser();
+        currentUser = new User(); // delete when done
+        currentUser.setRole("AD"); // delete when done
+        
         initComponents();
         this.setLocationRelativeTo(null); //this will center your frame
         
@@ -45,28 +50,72 @@ public class FinancialReportNew extends javax.swing.JFrame {
     // Custom Methodss  
     
     private void setFunction(String function) {
-        // Switch page visibility
-        if ("Custom".equals(function)) {
-            datePanel.setVisible(true);
-            monthPanel.setVisible(false);
-            yearPanel.setVisible(false);
-            clearPanel.setVisible(false);
-        } else if ("Monthly".equals(function)){
-            datePanel.setVisible(false);
-            monthPanel.setVisible(true);
-            yearPanel.setVisible(false);
-            clearPanel.setVisible(false);
-        } else if ("Yearly".equals(function)){
-            datePanel.setVisible(false);
-            monthPanel.setVisible(false);
-            yearPanel.setVisible(true);
-            clearPanel.setVisible(false);
-        } else{
+        if (null == function) {
             datePanel.setVisible(false);
             monthPanel.setVisible(false);
             yearPanel.setVisible(false);
             clearPanel.setVisible(true);
+        } else // Switch page visibility
+        switch (function) {
+            case "Custom" -> {
+                datePanel.setVisible(true);
+                monthPanel.setVisible(false);
+                yearPanel.setVisible(false);
+                clearPanel.setVisible(false);
+            }
+            case "Monthly" -> {
+                datePanel.setVisible(false);
+                monthPanel.setVisible(true);
+                yearPanel.setVisible(false);
+                clearPanel.setVisible(false);
+            }
+            case "Yearly" -> {
+                datePanel.setVisible(false);
+                monthPanel.setVisible(false);
+                yearPanel.setVisible(true);
+                clearPanel.setVisible(false);
+            }
+            default -> {
+                datePanel.setVisible(false);
+                monthPanel.setVisible(false);
+                yearPanel.setVisible(false);
+                clearPanel.setVisible(true);
+            }
         }
+    }
+    
+    private boolean validateInputs() {
+        // Validate Report Code
+        String reportCode = reportCodeField.getText().trim();
+        if (reportCode.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Report Code cannot be empty.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+            reportCodeField.requestFocus();
+            return false;
+        }
+
+        // Validate Report Date
+        if (reportDateField.getDate() == null) {
+            JOptionPane.showMessageDialog(this, "Please select a Report Date.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+            reportDateField.requestFocus();
+            return false;
+        }
+
+        // Validate Description
+        String description = descriptionField.getText().trim();
+        if (description.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Description cannot be empty.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+            descriptionField.requestFocus();
+            return false;
+        }
+
+        // Validate if payments have been fetched and are available
+        if (filteredPayments == null || filteredPayments.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No payment data has been fetched or the list is empty. Please fetch payments first.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+            fetchPaymentBtn.requestFocus();
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -360,6 +409,11 @@ public class FinancialReportNew extends javax.swing.JFrame {
         cancelButton.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         cancelButton.setForeground(new java.awt.Color(255, 255, 255));
         cancelButton.setText("Cancel");
+        cancelButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelButtonActionPerformed(evt);
+            }
+        });
 
         createButton.setBackground(new java.awt.Color(102, 204, 0));
         createButton.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
@@ -486,53 +540,55 @@ public class FinancialReportNew extends javax.swing.JFrame {
 
     private void createButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createButtonActionPerformed
         // TODO add your handling code here:
-        if (filteredPayments == null || filteredPayments.isEmpty()) {
-            System.out.println("The payment list is empty or null.");
-            JOptionPane.showMessageDialog(this, "Nothing To Report.", "No Data", JOptionPane.INFORMATION_MESSAGE);
-        } else {
-            
-            Date selectedDate = reportDateField.getDate();
-            LocalDate reportDate = selectedDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-            
-            try {
-                // Create the FinancialReport object
-                FinancialReport newFinancialReport = new FinancialReport(
-                    null,                          
-                    reportCodeField.getText(),
-                    1L,                 // Created by
-                    reportDate,                    
-                    descriptionField.getText(),
-                    null                           
-                );
-                new FinancialReportRepo().create(newFinancialReport);
-                
-                // get new created fr ID
-                Long newlyCreatedFinancialReportId = newFinancialReport.getId();
-
-                if (newlyCreatedFinancialReportId == null) {
-                    JOptionPane.showMessageDialog(this, "Failed to create financial report header or retrieve its ID.", "Save Error", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-                
-                // Add the financial report item
-                FinancialReportItemRepo frri = new FinancialReportItemRepo();
-                for (Payment payment : filteredPayments) {
-                    frri.create(new FinancialReportItem(
-                            null,
-                            newlyCreatedFinancialReportId,
-                            payment.getId()
-                    ));
-                }
-                
-                JOptionPane.showMessageDialog(null, "Financial Report Created successfully!");
-                NavigationManager.getInstance().goBack();
-                
-            } catch (IOException ex) {
-                Logger.getLogger(FinancialReportNew.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
+        if (!validateInputs()) {
+            return; // If validation fails, stop further processing
         }
+        
+        Date selectedDate = reportDateField.getDate();
+        LocalDate reportDate = selectedDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+        try {
+            // Create the FinancialReport object
+            FinancialReport newFinancialReport = new FinancialReport(
+                null,                          
+                reportCodeField.getText(),
+                currentUser.getId(),
+                reportDate,                    
+                descriptionField.getText(),
+                null                           
+            );
+            new FinancialReportRepo().create(newFinancialReport);
+
+            // get new created fr ID
+            Long newlyCreatedFinancialReportId = newFinancialReport.getId();
+
+            if (newlyCreatedFinancialReportId == null) {
+                JOptionPane.showMessageDialog(this, "Failed to create financial report header or retrieve its ID.", "Save Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Add the financial report item
+            FinancialReportItemRepo frri = new FinancialReportItemRepo();
+            for (Payment payment : filteredPayments) {
+                frri.create(new FinancialReportItem(
+                        null,
+                        newlyCreatedFinancialReportId,
+                        payment.getId()
+                ));
+            }
+
+            JOptionPane.showMessageDialog(null, "Financial Report Created successfully!");
+            NavigationManager.getInstance().goBack();
+
+        } catch (IOException ex) {
+            Logger.getLogger(FinancialReportNew.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }//GEN-LAST:event_createButtonActionPerformed
+
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+        NavigationManager.getInstance().goBack();
+    }//GEN-LAST:event_cancelButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -605,43 +661,28 @@ public class FinancialReportNew extends javax.swing.JFrame {
     private javax.swing.JPanel clearPanel;
     private javax.swing.JButton createButton;
     private com.toedter.calendar.JDateChooser customFromDate;
-    private com.toedter.calendar.JDateChooser customFromDate1;
     private com.toedter.calendar.JDateChooser customToDate;
-    private com.toedter.calendar.JDateChooser customToDate1;
     private javax.swing.JPanel datePanel;
-    private javax.swing.JPanel datePanel1;
     private javax.swing.JTextField descriptionField;
-    private javax.swing.JTextField descriptionField1;
     private javax.swing.JButton fetchPaymentBtn;
     private javax.swing.JComboBox<String> functionChooser;
-    private javax.swing.JComboBox<String> functionChooser1;
     private javax.swing.JPanel inputPanel;
-    private javax.swing.JPanel inputPanel1;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
     private com.toedter.calendar.JMonthChooser jMonthChooser1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTable jTable2;
-    private javax.swing.JTable jTable3;
     private com.toedter.calendar.JYearChooser jYearChooser1;
     private com.toedter.calendar.JYearChooser jYearChooser2;
     private javax.swing.JPanel monthPanel;
     private javax.swing.JTextField reportCodeField;
-    private javax.swing.JTextField reportCodeField1;
     private com.toedter.calendar.JDateChooser reportDateField;
     private javax.swing.JTextField totalField;
     private javax.swing.JPanel yearPanel;

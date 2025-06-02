@@ -10,8 +10,6 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-import sample.*;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import repository.StockReportItemRepo;
 import repository.StockReportRepo;
@@ -61,6 +59,18 @@ public class StockReportEdit extends javax.swing.JFrame {
         idColumn.setMaxWidth(0);
         idColumn.setPreferredWidth(0);
         idColumn.setResizable(false);
+    }
+    
+    private boolean validateInputs() {
+        // Validate Description
+        String description = descriptionField.getText().trim();
+        if (description.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Description cannot be empty.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+            descriptionField.requestFocus();
+            return false;
+        }
+        
+        return true; // All validations passed
     }
     
     /**
@@ -247,6 +257,10 @@ public class StockReportEdit extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
+        if (!validateInputs()) {
+            return; // If validation fails, stop further processing
+        }
+        
         toEdit.setDescription(descriptionField.getText());
         
         try {
