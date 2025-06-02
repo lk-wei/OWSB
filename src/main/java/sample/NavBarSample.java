@@ -67,6 +67,11 @@ public class NavBarSample extends javax.swing.JPanel {
                 notificationButtonMouseClicked(evt);
             }
         });
+        notificationButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                notificationButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -103,8 +108,15 @@ public class NavBarSample extends javax.swing.JPanel {
     }//GEN-LAST:event_userButtonActionPerformed
 
     private void notificationButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_notificationButtonMouseClicked
-        new AlertFrame().setVisible(true);
+        JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
+        AlertFrame dialog = new AlertFrame(topFrame, true);
+        dialog.setVisible(true);
+
     }//GEN-LAST:event_notificationButtonMouseClicked
+
+    private void notificationButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_notificationButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_notificationButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

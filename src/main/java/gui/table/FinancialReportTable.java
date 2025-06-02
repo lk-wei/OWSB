@@ -34,7 +34,7 @@ public class FinancialReportTable extends javax.swing.JFrame {
          // get lgged in user
         currentUser = UserSession.getInstance().getCurrentUser();
         currentUser = new User(); // delete when done
-        currentUser.setRole("IM"); // delete when done
+        currentUser.setRole("AD"); // delete when done
         
         initComponents();
         

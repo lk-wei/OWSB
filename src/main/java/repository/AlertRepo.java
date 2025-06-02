@@ -41,7 +41,7 @@ public class AlertRepo extends MasterRepo<Alert>{
             model.addRow(new Object[]{
                 sender.getUserName(),    // Sender Name
                 alert.getTitle(),   // Title
-                ""                        // Empty column (action buttons?)
+                "View"                        // Empty column (action buttons?)
             });
         }
         return model;

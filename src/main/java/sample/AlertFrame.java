@@ -18,15 +18,17 @@ import repository.AlertRepo;
  *
  * @author Kang Wei
  */
-public class AlertFrame extends javax.swing.JFrame {
+public class AlertFrame extends javax.swing.JDialog {
 
     /**
      * Creates new form AlertFrame
      */
     private String currentUserRole = "PM";
     
-    public AlertFrame() {
+    public AlertFrame(java.awt.Frame parent, boolean modal) {
+        super(parent, modal);
         initComponents();
+        this.setLocationRelativeTo(null);
         updateTable();
     }
     
@@ -68,8 +70,6 @@ public class AlertFrame extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
-
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -166,7 +166,7 @@ public class AlertFrame extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new AlertFrame().setVisible(true);
+                new AlertFrame(new javax.swing.JFrame(), true).setVisible(true);
             }
         });
     }

@@ -218,10 +218,7 @@ public class UserNew extends javax.swing.JFrame {
             
             userRepo.create(newUser);
             JOptionPane.showMessageDialog(null, "User added successfully!");
-            usernameField.setText("");
-            passwordField.setText("");
-            fullNameField.setText("");
-            roleComboBox.setSelectedIndex(-1);
+            NavigationManager.getInstance().goBack();
         } catch (IOException ex) {
             Logger.getLogger(UserNew.class.getName()).log(Level.SEVERE, null, ex);
         }
