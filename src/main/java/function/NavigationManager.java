@@ -6,6 +6,8 @@ package function;
 
 import javax.swing.JFrame;
 import java.util.Stack;
+import javax.swing.JOptionPane;
+import main.Login;
 
 /**
  * Manages a stack of JFrames for navigation purposes (e.g., "back" button).
@@ -62,6 +64,15 @@ public class NavigationManager {
             System.out.println("Navigation stack is empty. No frame to go back to.");
             if (this.currentManagedFrame != null) {
                 // for handling no previous screen
+                int confirm = JOptionPane.showConfirmDialog(
+                    currentManagedFrame,
+                    "Do You Want To Log Out?",
+                    "",
+                    JOptionPane.YES_NO_OPTION);
+        
+                if (confirm == JOptionPane.YES_OPTION) {
+                    clearHistoryAndDisposeAll(new Login());
+                }
             }
         }
         return null;
