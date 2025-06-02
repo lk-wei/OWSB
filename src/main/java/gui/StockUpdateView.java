@@ -56,12 +56,14 @@ public class StockUpdateView extends javax.swing.JFrame {
         
         try {
             update = sur.getById(viewId);
-            User u = new UserRepo().getById(update.getUpdatedById());
-            Item i = new ItemRepo().getById(update.getItemId());
+            
             
             if (this.update == null){
                 return;
             }
+            
+            User u = new UserRepo().getById(update.getUpdatedById());
+            Item i = new ItemRepo().getById(update.getItemId());
             
             updateCodeField.setText(update.getStockUpdateCode());
             dateField.setText(String.valueOf(update.getDate()));
@@ -128,6 +130,11 @@ public class StockUpdateView extends javax.swing.JFrame {
         setMinimumSize(new java.awt.Dimension(800, 800));
         setResizable(false);
         setSize(new java.awt.Dimension(800, 600));
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowActivated(java.awt.event.WindowEvent evt) {
+                formWindowActivated(evt);
+            }
+        });
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel1.setFocusable(false);
@@ -281,7 +288,6 @@ public class StockUpdateView extends javax.swing.JFrame {
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
                 .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(inputPanelLayout.createSequentialGroup()
                         .addGap(79, 79, 79)
@@ -305,7 +311,7 @@ public class StockUpdateView extends javax.swing.JFrame {
                     .addComponent(editButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(145, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -351,7 +357,7 @@ public class StockUpdateView extends javax.swing.JFrame {
                 "Confirm Deletion",
                 JOptionPane.YES_NO_OPTION);
         
-//        System.out.println(update.getId());
+        System.out.println(update.getId());
         
         if (update == null) {
             JOptionPane.showMessageDialog(this, "Update record not found. It may have already been deleted.", "Not Found", JOptionPane.WARNING_MESSAGE);
@@ -365,7 +371,7 @@ public class StockUpdateView extends javax.swing.JFrame {
                 
                 sur.delete(update); 
                 JOptionPane.showMessageDialog(this, "Update record deleted successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
-                NavigationManager.getInstance().openFrame(new StockUpdateTable(), this);
+                NavigationManager.getInstance().goBack();
             } catch (IOException ex) {
                 Logger.getLogger(StockUpdateView.class.getName()).log(Level.SEVERE, null, ex);
                 JOptionPane.showMessageDialog(this, "Failed to delete the update record. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -374,6 +380,11 @@ public class StockUpdateView extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_deleteButtonActionPerformed
+
+    private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
+        // TODO add your handling code here:z
+        setView();
+    }//GEN-LAST:event_formWindowActivated
 
     /**
      * @param args the command line arguments

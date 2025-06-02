@@ -358,7 +358,7 @@ public class DailySaleNew extends javax.swing.JFrame {
                 }
 
             JOptionPane.showMessageDialog(null, "Daily Sale added successfully!");
-            NavigationManager.getInstance().openFrame(new DailySaleTable(), this);
+            NavigationManager.getInstance().goBack();
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(null, "Please enter valid numbers for stock and unit cost.");
         } catch (IOException ex) {

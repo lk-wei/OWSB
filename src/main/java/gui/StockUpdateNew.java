@@ -399,7 +399,7 @@ public class StockUpdateNew extends javax.swing.JFrame {
             }
             
             JOptionPane.showMessageDialog(null, "Stock Update added successfully!");
-            NavigationManager.getInstance().openFrame(new StockUpdateTable(), this);
+            NavigationManager.getInstance().goBack();
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(null, "Please enter valid numbers for stock and unit cost.");
         } catch (IOException ex) {
