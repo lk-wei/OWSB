@@ -44,7 +44,6 @@ public class Login extends javax.swing.JFrame {
         passwordTextField = new javax.swing.JTextField();
         loginBtn = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
-        loginBtn1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMaximumSize(new java.awt.Dimension(500, 500));
@@ -54,54 +53,73 @@ public class Login extends javax.swing.JFrame {
         jPanel1.setMaximumSize(new java.awt.Dimension(500, 500));
         jPanel1.setMinimumSize(new java.awt.Dimension(500, 500));
         jPanel1.setPreferredSize(new java.awt.Dimension(500, 500));
-        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
         jLabel1.setText("Password:");
-        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 253, -1, -1));
 
         usernameTextField.setFont(new java.awt.Font("Segoe UI", 2, 14)); // NOI18N
+        usernameTextField.setForeground(new java.awt.Color(0, 0, 0));
         usernameTextField.setMaximumSize(new java.awt.Dimension(300, 30));
         usernameTextField.setMinimumSize(new java.awt.Dimension(300, 30));
         usernameTextField.setPreferredSize(new java.awt.Dimension(300, 30));
-        jPanel1.add(usernameTextField, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 205, -1, -1));
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
         jLabel2.setText("Username: ");
-        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 177, -1, -1));
 
         passwordTextField.setFont(new java.awt.Font("Segoe UI", 2, 14)); // NOI18N
+        passwordTextField.setForeground(new java.awt.Color(0, 0, 0));
         passwordTextField.setMaximumSize(new java.awt.Dimension(300, 30));
         passwordTextField.setMinimumSize(new java.awt.Dimension(300, 30));
         passwordTextField.setPreferredSize(new java.awt.Dimension(300, 30));
-        jPanel1.add(passwordTextField, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 281, -1, -1));
 
-        loginBtn.setBackground(new java.awt.Color(102, 204, 0));
-        loginBtn.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        loginBtn.setForeground(new java.awt.Color(255, 255, 255));
+        loginBtn.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         loginBtn.setText("Login");
+        loginBtn.setPreferredSize(new java.awt.Dimension(74, 32));
         loginBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 loginBtnMouseClicked(evt);
             }
         });
-        jPanel1.add(loginBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 362, 200, -1));
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel4.setText("LOGIN");
-        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 65, 500, -1));
 
-        loginBtn1.setBackground(new java.awt.Color(255, 0, 0));
-        loginBtn1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        loginBtn1.setForeground(new java.awt.Color(255, 255, 255));
-        loginBtn1.setText("Quit");
-        loginBtn1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                loginBtn1MouseClicked(evt);
-            }
-        });
-        jPanel1.add(loginBtn1, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 412, 200, -1));
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap(100, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1)
+                    .addComponent(usernameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(passwordTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
+                .addContainerGap(100, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(loginBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(65, 65, 65)
+                .addComponent(jLabel4)
+                .addGap(64, 64, 64)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(usernameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(passwordTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(51, 51, 51)
+                .addComponent(loginBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(106, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -130,28 +148,56 @@ public class Login extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_loginBtnMouseClicked
 
-    private void loginBtn1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_loginBtn1MouseClicked
-        // TODO add your handling code here:
-    }//GEN-LAST:event_loginBtn1MouseClicked
-
     private void assignRoleDashboard(String userRole){
         if (userRole.equalsIgnoreCase("AD")) { // Or use your role constants from PermissionService
-            new AdminDashBoard().setVisible(true);
-        } else if (userRole.equalsIgnoreCase("PM")) {
-            new PurchaseManagerDashboard().setVisible(true);
-        } else if (userRole.equalsIgnoreCase("SM")) {
-            new SaleManagerDashBoard().setVisible(true);
-        } else if (userRole.equalsIgnoreCase("IM")) {
-            new InventoryManagerDashboard().setVisible(true);
-        } else if (userRole.equalsIgnoreCase("FM")) {
-            new FinanceManagerDashBoard().setVisible(true);
-        } else {
-            JOptionPane.showMessageDialog(null, "No dashboard defined for role: " + userRole, "Error", JOptionPane.ERROR_MESSAGE);
-            // Potentially bring back login screen or handle as an error
+        new AdminDashBoard().setVisible(true);
+    } else if (userRole.equalsIgnoreCase("PM")) {
+        new PurchaseManagerDashboard().setVisible(true);
+    } else if (userRole.equalsIgnoreCase("SM")) {
+        new SaleManagerDashBoard().setVisible(true);
+    } else if (userRole.equalsIgnoreCase("IM")) {
+        new InventoryManagerDashboard().setVisible(true);
+    } else if (userRole.equalsIgnoreCase("FM")) {
+        new FinanceManagerDashBoard().setVisible(true);
+    } else {
+        JOptionPane.showMessageDialog(null, "No dashboard defined for role: " + userRole, "Error", JOptionPane.ERROR_MESSAGE);
+        // Potentially bring back login screen or handle as an error
+    }
+    }
+    
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        
-        // remove the login frame
-        this.dispose();
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new Login().setVisible(true);
+            }
+        });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -160,7 +206,6 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JButton loginBtn;
-    private javax.swing.JButton loginBtn1;
     private javax.swing.JTextField passwordTextField;
     private javax.swing.JTextField usernameTextField;
     // End of variables declaration//GEN-END:variables
