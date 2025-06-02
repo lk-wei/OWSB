@@ -4,24 +4,24 @@
  */
 package gui;
 
-
+import java.awt.EventQueue;
 
 /**
  *
  * @author zuwei
  */
 public class ItemView extends javax.swing.JFrame {
+
     /**
      * Creates new form DashBoardSample
      */
-    
-    public ItemView() {
+
+    public ItemView(Long id) {
         initComponents();
         this.setLocationRelativeTo(null); //this will center your frame
     }
-    
-    // Custom Methods
 
+    // Custom Methods
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -153,7 +153,7 @@ public class ItemView extends javax.swing.JFrame {
             .addComponent(inputPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(74, 561, Short.MAX_VALUE)
                 .addComponent(jButton1)
                 .addGap(18, 18, 18)
                 .addComponent(jButton2)
@@ -249,9 +249,10 @@ public class ItemView extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
+           java.awt.EventQueue.invokeLater(new Runnable() {
+            private Long id;
             public void run() {
-                new ItemView().setVisible(true);
+                new ItemView(id).setVisible(true);
             }
         });
     }

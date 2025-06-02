@@ -18,7 +18,8 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author zuwei
  */
-public class PaymentRepo extends MasterRepo<Payment>{
+public class PaymentRepo extends MasterRepo<Payment> {
+
     public PaymentRepo() {
         super(Path.of("database/payment.txt"));
     }
@@ -48,8 +49,8 @@ public class PaymentRepo extends MasterRepo<Payment>{
         }
         return null;
     }
-    
-    public List<Payment> getByDateRange(LocalDate fromDate, LocalDate toDate) throws IOException{
+
+    public List<Payment> getByDateRange(LocalDate fromDate, LocalDate toDate) throws IOException {
         if (fromDate == null || toDate == null) {
             throw new IllegalArgumentException("From date and to date cannot be null.");
         }
@@ -69,28 +70,28 @@ public class PaymentRepo extends MasterRepo<Payment>{
         }
         return paymentsInRange;
     }
-    
-    public List<Payment> getByMonth(int monthValue, int year) throws IOException{
+
+    public List<Payment> getByMonth(int monthValue, int year) throws IOException {
         if (monthValue < 1 || monthValue > 12) {
             throw new IllegalArgumentException("Month value must be between 1 and 12.");
         }
 
         YearMonth targetYearMonth = YearMonth.of(year, monthValue);
-        
+
         List<Payment> allPayments = getAll();
         List<Payment> paymentsInMonth = new ArrayList<>();
 
         for (Payment payment : allPayments) {
             LocalDate paymentDate = payment.getPaymentDate();
-            
+
             if (paymentDate != null && YearMonth.from(paymentDate).equals(targetYearMonth)) {
                 paymentsInMonth.add(payment);
             }
         }
         return paymentsInMonth;
     }
-    
-    public List<Payment> getByYear(int year) throws IOException{
+
+    public List<Payment> getByYear(int year) throws IOException {
         List<Payment> allPayments = getAll();
         List<Payment> paymentsInYear = new ArrayList<>();
 
@@ -102,50 +103,52 @@ public class PaymentRepo extends MasterRepo<Payment>{
         }
         return paymentsInYear;
     }
-    
 
-        //ui
+    //ui
     public DefaultTableModel getTableModel() throws IOException {
         DefaultTableModel model = new DefaultTableModel(
-            new Object[][]{},
-            // These column names must match what's in your JFrame
-            new String[]{"Payment Code", "Supplier Name", "Date", "Amount", ""}
+                new Object[][]{},
+                // These column names must match what's in your JFrame
+                new String[]{"","Payment Code", "Supplier Name", "Date", "Total Amount", "Payment Amount", ""}
         );
 
-        List<Payment> payments = getAll(); 
+        List<Payment> payments = getAll();
         SupplierRepo supplierRepo = new SupplierRepo();
 
         for (Payment payment : payments) {
             Supplier supp = supplierRepo.getSupplierById(payment.getSupplierId());
             model.addRow(new Object[]{
+                payment.getId(),
                 payment.getPaymentCode(),
                 supp.getSuppliername(),
                 payment.getPaymentDate(),
+                payment.getTotalAmount(),
                 payment.getPaymentAmount(),
-                ""
+                "View"
             });
         }
         return model;
     }
-    
+
     public DefaultTableModel getReportTableModel(List<Payment> filteredPaymentList) throws IOException {
         DefaultTableModel model = new DefaultTableModel(
-            new Object[][]{},
-            // These column names must match what's in your JFrame
-            new String[]{"Payment Code", "Supplier Name", "Date", "Amount", ""}
+                new Object[][]{},
+                // These column names must match what's in your JFrame
+                new String[]{"","Payment Code", "Supplier Name", "Date", "Total Amount", "Payment Amount", ""}
         );
 
         if (filteredPaymentList != null) {
             SupplierRepo supplierRepo = new SupplierRepo(); // Instance to fetch supplier details
             for (Payment payment : filteredPaymentList) {    // Use the passed-in list
-                Supplier supp = (payment.getSupplierId() != null) ? 
-                                supplierRepo.getSupplierById(payment.getSupplierId()) : null;
+                Supplier supp = (payment.getSupplierId() != null)
+                        ? supplierRepo.getSupplierById(payment.getSupplierId()) : null;
                 String supplierName = (supp != null) ? supp.getSuppliername() : "N/A";
 
                 model.addRow(new Object[]{
                     payment.getPaymentCode(),
                     supplierName,
-                    payment.getPaymentDate().toString(), // Or format the date as desired
+                    payment.getPaymentDate().toString(),
+                    payment.getTotalAmount(),// Or format the date as desired
                     payment.getPaymentAmount(),
                     Boolean.TRUE // Default "Include?" to true
                 });
@@ -161,7 +164,9 @@ public class PaymentRepo extends MasterRepo<Payment>{
                 payment.getId().toString(),
                 payment.getPaymentCode(),
                 payment.getSupplierId().toString(),
+                payment.getSupplierName(),
                 payment.getPaymentDate().toString(),
+                Double.toString(payment.getTotalAmount()),
                 Double.toString(payment.getPaymentAmount())
         );
     }
@@ -172,11 +177,13 @@ public class PaymentRepo extends MasterRepo<Payment>{
         String[] parts = line.split("\\|");
 
         return new Payment(
-                Long.valueOf(parts[0]), // 
-                parts[1],
-                Long.valueOf(parts[2]), // suppliername
-                LocalDate.parse(parts[3]), // date
-                Double.parseDouble(parts[4])
+                Long.valueOf(parts[0]), // id
+                parts[1], // paymentCode
+                
+                parts[2], 
+                LocalDate.parse(parts[3]), // paymentDate
+                Double.parseDouble(parts[4]), // totalAmount
+                Double.parseDouble(parts[5]) // paymentAmount
         );
     }
 }

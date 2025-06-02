@@ -4,6 +4,11 @@
  */
 package gui.dashboard;
 
+import function.NavigationManager;
+import gui.table.ItemTable;
+import gui.table.PurchaseOrderTable;
+import gui.table.StockReportTable;
+import gui.table.StockUpdateTable;
 import sample.*;
 import java.awt.BorderLayout;
 
@@ -12,27 +17,26 @@ import java.awt.BorderLayout;
  * @author Kang Wei
  */
 public class InventoryManagerDashboard extends javax.swing.JFrame {
+
     /**
      * Creates new form DashBoardSample
      */
     private int currentPage = 1; // Track current page
-    
+
     public InventoryManagerDashboard() {
         initComponents();
         this.setLocationRelativeTo(null); //this will center your frame
-        
+
         // Create and add navbar
         NavBarSample navbar = new NavBarSample();
         jPanel1.add(navbar, BorderLayout.NORTH); // Add to top
-        
+
         // Initial state
         page1.setVisible(true);
 
     }
-    
-    // Custom Methods
-   
 
+    // Custom Methods
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -70,6 +74,11 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
         jButton1.setText("Item");
         jButton1.setBorderPainted(false);
         jButton1.setPreferredSize(new java.awt.Dimension(150, 100));
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jButton3.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jButton3.setText("Report");
@@ -87,6 +96,11 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
         jButton4.setBorderPainted(false);
         jButton4.setMargin(new java.awt.Insets(2, 0, 2, 0));
         jButton4.setPreferredSize(new java.awt.Dimension(150, 100));
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
 
         jButton5.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
         jButton5.setText("Purchase Order");
@@ -171,12 +185,20 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        // TODO add your handling code here:
+        NavigationManager.getInstance().openFrame(new PurchaseOrderTable(), this);        // TODO add your handling code here:
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
+        NavigationManager.getInstance().openFrame(new StockReportTable(), this);        // TODO add your handling code here:
     }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        NavigationManager.getInstance().openFrame(new ItemTable(), this);        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        NavigationManager.getInstance().openFrame(new StockUpdateTable(), this);        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton4ActionPerformed
 
     /**
      * @param args the command line arguments

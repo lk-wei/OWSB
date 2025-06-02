@@ -16,18 +16,18 @@ public class PaymentItem implements Identifiable<Long>{
     private String paymentCode;
     private Long purchaseOrderId;       
     private double TotalAmount;
-    private String productOrderCode;
+    private String purchaseOrderCode;
     
     public PaymentItem() {
     }
 
-    public PaymentItem(Long id, Long paymentId, String paymentCode, Long purchaseOrderId, double TotalAmount, String productOrderCode) {
+    public PaymentItem(Long id, Long paymentId, String paymentCode, Long purchaseOrderId, double totalAmount, String purchaseOrderCode) {
         this.id = id;
-        this.paymentId = paymentId;
-        this.paymentCode = paymentCode;
-        this.purchaseOrderId = purchaseOrderId;
-        this.TotalAmount = TotalAmount;
-        this.productOrderCode = productOrderCode;
+        this.paymentId = paymentId; //fk
+        this.paymentCode = paymentCode; //fk
+        this.purchaseOrderId = purchaseOrderId; //fk
+        this.TotalAmount = totalAmount;  //fk
+        this.purchaseOrderCode = purchaseOrderCode; //fk
     }
 
     public Long getId() {
@@ -66,15 +66,15 @@ public class PaymentItem implements Identifiable<Long>{
         return TotalAmount;
     }
 
-    public void setTotalAmount(double TotalAmount) {
-        this.TotalAmount = TotalAmount;
+    public void setTotalAmount(double totalAmount) {
+        this.TotalAmount = totalAmount;
     }
 
-    public String getProductOrderCode() {
-        return productOrderCode;
+    public String getPurchaseOrderCode() {
+        return purchaseOrderCode;
     }
 
-    public void setProductOrderCode(String productOrderCode) {
-        this.productOrderCode = productOrderCode;
+    public void setPurchaseOrderCode(String purchaseOrderCode) {
+        this.purchaseOrderCode = purchaseOrderCode;
     }
 }

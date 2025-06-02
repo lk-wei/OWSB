@@ -4,33 +4,125 @@
  */
 package gui;
 
-import sample.*;
+import component.ButtonEditor;
+import component.ButtonRenderer;
+import domain.Payment;
+import domain.PurchaseOrder;
+import java.awt.Component;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import javax.swing.JCheckBox;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
+import repository.PaymentRepo;
+import repository.PurchaseOrderRepo;
 
 /**
  *
- * @author Kang Wei
+ * @author zuwei
  */
 public class PaymentNew extends javax.swing.JFrame {
+
     /**
      * Creates new form DashBoardSample
      */
     private DefaultTableModel tableModel;
-    
+    protected List<PurchaseOrderDetail> purchaseOrdeList = new ArrayList<>();
+
     public PaymentNew() {
         initComponents();
+
         this.setLocationRelativeTo(null); //this will center your frame
-        
+
         initTableModel();
+        addTableModelListener();
     }
-    
+
     // Custom Methods
-    
     private void initTableModel() {
         tableModel = (DefaultTableModel) jTable2.getModel();
         tableModel.setRowCount(0);
-        
+
         tableModel.addRow(new Object[]{"", "", "", ""});
+    }
+
+    private void removeAllRows() {
+        while (tableModel.getRowCount() > 0) {
+            tableModel.removeRow(0);
+        }
+    }
+
+    public void updateTable() throws IOException {
+        removeAllRows();
+        PurchaseOrderRepo por = new PurchaseOrderRepo();
+
+        for (PurchaseOrderDetail purchase : purchaseOrdeList) {
+            long purchaseOrderId = purchase.getPurchaseOrderId();
+            PurchaseOrder po = por.getById(purchaseOrderId);
+
+            tableModel.addRow(new Object[]{po.getPurchaseOrderCode(), po.getOrderDate(), po.getTotalAmount(), "Delete"});
+
+        }
+
+        TableColumn actionColumn = jTable2.getColumnModel().getColumn(3);
+        actionColumn.setCellRenderer(new ButtonRenderer());
+        actionColumn.setCellEditor(new ButtonEditor(new JCheckBox()) {
+            @Override
+            public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+                Component c = super.getTableCellEditorComponent(table, value, isSelected, row, column);
+
+                button.addActionListener(e -> {
+                    // add button function here
+                    String name = table.getValueAt(row, 1).toString();
+                    JOptionPane.showMessageDialog(table, "Editing: " + name);
+                });
+                return c;
+            }
+        });
+    }
+    // TODO add your handling code here:
+
+    private void calculateTotalAmount() {
+        double totalAmount = 0.0;
+
+        // Iterate through all the rows of the table
+        for (int row = 0; row < tableModel.getRowCount(); row++) {
+            Object amountObj = tableModel.getValueAt(row, 2); // Get the value in the Amount column (index 2)
+            if (amountObj != null) {
+                try {
+                    double amount = Double.parseDouble(amountObj.toString()); // Convert to double
+                    totalAmount += amount; // Add to the total amount
+                } catch (NumberFormatException e) {
+                    // Ignore invalid amounts (if any)
+                }
+            }
+        }
+
+        // Set the total amount in the TotalAmount field
+        TotalAmountField.setText(String.format("%.2f", totalAmount)); // Display total with 2 decimal places
+    }
+
+    private void addTableModelListener() {
+        jTable2.getModel().addTableModelListener(new TableModelListener() {
+
+            public void tableChanged(TableModelEvent e) {
+                // Only update if the "Amount" column is updated (column index 2)
+                if (e.getType() == TableModelEvent.UPDATE) {
+                    if (e.getColumn() == 2) {
+                        // Call the method to recalculate the total amount
+                        calculateTotalAmount();
+                    }
+                }
+            }
+        });
     }
 
     /**
@@ -49,15 +141,15 @@ public class PaymentNew extends javax.swing.JFrame {
         inputPanel = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        jTextField4 = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        jTextField7 = new javax.swing.JTextField();
+        TotalAmountField = new javax.swing.JTextField();
         addItemBtn = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        SupplierField = new javax.swing.JComboBox<>();
         jLabel4 = new javax.swing.JLabel();
-        jTextField8 = new javax.swing.JTextField();
+        PaymentAmount = new javax.swing.JTextField();
+        DateField = new com.toedter.calendar.JDateChooser();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
 
@@ -102,19 +194,15 @@ public class PaymentNew extends javax.swing.JFrame {
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel6.setText("Date");
 
-        jTextField4.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jTextField4.setText("Input");
-        jTextField4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField4ActionPerformed(evt);
-            }
-        });
-
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel3.setText("Total Amount");
 
-        jTextField7.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jTextField7.setText("Long input");
+        TotalAmountField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        TotalAmountField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                TotalAmountFieldActionPerformed(evt);
+            }
+        });
 
         addItemBtn.setText("+ Add");
         addItemBtn.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -128,11 +216,11 @@ public class PaymentNew extends javax.swing.JFrame {
                 {null, null, null, null}
             },
             new String [] {
-                "Product Order code", "Purchase Order Code", "Date", "Amount"
+                "Purchase Order Code", "Date", "Amount", "Action"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.Object.class, java.lang.String.class, java.lang.Object.class
+                java.lang.Object.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -140,17 +228,21 @@ public class PaymentNew extends javax.swing.JFrame {
             }
         });
         jTable2.setShowGrid(true);
+        jTable2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable2MouseClicked(evt);
+            }
+        });
         jScrollPane3.setViewportView(jTable2);
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        jComboBox1.setPreferredSize(new java.awt.Dimension(64, 23));
-        jComboBox1.setSize(new java.awt.Dimension(64, 23));
+        SupplierField.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        SupplierField.setPreferredSize(new java.awt.Dimension(64, 23));
+        SupplierField.setSize(new java.awt.Dimension(64, 23));
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel4.setText("Payment Amount");
 
-        jTextField8.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jTextField8.setText("Long input");
+        PaymentAmount.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         javax.swing.GroupLayout inputPanelLayout = new javax.swing.GroupLayout(inputPanel);
         inputPanel.setLayout(inputPanelLayout);
@@ -168,18 +260,20 @@ public class PaymentNew extends javax.swing.JFrame {
                             .addGroup(inputPanelLayout.createSequentialGroup()
                                 .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel2)
-                                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(SupplierField, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 299, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel6)))
+                                .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(inputPanelLayout.createSequentialGroup()
+                                        .addComponent(jLabel6)
+                                        .addGap(268, 268, 268))
+                                    .addComponent(DateField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                             .addGroup(inputPanelLayout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
                                 .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel3)
-                                    .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(TotalAmountField, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel4)
-                                    .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                    .addComponent(PaymentAmount, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addGap(75, 75, 75))))
         );
         inputPanelLayout.setVerticalGroup(
@@ -190,8 +284,8 @@ public class PaymentNew extends javax.swing.JFrame {
                     .addComponent(jLabel6))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jTextField4, javax.swing.GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(DateField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(SupplierField, javax.swing.GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE))
                 .addGap(41, 41, 41)
                 .addComponent(addItemBtn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -199,11 +293,11 @@ public class PaymentNew extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(TotalAmountField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(20, 20, 20)
                 .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(PaymentAmount, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -221,6 +315,11 @@ public class PaymentNew extends javax.swing.JFrame {
         jButton2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jButton2.setForeground(new java.awt.Color(255, 255, 255));
         jButton2.setText("Create");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -262,12 +361,103 @@ public class PaymentNew extends javax.swing.JFrame {
 
     private void addItemBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_addItemBtnMouseClicked
         tableModel.addRow(new Object[]{"", "", "", ""});
-        jTable2.scrollRectToVisible(jTable2.getCellRect(tableModel.getRowCount()-1, 0, true));
+        jTable2.scrollRectToVisible(jTable2.getCellRect(tableModel.getRowCount() - 1, 0, true));
+        calculateTotalAmount();
     }//GEN-LAST:event_addItemBtnMouseClicked
 
-    private void jTextField4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField4ActionPerformed
+    private void TotalAmountFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TotalAmountFieldActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField4ActionPerformed
+    }//GEN-LAST:event_TotalAmountFieldActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+
+        PaymentRepo paymentRepo = new PaymentRepo();
+
+        try {
+            Date selectedDate = DateField.getDate();  // Get date from JDateChooser
+
+            // When merge, this field will automatically get the current user id
+            Long recordedById = 1L; // You may replace this with the current user ID
+            String selectedSupplier = (String) SupplierField.getSelectedItem();
+
+            // Check for null to avoid NullPointerException
+            if (selectedDate == null) {
+                JOptionPane.showMessageDialog(null, "Please select a valid date.");
+                return;
+            }
+
+            // Convert Date to LocalDate
+            LocalDate PaymentDate = selectedDate.toInstant()
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDate();
+            double totalAmount = 0.0;
+            try {
+                totalAmount = Double.parseDouble(TotalAmountField.getText());  // If TotalAmountField is a JTextField
+            } catch (NumberFormatException ex) {
+                // If TotalAmountField is not a JTextField or contains invalid text
+                JOptionPane.showMessageDialog(null, "Invalid total amount.");
+                return;
+            }
+
+            // Parse PaymentAmount similarly
+            double paymentAmount = 0.0;
+            try {
+                paymentAmount = Double.parseDouble(PaymentAmount.getText());
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(null, "Invalid payment amount.");
+                return;
+            }
+            for (PurchaseOrderDetail po : purchaseOrdeList) {
+
+                Payment newPayment = new Payment(
+                        null,
+                        null,
+                        selectedSupplier,
+                        PaymentDate,
+                        totalAmount,
+                        paymentAmount
+                );
+
+                paymentRepo.create(newPayment); // Now the create() method can be called on the instance
+            }
+
+            JOptionPane.showMessageDialog(null, "Payment added successfully!");
+
+            // Clear the form
+            SupplierField.setSelectedItem(null);  // Deselect supplier field
+            DateField.setDate(null);  // Reset date field
+            TotalAmountField.setText("");  // Clear total amount
+            PaymentAmount.setText("");  // Clear payment amount
+
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(null, "Please enter valid numbers for total and payment amounts.");
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null, "Error saving payment: " + ex.getMessage());
+        }
+
+
+    }//GEN-LAST:event_jButton2ActionPerformed
+    public class PurchaseOrderDetail {
+
+        private long purchaseOrderId;
+
+        public PurchaseOrderDetail(Long purchaseOrderId) {
+            this.purchaseOrderId = purchaseOrderId;
+        }
+
+        // Getter method for purchaseOrderId
+        public long getPurchaseOrderId() {
+            return purchaseOrderId;
+        }
+    }
+
+    public void addToList(Long id) {
+        purchaseOrdeList.add(new PurchaseOrderDetail(id));
+        System.out.println("added to list" + id);
+    }
+    private void jTable2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable2MouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTable2MouseClicked
 
     /**
      * @param args the command line arguments
@@ -336,11 +526,14 @@ public class PaymentNew extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.toedter.calendar.JDateChooser DateField;
+    private javax.swing.JTextField PaymentAmount;
+    private javax.swing.JComboBox<String> SupplierField;
+    private javax.swing.JTextField TotalAmountField;
     private javax.swing.JButton addItemBtn;
     private javax.swing.JPanel inputPanel;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -351,8 +544,5 @@ public class PaymentNew extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField7;
-    private javax.swing.JTextField jTextField8;
     // End of variables declaration//GEN-END:variables
 }
