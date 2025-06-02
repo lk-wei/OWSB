@@ -23,7 +23,7 @@ public class AlertFrame extends javax.swing.JDialog {
     /**
      * Creates new form AlertFrame
      */
-    private String currentUserRole = "PM";
+    private String currentUserRole;
     
     public AlertFrame(java.awt.Frame parent, boolean modal) {
         super(parent, modal);

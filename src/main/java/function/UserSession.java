@@ -12,7 +12,7 @@ import domain.User;
  */
 public class UserSession {
     private static UserSession instance;
-    private User currentUser;
+    private User currentUser = new User();
     
     private UserSession(){
         
