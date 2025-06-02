@@ -41,12 +41,13 @@ public class ItemRepo extends MasterRepo<Item>{
         DefaultTableModel model = new DefaultTableModel(
                 new Object[][]{},
                 // These column names must match what's in your JFrame
-                new String[]{"Item Code", "Item Name", "Current Stock", "Min Stock", "Unit Cost", ""}
+                new String[]{"", "Item Code", "Item Name", "Current Stock", "Min Stock", "Unit Cost", ""}
         );
         List<Item> items = getAll();
 
         for (Item item : items) {
             model.addRow(new Object[]{
+                item.getId(),
                 item.getItemCode(), //itemCode
                 item.getItemName(), //ItemName
                 item.getCurrentStock(), //currentStock

@@ -4,8 +4,17 @@
  */
 package gui.table;
 
+import component.ButtonEditor;
+import component.ButtonRenderer;
+import function.NavigationManager;
+import gui.FinancialReportView;
+import gui.PaymentView;
+import java.awt.Component;
 import java.io.IOException;
+import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.table.TableColumn;
 import repository.PaymentRepo;
 
 /**
@@ -13,25 +22,57 @@ import repository.PaymentRepo;
  * @author Kang Wei
  */
 public class PaymentTable extends javax.swing.JFrame {
+
     /**
      * Creates new form DashBoardSample
      */
-    
+
     public PaymentTable() {
         initComponents();
         this.setLocationRelativeTo(null); //this will center your frame
         updateTable();
     }
-    
+
     // Custom Methods
-     private void updateTable() {
+    private void updateTable() {
         PaymentRepo repo = new PaymentRepo();
         try {
-             jTable1.setModel(repo.getTableModel());
+            jTable1.setModel(repo.getTableModel());
         } catch (IOException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
         }
+        // Hide the ID column
+        TableColumn idColumn = jTable1.getColumnModel().getColumn(0);
+        idColumn.setMinWidth(0);
+        idColumn.setMaxWidth(0);
+        idColumn.setPreferredWidth(0);
+        idColumn.setResizable(false);
+
+        int lastColumnIndex = jTable1.getColumnModel().getColumnCount() - 1;
+        TableColumn actionColumn = jTable1.getColumnModel().getColumn(lastColumnIndex);
+        actionColumn.setCellRenderer(new ButtonRenderer());
+        actionColumn.setCellEditor(new ButtonEditor(new JCheckBox()) {
+            @Override
+            public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+                Component c = super.getTableCellEditorComponent(table, value, isSelected, row, column);
+
+                for (java.awt.event.ActionListener al : button.getActionListeners()) {
+                    button.removeActionListener(al);
+                }
+
+                button.addActionListener(e -> {
+                    int modelRow = table.convertRowIndexToModel(row);
+                    Object rawId = table.getModel().getValueAt(modelRow, 0);
+                    Long id = Long.valueOf(rawId.toString());
+                    System.out.println("ID: " + id);
+
+                    NavigationManager.getInstance().openFrame(new PaymentView(id), PaymentTable.this);
+                });
+                return c;
+            }
+        });
+
     }
 
     /**
@@ -64,13 +105,13 @@ public class PaymentTable extends javax.swing.JFrame {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
             },
             new String [] {
-                "Payment Code", "Supplier Name", "Date", "Amount", ""
+                "", "Payment Code", "Supplier Name", "Date", "Total Amount", "Payment Amount", ""
             }
         ));
         jScrollPane1.setViewportView(jTable1);
