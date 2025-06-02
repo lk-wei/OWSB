@@ -9,6 +9,7 @@ import component.ButtonRenderer;
 import domain.User;
 import function.FrontendPermissionManager;
 import function.NavigationManager;
+import function.UserSession;
 import gui.UserNew;
 import gui.UserView;
 import java.awt.Component;
@@ -27,11 +28,11 @@ public class UserTable extends javax.swing.JFrame {
     /**
      * Creates new form DashBoardSample
      */
-    User currentUser = new User();
+    private User currentUser;
     
     public UserTable() {
+        currentUser = UserSession.getInstance().getCurrentUser();
         
-        currentUser.setRole("AD");
         initComponents();
         
         FrontendPermissionManager.applyButtonPermissions(
@@ -108,6 +109,11 @@ public class UserTable extends javax.swing.JFrame {
         setMinimumSize(new java.awt.Dimension(1000, 800));
         setResizable(false);
         setSize(new java.awt.Dimension(1000, 800));
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowActivated(java.awt.event.WindowEvent evt) {
+                formWindowActivated(evt);
+            }
+        });
         getContentPane().add(navBarSample2, java.awt.BorderLayout.NORTH);
 
         jPanel2.setMinimumSize(new java.awt.Dimension(1000, 0));
@@ -177,6 +183,11 @@ public class UserTable extends javax.swing.JFrame {
         // TODO add your handling code here:
         NavigationManager.getInstance().openFrame(new UserNew(), this);
     }//GEN-LAST:event_newButtonActionPerformed
+
+    private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
+        // TODO add your handling code here:
+        updateTable();
+    }//GEN-LAST:event_formWindowActivated
 
     /**
      * @param args the command line arguments

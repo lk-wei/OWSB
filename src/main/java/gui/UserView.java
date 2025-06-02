@@ -6,6 +6,7 @@ package gui;
 
 import domain.User;
 import function.NavigationManager;
+import function.UserSession;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,9 +24,13 @@ public class UserView extends javax.swing.JFrame {
      * Creates new form DashBoardSample
      */
     private Long viewId;
-    private User user; 
+    private User user;
+    private User currentUser;
     
     public UserView(Long viewId) {
+        // get lgged in user
+        currentUser = UserSession.getInstance().getCurrentUser();
+        
         this.viewId = viewId;
         
         initComponents();
@@ -90,6 +95,11 @@ public class UserView extends javax.swing.JFrame {
         setMinimumSize(new java.awt.Dimension(600, 500));
         setResizable(false);
         setSize(new java.awt.Dimension(800, 600));
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowActivated(java.awt.event.WindowEvent evt) {
+                formWindowActivated(evt);
+            }
+        });
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -285,6 +295,11 @@ public class UserView extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_deleteButtonActionPerformed
+
+    private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
+        // TODO add your handling code here:
+        setView();
+    }//GEN-LAST:event_formWindowActivated
 
     /**
      * @param args the command line arguments

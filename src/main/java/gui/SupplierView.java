@@ -5,7 +5,9 @@
 package gui;
 
 import domain.Supplier;
+import domain.User;
 import function.NavigationManager;
+import function.UserSession;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,8 +29,12 @@ public class SupplierView extends javax.swing.JFrame {
     private DefaultTableModel tableModel;
     private Long viewId;
     private Supplier supplier; 
+    private User currentUser;
     
     public SupplierView(Long viewId) {
+        // get lgged in user
+        currentUser = UserSession.getInstance().getCurrentUser();
+        
         this.viewId = viewId;
         
         initComponents();
@@ -51,8 +57,8 @@ public class SupplierView extends javax.swing.JFrame {
             
             codeField.setText(supplier.getSupplierCode());
             nameField.setText(supplier.getSuppliername());
-            emailField.setText(supplier.getPhone());
-            phoneField.setText(supplier.getEmail());
+            emailField.setText(supplier.getEmail());
+            phoneField.setText(supplier.getPhone());
             
             jTable2.setModel(isr.getItemTableModel(viewId));
         } catch (IllegalArgumentException e) {
@@ -107,6 +113,11 @@ public class SupplierView extends javax.swing.JFrame {
         setMinimumSize(new java.awt.Dimension(600, 500));
         setResizable(false);
         setSize(new java.awt.Dimension(800, 600));
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowActivated(java.awt.event.WindowEvent evt) {
+                formWindowActivated(evt);
+            }
+        });
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -332,6 +343,11 @@ public class SupplierView extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_deleteButtonActionPerformed
+
+    private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
+        // TODO add your handling code here:
+        setView();
+    }//GEN-LAST:event_formWindowActivated
 
     /**
      * @param args the command line arguments
