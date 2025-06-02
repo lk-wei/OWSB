@@ -46,6 +46,8 @@ public class ItemRepo extends MasterRepo<Item>{
         List<Item> items = getAll();
 
         for (Item item : items) {
+            
+            
             model.addRow(new Object[]{
                 item.getId(),
                 item.getItemCode(), //itemCode
@@ -53,7 +55,7 @@ public class ItemRepo extends MasterRepo<Item>{
                 item.getCurrentStock(), //currentStock
                 item.getMinStock(), //minStock
                 item.getUnitCost(),
-                ""}); //unit Cost
+                "View"}); //unit Cost
         }
         return model;
     }

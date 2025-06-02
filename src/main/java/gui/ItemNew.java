@@ -5,6 +5,7 @@
 package gui;
 
 import domain.Item;
+import function.NavigationManager;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -144,6 +145,11 @@ public class ItemNew extends javax.swing.JFrame {
         jButton1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jButton1.setForeground(new java.awt.Color(255, 255, 255));
         jButton1.setText("Cancel");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         createButton.setBackground(new java.awt.Color(102, 204, 0));
         createButton.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
@@ -201,18 +207,19 @@ public class ItemNew extends javax.swing.JFrame {
 
     private void createButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createButtonActionPerformed
         ItemRepo itemRepo = new ItemRepo();
-        
+
         try {
             Item newItem = new Item(
-                        null,
-                        itemCodeField.getText(),
-                        itemNameField.getText(),
-                        Integer.parseInt(currentStockField.getText()),
-                        Integer.parseInt(minStockField.getText()),
-                        Double.parseDouble(unitCostField.getText())
+                    null,
+                    itemCodeField.getText(),
+                    itemNameField.getText(),
+                    Integer.parseInt(currentStockField.getText()),
+                    Integer.parseInt(minStockField.getText()),
+                    Double.parseDouble(unitCostField.getText())
             );
             itemRepo.create(newItem);
             JOptionPane.showMessageDialog(null, "Item added successfully!");
+            NavigationManager.getInstance().goBack();
             itemCodeField.setText("");
             itemNameField.setText("");
             currentStockField.setText("");
@@ -226,6 +233,11 @@ public class ItemNew extends javax.swing.JFrame {
 
 
     }//GEN-LAST:event_createButtonActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        NavigationManager.getInstance().goBack();
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
