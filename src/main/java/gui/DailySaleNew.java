@@ -307,6 +307,12 @@ public class DailySaleNew extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, "Please select a date.");
                 return;
             }
+            
+            // Check if itemList is empty or null
+            if (itemList == null || itemList.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Please select at least one item to create a daily sale.");
+                return;
+            }
 
             // Convert Date to LocalDate
             LocalDate saleDate = selectedDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
@@ -331,7 +337,9 @@ public class DailySaleNew extends javax.swing.JFrame {
                 }
 
             JOptionPane.showMessageDialog(null, "Daily Sale added successfully!");
-            NavigationManager.getInstance().goBack();
+            //NavigationManager.getInstance().goBack();
+            //this.dispose();
+            NavigationManager.getInstance().openFrame(new DailySaleTable(), this);
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(null, "Please enter valid numbers for stock and unit cost.");
         } catch (IOException ex) {

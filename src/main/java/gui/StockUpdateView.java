@@ -357,7 +357,8 @@ public class StockUpdateView extends javax.swing.JFrame {
                 
                 sur.delete(update); 
                 JOptionPane.showMessageDialog(this, "Update record deleted successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
-                NavigationManager.getInstance().goBack();
+//                NavigationManager.getInstance().goBack();
+                NavigationManager.getInstance().openFrame(new StockUpdateTable(), this);
             } catch (IOException ex) {
                 Logger.getLogger(StockUpdateView.class.getName()).log(Level.SEVERE, null, ex);
                 JOptionPane.showMessageDialog(this, "Failed to delete the update record. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);

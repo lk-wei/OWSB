@@ -10,6 +10,7 @@ import domain.Item;
 import domain.StockUpdate;
 import function.ManageStock;
 import function.NavigationManager;
+import gui.table.DailySaleTable;
 import gui.table.StockUpdateTable;
 import java.awt.Component;
 import java.io.IOException;
@@ -338,7 +339,20 @@ public class StockUpdateNew extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, "Please select a date.");
                 return;
             }
-
+            
+            String description = descriptionField.getText().trim();
+            if (description.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Please enter a description.");
+                return;
+            }
+            
+            // Check if itemList is empty or null
+            if (itemList == null || itemList.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Please select at least one item to create stock update.");
+                return;
+            }
+            
+            
             // Convert Date to LocalDate
             LocalDate date = selectedDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
             List<Map<String, Object>> stockList = new ArrayList<>();
@@ -347,7 +361,8 @@ public class StockUpdateNew extends javax.swing.JFrame {
                 StockUpdate newStockUpdate = new StockUpdate(
                         null,
                         codeField.getText(),
-                        descriptionField.getText(),
+//                        descriptionField.getText(),
+                        description,
                         i.itemId,
                         i.quantity,
                         date,
@@ -368,7 +383,8 @@ public class StockUpdateNew extends javax.swing.JFrame {
 //            descriptionField.setText("");
 //            dateField.setDate(null);
 //            userIdField.setText("");
-            NavigationManager.getInstance().goBack();
+//            NavigationManager.getInstance().goBack();
+            NavigationManager.getInstance().openFrame(new StockUpdateTable(), this);
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(null, "Please enter valid numbers for stock and unit cost.");
         } catch (IOException ex) {

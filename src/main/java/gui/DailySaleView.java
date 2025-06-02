@@ -325,7 +325,8 @@ public class DailySaleView extends javax.swing.JFrame {
                 
                 dsr.delete(sale); 
                 JOptionPane.showMessageDialog(this, "Sale record deleted successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
-                NavigationManager.getInstance().goBack();
+                //NavigationManager.getInstance().goBack();
+                NavigationManager.getInstance().openFrame(new DailySaleTable(), this);
             } catch (IOException ex) {
                 Logger.getLogger(DailySaleView.class.getName()).log(Level.SEVERE, null, ex);
                 JOptionPane.showMessageDialog(this, "Failed to delete the sale record. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
