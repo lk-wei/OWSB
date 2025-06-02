@@ -7,10 +7,15 @@ package gui;
 import component.ButtonEditor;
 import component.ButtonRenderer;
 import domain.Item;
+import domain.ItemSupplier;
+import domain.Supplier;
+import function.NavigationManager;
 import java.awt.Component;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JCheckBox;
@@ -19,25 +24,81 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import repository.ItemRepo;
+import repository.ItemSupplierRepo;
+import repository.SupplierRepo;
 import sample.*;
 
 /**
  *
  * @author jacks
  */
-public class SupplierNew extends javax.swing.JFrame {
+public class SupplierNew extends javax.swing.JFrame implements ItemSelectionListener{
     /**
      * Creates new form DashBoardSample
      */
+    private DefaultTableModel tableModel;
+    private List<Item> itemList = new ArrayList<>();
     
-    public SupplierNew() {
+    public SupplierNew() throws IOException {
         initComponents();
-        
+        tableModel = (DefaultTableModel) itemTable.getModel();
         this.setLocationRelativeTo(null); //this will center your frame
+        
+        updateTable();
     }
     
     // Custom Methods
-  
+    public void updateTable() throws IOException {
+        removeAllRows();
+
+        if(itemList != null){
+            for (Item i : itemList) {
+                tableModel.addRow(new Object[]{i.getId(),i.getItemCode(), i.getItemName(), "Delete"});            
+                System.out.println("table updated");
+            }
+        }
+        
+        TableColumn idColumn = itemTable.getColumnModel().getColumn(0);
+        idColumn.setMinWidth(0);
+        idColumn.setMaxWidth(0);
+        idColumn.setPreferredWidth(0);
+        idColumn.setResizable(false);
+        
+        TableColumn actionColumn = itemTable.getColumnModel().getColumn(3);
+        actionColumn.setCellRenderer(new ButtonRenderer());
+        actionColumn.setCellEditor(new ButtonEditor(new JCheckBox()) {
+            @Override
+            public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+                Component c = super.getTableCellEditorComponent(table, value, isSelected, row, column);
+
+                button.addActionListener(e -> {
+                    fireEditingStopped();
+                    
+                    // add button function here
+                    Object rawId = table.getModel().getValueAt(row, 0);
+                    Long id = Long.valueOf(rawId.toString());
+                    System.out.println(id);
+                    
+                    for(Item i : itemList){
+                        if(Objects.equals(i.getId(), id)){
+                            itemList.remove(i);
+                            System.out.println("Removed id: "+ id );
+                            break;
+                        }
+                    }
+                    
+                    tableModel.removeRow(row);
+                });
+                return c;
+            }
+        });
+    }
+    
+    private void removeAllRows() {
+        while (tableModel.getRowCount() > 0) {
+            tableModel.removeRow(0);
+        }
+    }
     
 
     /**
@@ -53,14 +114,16 @@ public class SupplierNew extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         inputPanel = new javax.swing.JPanel();
         supplierNameLabel = new javax.swing.JLabel();
-        nameField = new javax.swing.JTextField();
+        codeField = new javax.swing.JTextField();
         phoneLabel = new javax.swing.JLabel();
-        phoneField = new javax.swing.JTextField();
+        nameField = new javax.swing.JTextField();
         emailLabel = new javax.swing.JLabel();
         emailField = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         itemTable = new javax.swing.JTable();
         addItemBtn = new javax.swing.JButton();
+        phoneField = new javax.swing.JTextField();
+        phoneLabel1 = new javax.swing.JLabel();
         cancelButton = new javax.swing.JButton();
         createButton = new javax.swing.JButton();
 
@@ -75,14 +138,14 @@ public class SupplierNew extends javax.swing.JFrame {
         jLabel1.setToolTipText("");
 
         supplierNameLabel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        supplierNameLabel.setText("Name");
+        supplierNameLabel.setText("Supplier Code");
 
-        nameField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        codeField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         phoneLabel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        phoneLabel.setText("Phone");
+        phoneLabel.setText("Name");
 
-        phoneField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        nameField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         emailLabel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         emailLabel.setText("Email");
@@ -94,7 +157,7 @@ public class SupplierNew extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Item Code", "Item Name", "Action"
+                "", "Item Code", "Item Name", "Action"
             }
         ));
         itemTable.setShowGrid(true);
@@ -107,6 +170,11 @@ public class SupplierNew extends javax.swing.JFrame {
             }
         });
 
+        phoneField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+
+        phoneLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        phoneLabel1.setText("Phone");
+
         javax.swing.GroupLayout inputPanelLayout = new javax.swing.GroupLayout(inputPanel);
         inputPanel.setLayout(inputPanelLayout);
         inputPanelLayout.setHorizontalGroup(
@@ -117,7 +185,7 @@ public class SupplierNew extends javax.swing.JFrame {
                     .addGroup(inputPanelLayout.createSequentialGroup()
                         .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(supplierNameLabel, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(nameField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE))
+                            .addComponent(codeField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE))
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(inputPanelLayout.createSequentialGroup()
                         .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -125,8 +193,10 @@ public class SupplierNew extends javax.swing.JFrame {
                             .addGroup(inputPanelLayout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
                                 .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(nameField, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(phoneLabel)
                                     .addComponent(phoneField, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(phoneLabel))))
+                                    .addComponent(phoneLabel1))))
                         .addGap(75, 75, 75))
                     .addGroup(inputPanelLayout.createSequentialGroup()
                         .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -142,15 +212,19 @@ public class SupplierNew extends javax.swing.JFrame {
                     .addGroup(inputPanelLayout.createSequentialGroup()
                         .addComponent(supplierNameLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(nameField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(codeField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(inputPanelLayout.createSequentialGroup()
                         .addComponent(phoneLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(phoneField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(nameField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
-                .addComponent(emailLabel)
+                .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(emailLabel)
+                    .addComponent(phoneLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(emailField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(emailField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(phoneField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(addItemBtn)
                 .addGap(18, 18, 18)
@@ -219,16 +293,90 @@ public class SupplierNew extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void addItemBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addItemBtnActionPerformed
-        // TODO add your handling code here:
-
-    }//GEN-LAST:event_addItemBtnActionPerformed
-
     private void createButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createButtonActionPerformed
         // TODO add your handling code here:
-        
+        try {
+            Supplier newSupplier = new Supplier(
+                null,                          
+                codeField.getText(),
+                nameField.getText(),             
+                emailField.getText(),                    
+                phoneField.getText(),
+                null                           
+            );
+            
+            new SupplierRepo().create(newSupplier);
+                
+            // get new created fr ID
+            Long newlyCreatedSupplierId = newSupplier.getId();
+
+            
+            
+            if(itemList != null){
+                for (Item i : itemList) {
+                    new ItemSupplierRepo().create(new ItemSupplier(
+                        null,
+                        i.getId(),
+                        newlyCreatedSupplierId
+                    ));
+                }
+            }
+
+            JOptionPane.showMessageDialog(null, "New Supplier added successfully!");
+            NavigationManager.getInstance().goBack();
+        } catch (IOException ex) {
+            
+        }
     }//GEN-LAST:event_createButtonActionPerformed
 
+    private void addItemBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addItemBtnActionPerformed
+        // TODO add your handling code here:
+        try {
+            new SupplierItem(this, this).setVisible(true);
+        } catch (IOException ex) {
+            Logger.getLogger(DailySaleNew.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_addItemBtnActionPerformed
+
+    @Override
+    public void onItemSelected(Item item) {
+        addToList(item); // Or any custom logic
+    }
+    
+    public void addToList(Item item){
+        if (item == null || item.getId() == null) {
+            System.out.println("Attempted to add a null item or item with null ID.");
+            return;
+        }
+        
+        // check for duplicate items
+        boolean itemExists = false;
+        for (Item existingItem : itemList) {
+            if (existingItem.getId().equals(item.getId())) {
+                itemExists = true;
+                break;
+            }
+        }
+        
+         if (!itemExists) {
+            itemList.add(item);
+            System.out.println("Added to list: " + item.getItemCode());
+            try {
+                updateTable(); 
+            } catch (IOException ex) {
+                Logger.getLogger(SupplierNew.class.getName()).log(Level.SEVERE, "Error updating table after adding item", ex);
+            }
+        } else {
+            System.out.println("Item " + item.getItemCode() + " is already in the list for this supplier.");
+            JOptionPane.showMessageDialog(
+                this,
+                "Item '" + item.getItemCode()+ "' is already added for this supplier.",
+                "Duplicate Item",
+                JOptionPane.INFORMATION_MESSAGE
+            );
+        }
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -322,7 +470,11 @@ public class SupplierNew extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new SupplierNew().setVisible(true);
+                try {
+                    new SupplierNew().setVisible(true);
+                } catch (IOException ex) {
+                    Logger.getLogger(SupplierNew.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }
@@ -330,6 +482,7 @@ public class SupplierNew extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addItemBtn;
     private javax.swing.JButton cancelButton;
+    private javax.swing.JTextField codeField;
     private javax.swing.JButton createButton;
     private javax.swing.JTextField emailField;
     private javax.swing.JLabel emailLabel;
@@ -341,6 +494,7 @@ public class SupplierNew extends javax.swing.JFrame {
     private javax.swing.JTextField nameField;
     private javax.swing.JTextField phoneField;
     private javax.swing.JLabel phoneLabel;
+    private javax.swing.JLabel phoneLabel1;
     private javax.swing.JLabel supplierNameLabel;
     // End of variables declaration//GEN-END:variables
 }

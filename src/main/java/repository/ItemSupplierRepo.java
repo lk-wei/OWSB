@@ -4,13 +4,16 @@
  */
 package repository;
 
+import domain.Item;
 import domain.ItemSupplier;
+import domain.Supplier;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -48,6 +51,71 @@ public class ItemSupplierRepo extends MasterRepo<ItemSupplier>{
             }
         }
         return ItemSupplierList;
+    }
+    
+    // for supplier deletion
+    public void deleteBySupplierId(Long supplierId) throws IOException{
+        List<String> lines = Files.readAllLines(filePath);
+        List<String> updatedLines = new ArrayList<>();
+
+        for (String line : lines) {
+            ItemSupplier is = stringToObject(line);
+
+            if (!Objects.equals(is.getSupplierId(), supplierId)) {
+                updatedLines.add(line);
+            }
+        }
+        Files.write(filePath, updatedLines);
+    }
+    
+    // for item deletion
+    public void deleteByItemId(Long itemId) throws IOException{
+        List<String> lines = Files.readAllLines(filePath);
+        List<String> updatedLines = new ArrayList<>();
+
+        for (String line : lines) {
+            ItemSupplier is = stringToObject(line);
+
+            if (!Objects.equals(is.getItemId(), itemId)) {
+                updatedLines.add(line);
+            }
+        }
+        Files.write(filePath, updatedLines);
+    }
+    
+    // UI
+    public DefaultTableModel getSupplierTableModel(Long itemId) throws IOException {
+        String[] columnNames = {"", "Report Number", "Description", "Date", "Created By", ""};
+        DefaultTableModel model = new DefaultTableModel(columnNames, 0);
+        
+        for (ItemSupplier is : getBySupplierId(itemId)) {
+            Supplier s = new SupplierRepo().getById(is.getItemId());
+            
+            model.addRow(new Object[]{
+                s.getId(),
+                s.getSupplierCode(),
+                s.getSuppliername(),
+                "delete" // Action 
+            });
+        }
+        return model;
+    }
+    
+    public DefaultTableModel getItemTableModel(Long supplierId) throws IOException {
+        String[] columnNames = {"", "Item Code", "Item Name", ""};
+        DefaultTableModel model = new DefaultTableModel(columnNames, 0);
+        
+        for (ItemSupplier is : getBySupplierId(supplierId)) {
+            Item i = new ItemRepo().getById(is.getItemId());
+            
+            model.addRow(new Object[]{
+                i.getId(),
+                i.getItemCode(),
+                i.getItemName(),
+                "delete" // Action 
+            });
+        }
+        return model;
     }
     
     // convert object into string seperated by |

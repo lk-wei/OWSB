@@ -11,6 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 import repository.ItemSupplierRepo;
 import repository.SupplierRepo;
 import sample.*;
@@ -50,20 +51,30 @@ public class SupplierView extends javax.swing.JFrame {
             
             codeField.setText(supplier.getSupplierCode());
             nameField.setText(supplier.getSuppliername());
-            phoneField.setText(supplier.getPhone());
-            emailField.setText(supplier.getEmail());
-//            
-//            LocalDate localDate = report.getCreationDate(); // example date
-//            Date date = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
-//
-//            reportDateField.setDate(date);
+            emailField.setText(supplier.getPhone());
+            phoneField.setText(supplier.getEmail());
             
-            //jTable2.setModel(isr.getTableModel(viewId));
+            jTable2.setModel(isr.getItemTableModel(viewId));
         } catch (IllegalArgumentException e) {
             JOptionPane.showMessageDialog(this, e.getMessage(), "Input Error", JOptionPane.ERROR_MESSAGE);
         } catch (IOException ex) {
             Logger.getLogger(FinancialReportNew.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        // Hide the ID column
+        TableColumn idColumn = jTable2.getColumnModel().getColumn(0);
+        idColumn.setMinWidth(0);
+        idColumn.setMaxWidth(0);
+        idColumn.setPreferredWidth(0);
+        idColumn.setResizable(false);
+        
+        // Hide Action button for view only
+        int lastColumnIndex = jTable2.getColumnModel().getColumnCount() - 1;
+        TableColumn actionColumn = jTable2.getColumnModel().getColumn(lastColumnIndex);
+        actionColumn.setMinWidth(0);
+        actionColumn.setMaxWidth(0);
+        actionColumn.setPreferredWidth(0);
+        actionColumn.setResizable(false);
     }
 
     /**
@@ -83,9 +94,9 @@ public class SupplierView extends javax.swing.JFrame {
         codeField = new javax.swing.JTextField();
         nameField = new javax.swing.JTextField();
         phoneLabel = new javax.swing.JLabel();
-        phoneField = new javax.swing.JTextField();
-        emailLabel = new javax.swing.JLabel();
         emailField = new javax.swing.JTextField();
+        emailLabel = new javax.swing.JLabel();
+        phoneField = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
         backButton = new javax.swing.JButton();
@@ -115,16 +126,16 @@ public class SupplierView extends javax.swing.JFrame {
         nameField.setEnabled(false);
 
         phoneLabel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        phoneLabel.setText("Phone");
-
-        phoneField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        phoneField.setEnabled(false);
-
-        emailLabel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        emailLabel.setText("Email");
+        phoneLabel.setText("Email");
 
         emailField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         emailField.setEnabled(false);
+
+        emailLabel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        emailLabel.setText("Phone");
+
+        phoneField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        phoneField.setEnabled(false);
 
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -142,30 +153,31 @@ public class SupplierView extends javax.swing.JFrame {
                 return types [columnIndex];
             }
         });
+        jTable2.setEnabled(false);
         jScrollPane1.setViewportView(jTable2);
 
         javax.swing.GroupLayout inputPanelLayout = new javax.swing.GroupLayout(inputPanel);
         inputPanel.setLayout(inputPanelLayout);
         inputPanelLayout.setHorizontalGroup(
             inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, inputPanelLayout.createSequentialGroup()
+            .addGroup(inputPanelLayout.createSequentialGroup()
                 .addGap(75, 75, 75)
                 .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 650, Short.MAX_VALUE)
                     .addGroup(inputPanelLayout.createSequentialGroup()
                         .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(phoneField, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(emailField, javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(codeField, javax.swing.GroupLayout.Alignment.LEADING)
                                 .addGroup(javax.swing.GroupLayout.Alignment.LEADING, inputPanelLayout.createSequentialGroup()
                                     .addComponent(codeLabel)
                                     .addGap(262, 262, 262)))
                             .addComponent(phoneLabel))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 54, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 56, Short.MAX_VALUE)
                         .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(emailLabel)
                             .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(emailField, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(phoneField, javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(supplierNameLabel, javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(nameField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)))))
                 .addGap(75, 75, 75))
@@ -185,14 +197,14 @@ public class SupplierView extends javax.swing.JFrame {
                     .addGroup(inputPanelLayout.createSequentialGroup()
                         .addComponent(phoneLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(phoneField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(emailField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(inputPanelLayout.createSequentialGroup()
                         .addComponent(emailLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(emailField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(75, Short.MAX_VALUE))
+                        .addComponent(phoneField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(59, 59, 59)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(17, Short.MAX_VALUE))
         );
 
         backButton.setBackground(new java.awt.Color(204, 204, 204));
@@ -241,9 +253,9 @@ public class SupplierView extends javax.swing.JFrame {
             .addComponent(inputPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(73, 73, 73)
                 .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(backButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(editButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -278,8 +290,12 @@ public class SupplierView extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void editButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editButtonActionPerformed
-        // TODO add your handling code here:
-        NavigationManager.getInstance().openFrame(new SupplierEdit(viewId), this);
+        try {
+            // TODO add your handling code here:
+            NavigationManager.getInstance().openFrame(new SupplierEdit(viewId), this);
+        } catch (IOException ex) {
+            Logger.getLogger(SupplierView.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_editButtonActionPerformed
 
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
@@ -303,9 +319,9 @@ public class SupplierView extends javax.swing.JFrame {
         }
 
         if (confirm == JOptionPane.YES_OPTION) {
-            SupplierRepo sr = new SupplierRepo();
             try {
-                sr.delete(supplier); 
+                new SupplierRepo().delete(supplier);
+                new ItemSupplierRepo().deleteBySupplierId(supplier.getId());
                 JOptionPane.showMessageDialog(this, "Supplier deleted successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
                 NavigationManager.getInstance().goBack();
             } catch (IOException ex) {
@@ -378,7 +394,7 @@ public class SupplierView extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-//               new SupplierView().setVisible(true);
+               new SupplierView(12L).setVisible(true);
             }
         });
     }

@@ -9,9 +9,12 @@ import component.ButtonRenderer;
 import domain.User;
 import function.FrontendPermissionManager;
 import function.NavigationManager;
+import gui.SupplierNew;
 import gui.SupplierView;
 import java.awt.Component;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -107,6 +110,11 @@ public class SupplierTable extends javax.swing.JFrame {
         setMinimumSize(new java.awt.Dimension(1000, 800));
         setResizable(false);
         setSize(new java.awt.Dimension(1000, 800));
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowActivated(java.awt.event.WindowEvent evt) {
+                formWindowActivated(evt);
+            }
+        });
         getContentPane().add(navBarSample2, java.awt.BorderLayout.NORTH);
 
         jPanel2.setMinimumSize(new java.awt.Dimension(1000, 0));
@@ -138,6 +146,11 @@ public class SupplierTable extends javax.swing.JFrame {
 
         newButton.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         newButton.setText("New +");
+        newButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                newButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -166,6 +179,20 @@ public class SupplierTable extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void newButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newButtonActionPerformed
+        try {
+            // TODO add your handling code here:
+            NavigationManager.getInstance().openFrame(new SupplierNew(), this);
+        } catch (IOException ex) {
+            Logger.getLogger(SupplierTable.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_newButtonActionPerformed
+
+    private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
+        // TODO add your handling code here:
+        updateTable();
+    }//GEN-LAST:event_formWindowActivated
 
     /**
      * @param args the command line arguments
