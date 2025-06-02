@@ -4,6 +4,8 @@
  */
 package domain;
 
+import repository.PurchaseRequisitionRepo;
+
 /**
  *
  * @author See Kai Yang
@@ -68,9 +70,6 @@ public class PurchaseRequisitionItem implements Identifiable<Long>{
         this.supplierId = supplierId;
     }
 
-    public Object getPurchaseRequisitionCode() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
     
     
     

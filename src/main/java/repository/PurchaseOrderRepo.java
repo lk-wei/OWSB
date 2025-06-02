@@ -119,7 +119,7 @@ public class PurchaseOrderRepo extends MasterRepo<PurchaseOrder>{
             LocalDate.parse(parts[5]),           // orderDate
             LocalDate.parse(parts[6]),           // expectedDeliveryDate
             parts[7],                            // status
-            LocalDate.parse(parts[8]),                                // approvalDate (not saved)
+            LocalDate.parse(parts[8]),           // approvalDate
             Long.valueOf(parts[9]),              // approvedById
             Double.valueOf(parts[10]),            // totalAmount
             new ArrayList<>() // item list
