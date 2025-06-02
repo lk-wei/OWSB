@@ -9,6 +9,7 @@ import component.ButtonRenderer;
 import domain.User;
 import function.FrontendPermissionManager;
 import function.NavigationManager;
+import function.UserSession;
 import gui.UserNew;
 import gui.UserView;
 import java.awt.Component;
@@ -27,11 +28,11 @@ public class UserTable extends javax.swing.JFrame {
     /**
      * Creates new form DashBoardSample
      */
-    User currentUser = new User();
+    private User currentUser;
     
     public UserTable() {
+        currentUser = UserSession.getInstance().getCurrentUser();
         
-        currentUser.setRole("AD");
         initComponents();
         
         FrontendPermissionManager.applyButtonPermissions(

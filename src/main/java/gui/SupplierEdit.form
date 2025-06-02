@@ -79,7 +79,7 @@
               <Font name="Segoe UI" size="36" style="1"/>
             </Property>
             <Property name="horizontalAlignment" type="int" value="0"/>
-            <Property name="text" type="java.lang.String" value="View Supplier"/>
+            <Property name="text" type="java.lang.String" value="Edit Supplier"/>
             <Property name="toolTipText" type="java.lang.String" value=""/>
           </Properties>
         </Component>

@@ -9,7 +9,9 @@ import component.ButtonRenderer;
 import domain.Item;
 import domain.ItemSupplier;
 import domain.Supplier;
+import domain.User;
 import function.NavigationManager;
+import function.UserSession;
 import java.awt.Component;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -38,8 +40,12 @@ public class SupplierEdit extends javax.swing.JFrame implements ItemSelectionLis
     private Supplier supplier;
     private List<Item> oriItemList = new ArrayList<>();
     private List<Item> itemList = new ArrayList<>();
+    private User currentUser;
     
     public SupplierEdit(Long viewId) throws IOException {
+        // get lgged in user
+        currentUser = UserSession.getInstance().getCurrentUser();
+        
         this.viewId = viewId;
         oriItemList = new SupplierRepo().getItemsForSupplier(viewId);
         if (oriItemList == null) { // defensively handle null from repo
@@ -165,7 +171,7 @@ public class SupplierEdit extends javax.swing.JFrame implements ItemSelectionLis
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("View Supplier");
+        jLabel1.setText("Edit Supplier");
         jLabel1.setToolTipText("");
 
         codeLabel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -331,6 +337,13 @@ public class SupplierEdit extends javax.swing.JFrame implements ItemSelectionLis
     }// </editor-fold>//GEN-END:initComponents
 
     private void updateBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateBtnActionPerformed
+        if (nameField.getText().trim().isEmpty() ||
+            emailField.getText().trim().isEmpty() ||
+            phoneField.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Please fill in all the field.");
+            return;
+        }
+        
         try {
             // TODO add your handling code here:
             // update supplier

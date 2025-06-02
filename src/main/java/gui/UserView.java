@@ -6,6 +6,7 @@ package gui;
 
 import domain.User;
 import function.NavigationManager;
+import function.UserSession;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,9 +24,13 @@ public class UserView extends javax.swing.JFrame {
      * Creates new form DashBoardSample
      */
     private Long viewId;
-    private User user; 
+    private User user;
+    private User currentUser;
     
     public UserView(Long viewId) {
+        // get lgged in user
+        currentUser = UserSession.getInstance().getCurrentUser();
+        
         this.viewId = viewId;
         
         initComponents();

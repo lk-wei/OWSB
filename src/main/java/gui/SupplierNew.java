@@ -9,7 +9,9 @@ import component.ButtonRenderer;
 import domain.Item;
 import domain.ItemSupplier;
 import domain.Supplier;
+import domain.User;
 import function.NavigationManager;
+import function.UserSession;
 import java.awt.Component;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -38,8 +40,12 @@ public class SupplierNew extends javax.swing.JFrame implements ItemSelectionList
      */
     private DefaultTableModel tableModel;
     private List<Item> itemList = new ArrayList<>();
+    private User currentUser;
     
     public SupplierNew() throws IOException {
+        // get lgged in user
+        currentUser = UserSession.getInstance().getCurrentUser();
+        
         initComponents();
         tableModel = (DefaultTableModel) itemTable.getModel();
         this.setLocationRelativeTo(null); //this will center your frame
@@ -239,6 +245,11 @@ public class SupplierNew extends javax.swing.JFrame implements ItemSelectionList
         cancelButton.setMaximumSize(new java.awt.Dimension(84, 32));
         cancelButton.setMinimumSize(new java.awt.Dimension(84, 32));
         cancelButton.setPreferredSize(new java.awt.Dimension(84, 32));
+        cancelButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelButtonActionPerformed(evt);
+            }
+        });
 
         createButton.setBackground(new java.awt.Color(102, 204, 0));
         createButton.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
@@ -295,7 +306,27 @@ public class SupplierNew extends javax.swing.JFrame implements ItemSelectionList
 
     private void createButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createButtonActionPerformed
         // TODO add your handling code here:
+        if (codeField.getText().trim().isEmpty() ||
+            nameField.getText().trim().isEmpty() ||
+            emailField.getText().trim().isEmpty() ||
+            phoneField.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Please fill in all the field.");
+            return;
+        }
+        
+        SupplierRepo supplierRepo = new SupplierRepo();
+        
         try {
+            // Fetch all suppliers and check if the code already exists
+            List<Supplier> existingSuppliers = supplierRepo.getAll();
+            for (Supplier existingSupplier : existingSuppliers) {
+                if (existingSupplier.getSupplierCode().equals(codeField.getText().trim())) {
+                    // If the supplier code exists, show an error message
+                    JOptionPane.showMessageDialog(null, "Supplier code already exists! Please choose another code.");
+                    return;
+                }
+            }
+            
             Supplier newSupplier = new Supplier(
                 null,                          
                 codeField.getText(),
@@ -337,6 +368,11 @@ public class SupplierNew extends javax.swing.JFrame implements ItemSelectionList
             Logger.getLogger(DailySaleNew.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_addItemBtnActionPerformed
+
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+        // TODO add your handling code here:
+        NavigationManager.getInstance().goBack();
+    }//GEN-LAST:event_cancelButtonActionPerformed
 
     @Override
     public void onItemSelected(Item item) {

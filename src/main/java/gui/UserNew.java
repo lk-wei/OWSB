@@ -6,6 +6,7 @@ package gui;
 
 import domain.User;
 import function.NavigationManager;
+import function.UserSession;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,8 +22,12 @@ public class UserNew extends javax.swing.JFrame {
     /**
      * Creates new form DashBoardSample
      */
+    private User currentUser;
     
     public UserNew() {
+        // get lgged in user
+        currentUser = UserSession.getInstance().getCurrentUser();
+        
         initComponents();
         this.setLocationRelativeTo(null); //this will center your frame
     }

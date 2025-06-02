@@ -6,6 +6,7 @@ package gui;
 
 import domain.User;
 import function.NavigationManager;
+import function.UserSession;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,8 +24,12 @@ public class UserEdit extends javax.swing.JFrame {
      */
     private Long viewId;
     private User toEdit;
+    private User currentUser;
     
     public UserEdit(Long viewId) {
+        // get lgged in user
+        currentUser = UserSession.getInstance().getCurrentUser();
+        
         this.viewId = viewId;
         
         initComponents();
@@ -236,7 +241,24 @@ public class UserEdit extends javax.swing.JFrame {
         toEdit.setPassword(passwordField.getText());
         toEdit.setRole(roleCode);
         
+        if (usernameField.getText().trim().isEmpty() ||
+            passwordField.getText().trim().isEmpty() ||
+            fullNameField.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Please fill in all the field.");
+            return;
+        }
+        
+        UserRepo userRepo = new UserRepo();
+        
         try {
+            User existingUser = userRepo.getUserByUsername(usernameField.getText().trim());
+        
+            if (existingUser != null) {
+                // If the username exists in the file, show an error message
+                JOptionPane.showMessageDialog(null, "Username already exists! Please choose another username.");
+                return;
+            }
+            
             new UserRepo().update(toEdit);
             
             JOptionPane.showMessageDialog(null, "User Updated successfully!");
