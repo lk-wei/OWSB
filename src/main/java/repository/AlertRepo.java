@@ -7,9 +7,7 @@ package repository;
 import domain.Alert;
 import domain.User;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
@@ -26,53 +24,34 @@ public class AlertRepo extends MasterRepo<Alert>{
     
     // Custom Method
     // UI method
-    public DefaultTableModel getTableModel(String currentUserRole) throws IOException {
-        DefaultTableModel model = new DefaultTableModel(
-            new Object[][]{},
-            // These column names must match what's in your JFrame
-            new String[]{"","From", "Title", ""}
-        );
+   public DefaultTableModel getTableModel(String role) throws IOException {
+        String[] columnNames = {"", "From", "Title", ""};
+        DefaultTableModel model = new DefaultTableModel(columnNames, 0);
         
-        List<Alert> alerts = new ArrayList<>();
-        
-        if("AD".equals(currentUserRole)){
-            alerts = getAll(); 
-        }else{
-            alerts = getByReciverRole(currentUserRole); 
+        for (Alert i : getByReciverRole(role)) {
+            User u = new UserRepo().getById(i.getSender());
+            
+            model.addRow(new Object[]{
+                i.getId(),
+                u.getUserName(),         // From
+                i.getTitle(),        // Title
+                "View"
+            });
         }
-
-        
-        UserRepo userRepo = new UserRepo();    
-
-        for (Alert alert : alerts) {
-            User sender = userRepo.getUserById(alert.getSender());
-
-            // If admin, show all alerts. If not admin, show only unread.
-            if ("AD".equals(currentUserRole) || "unread".equals(alert.getStatus())) {
-                model.addRow(new Object[]{
-                    alert.getId(),
-                    sender.getUserName(),
-                    alert.getTitle(),
-                    "View"
-                });
-            }
-}
+        System.out.println("Rows added to table model: " + model.getRowCount());
         return model;
     }
     
-    public List<Alert> getByReciverRole(String role) throws IOException{
+    public List<Alert> getByReciverRole(String role) throws IOException {
         List<Alert> list = new ArrayList<>();
-        List<String> lines = Files.readAllLines(filePath);
 
-        for (String line : lines) {
-            Alert alert = stringToObject(line);
-            
-            if(alert.getReciverRole().equals(role) || "AD".equals(role)){
-                 list.add(alert);
+        for (Alert a : getAll()) {
+            if ("AD".equals(role) || a.getReciverRole().equals(role)) {
+                list.add(a);
             }
-            
-            
         }
+        System.out.println("Role: " + role + " | Matching alerts: " + list.size());
+
         return list;
     }
     
@@ -92,6 +71,7 @@ public class AlertRepo extends MasterRepo<Alert>{
     @Override
     protected Alert stringToObject(String line) {
         String[] parts = line.split("\\|", -1);
+        System.out.println(line);
         
         return new Alert(
                 Long.valueOf(parts[0]),

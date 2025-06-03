@@ -31,7 +31,10 @@ public class AlertFrame extends javax.swing.JDialog {
     
     public AlertFrame(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
-        currentUser = UserSession.getInstance().getCurrentUser();
+//        currentUser = UserSession.getInstance().getCurrentUser();
+        currentUser = new User();
+        currentUser.setRole("PM");
+        System.out.println(currentUser.getId());
         initComponents();
         this.setLocationRelativeTo(null);
         updateTable();
@@ -40,19 +43,19 @@ public class AlertFrame extends javax.swing.JDialog {
     private void updateTable() {
         AlertRepo repo = new AlertRepo();
         try {
-             jTable1.setModel(repo.getTableModel(currentUser.getRole()));
+             messageTable.setModel(repo.getTableModel(currentUser.getRole()));
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
         }
         
         // Hide the ID column
-        TableColumn idColumn = jTable1.getColumnModel().getColumn(0);
+        TableColumn idColumn = messageTable.getColumnModel().getColumn(0);
         idColumn.setMinWidth(0);
         idColumn.setMaxWidth(0);
         idColumn.setPreferredWidth(0);
         idColumn.setResizable(false);
         
-        TableColumn actionColumn = jTable1.getColumnModel().getColumn(3);
+        TableColumn actionColumn = messageTable.getColumnModel().getColumn(3);
         actionColumn.setCellRenderer(new ButtonRenderer());
         actionColumn.setCellEditor(new ButtonEditor(new JCheckBox()) {
             @Override
@@ -91,42 +94,29 @@ public class AlertFrame extends javax.swing.JDialog {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        refreshBtn = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        messageTable = new javax.swing.JTable();
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
-            },
-            new String [] {
-                "From", "Title", "Action"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
+        refreshBtn.setText("Refresh");
+        refreshBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                refreshBtnActionPerformed(evt);
             }
         });
-        jTable1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
-        jTable1.setPreferredSize(new java.awt.Dimension(105, 100));
-        jTable1.setRowHeight(25);
-        jTable1.setShowGrid(false);
-        jTable1.setShowVerticalLines(true);
-        jScrollPane1.setViewportView(jTable1);
-        if (jTable1.getColumnModel().getColumnCount() > 0) {
-            jTable1.getColumnModel().getColumn(0).setResizable(false);
-            jTable1.getColumnModel().getColumn(0).setPreferredWidth(1);
-            jTable1.getColumnModel().getColumn(1).setResizable(false);
-            jTable1.getColumnModel().getColumn(1).setPreferredWidth(100);
-            jTable1.getColumnModel().getColumn(2).setResizable(false);
-            jTable1.getColumnModel().getColumn(2).setPreferredWidth(100);
-        }
+
+        messageTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane2.setViewportView(messageTable);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -134,14 +124,20 @@ public class AlertFrame extends javax.swing.JDialog {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 488, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 416, Short.MAX_VALUE)
+                        .addComponent(refreshBtn))
+                    .addComponent(jScrollPane2))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 488, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(refreshBtn)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 475, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -158,6 +154,11 @@ public class AlertFrame extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void refreshBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshBtnActionPerformed
+        // TODO add your handling code here:
+        updateTable();
+    }//GEN-LAST:event_refreshBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -196,7 +197,8 @@ public class AlertFrame extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTable messageTable;
+    private javax.swing.JButton refreshBtn;
     // End of variables declaration//GEN-END:variables
 }
