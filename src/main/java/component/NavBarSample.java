@@ -4,7 +4,9 @@
  */
 package component;
 
+import domain.User;
 import function.NavigationManager;
+import function.UserSession;
 import javax.swing.*;
 import main.Login;
 
@@ -18,12 +20,16 @@ public class NavBarSample extends javax.swing.JPanel {
      * Creates new form NavBarSampleget
      */
     private final JPopupMenu userPopupMenu;
-    
+    private User currentUser;
+            
     public NavBarSample() {
+        currentUser = UserSession.getInstance().getCurrentUser();
         initComponents();
         
         userPopupMenu = new JPopupMenu();
         userPopupMenu.add(jPanel1);
+        
+        userButton.setText(currentUser.getUserName());
 
     }
     
