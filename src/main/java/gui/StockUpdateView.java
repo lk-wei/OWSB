@@ -385,6 +385,11 @@ public class StockUpdateView extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_deleteButtonActionPerformed
 
+    private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
+        // TODO add your handling code here:
+        setView();
+    }//GEN-LAST:event_formWindowActivated
+
     /**
      * @param args the command line arguments
      */
