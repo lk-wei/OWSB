@@ -6,6 +6,7 @@ package gui;
 
 import domain.Supplier;
 import domain.User;
+import function.FrontendPermissionManager;
 import function.NavigationManager;
 import function.UserSession;
 import java.io.IOException;
@@ -34,10 +35,19 @@ public class SupplierView extends javax.swing.JFrame {
     public SupplierView(Long viewId) {
         // get lgged in user
         currentUser = UserSession.getInstance().getCurrentUser();
-        
+             
         this.viewId = viewId;
         
         initComponents();
+        
+        FrontendPermissionManager.applyButtonPermissions(
+                currentUser,
+                "s",
+                null,      
+                editButton,      
+                deleteButton    
+        );
+        
         this.setLocationRelativeTo(null); //this will center your frame
         
         setView();
