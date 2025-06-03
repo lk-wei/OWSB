@@ -52,43 +52,43 @@ public class PurchaseOrderRepo extends MasterRepo<PurchaseOrder>{
     }
     
     public DefaultTableModel getTableModel() throws IOException {
-    DefaultTableModel model = new DefaultTableModel(
-        new Object[][]{},
-        new String[]{
-            "",
-            "Purchase Order Code", 
-            "Created By", 
-            "Suppplier Code",
-            "Supplier Name",
-            "Order Date", 
-            "Expected Delivery Date", 
-            "Status", 
-            "Total Amount", 
-            ""
-        }
-    );
+        DefaultTableModel model = new DefaultTableModel(
+            new Object[][]{},
+            new String[]{
+                "",
+                "Purchase Order Code", 
+                "Created By", 
+                "Suppplier Code",
+                "Supplier Name",
+                "Order Date", 
+                "Expected Delivery Date", 
+                "Status", 
+                "Total Amount", 
+                ""
+            }
+        );
 
-    List<PurchaseOrder> reports = getAll();
-    SupplierRepo supplierRepo = new SupplierRepo();
-    UserRepo userRepo = new UserRepo();
-    
-    for (PurchaseOrder report : reports) {
-        Supplier supp = supplierRepo.getSupplierById(report.getSupplierId());
-        User createdUser = userRepo.getUserById(report.getCreatedById());
-        
-        model.addRow(new Object[]{
-            report.getId(),
-            report.getPurchaseOrderCode(),
-            createdUser.getFullName(),
-            supp.getSupplierCode(),
-            supp.getSuppliername(),
-            report.getOrderDate(),
-            report.getExpectedDeliveryDate(),
-            report.getStatus(),
-            report.getTotalAmount(),
-            "View"
-        });
-    }
+        List<PurchaseOrder> reports = getAll();
+        SupplierRepo supplierRepo = new SupplierRepo();
+        UserRepo userRepo = new UserRepo();
+
+        for (PurchaseOrder report : reports) {
+            Supplier supp = supplierRepo.getSupplierById(report.getSupplierId());
+            User createdUser = userRepo.getUserById(report.getCreatedById());
+
+            model.addRow(new Object[]{
+                report.getId(),
+                report.getPurchaseOrderCode(),
+                createdUser.getFullName(),
+                supp.getSupplierCode(),
+                supp.getSuppliername(),
+                report.getOrderDate(),
+                report.getExpectedDeliveryDate(),
+                report.getStatus(),
+                report.getTotalAmount(),
+                "View"
+            });
+        }
 
     return model;
 }

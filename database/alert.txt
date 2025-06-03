@@ -9,3 +9,5 @@
 9|3|PM|New PR Created|PR #PR005 needs review for PO creation.|unread
 10|1|AD|System Maintenance Alert|Scheduled maintenance tonight at 2 AM.|unread
 11|1|PM|New Purchase Requisition Created: TestAlert|Purchase Requisition TestAlert has been submitted and is awaiting your review for PO generation.|read
+12|1|PM|New Purchase Requisition Created: NewPR|Purchase Requisition NewPR has been submitted and is awaiting your review for PO generation.|unread
+13|1|FM|New Purchase Requisition Created: asdasdsad|Purchase Requisition asdasdsad has been submitted and is awaiting your review for PO generation.|unread

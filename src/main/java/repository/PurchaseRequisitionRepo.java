@@ -45,23 +45,12 @@ public class PurchaseRequisitionRepo extends MasterRepo<PurchaseRequisition>{
             );
 
             List<PurchaseRequisition> reports = getAll();
-            SupplierRepo supplierRepo = new SupplierRepo();
             UserRepo userRepo = new UserRepo();
-            PurchaseRequisitionItemRepo itemRepo = new PurchaseRequisitionItemRepo();  // Add this to load items
 
             for (PurchaseRequisition report : reports) {
-                // Fetch and assign items to the current PurchaseRequisition using purchaseRequisitionItemId
-                List<PurchaseRequisitionItem> items = itemRepo.getItemsByRequisitionId(report.getPurchaseRequisitionItemId());
-                report.setItem(items);  // Set the items in the PurchaseRequisition object
+                User user = new UserRepo().getById(report.getRequestedById());
 
-                // Debugging: check if items are fetched correctly
-                System.out.println("Items for Purchase Requisition " + report.getPurchaseRequisitionCode() + ": " + items.size());
-
-                // Process the items and populate the table
-                for (PurchaseRequisitionItem item : items) {
-                    User user = userRepo.getUserById(report.getRequestedById());
-
-                    model.addRow(new Object[]{
+                model.addRow(new Object[]{
                         report.getId().toString(),
                         report.getPurchaseRequisitionCode(),
                         user.getFullName(),
@@ -70,7 +59,6 @@ public class PurchaseRequisitionRepo extends MasterRepo<PurchaseRequisition>{
                         report.getStatus(),
                         "View"
                     });
-                }
             }
 
             return model;

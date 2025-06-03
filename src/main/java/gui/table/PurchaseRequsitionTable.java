@@ -45,7 +45,6 @@ public class PurchaseRequsitionTable extends javax.swing.JFrame {
         );
 
 
-        
         updateTable();
         this.setLocationRelativeTo(null); //this will center your frame
     }
@@ -54,53 +53,48 @@ public class PurchaseRequsitionTable extends javax.swing.JFrame {
     private void updateTable() {
         PurchaseRequisitionRepo Prr = new PurchaseRequisitionRepo();
         try {
-             jTable1.setModel(Prr.getTableModel());
-             // Hide the first column (ID column)
-        
-            // Hide the first column (ID column)
-            TableColumn idColumn = jTable1.getColumnModel().getColumn(0);
-            idColumn.setMinWidth(0);
-            idColumn.setMaxWidth(0);
-            idColumn.setPreferredWidth(0);
-            idColumn.setResizable(false);
-
-            // Add button renderer and editor for the last column (View Button)
-            int lastColumnIndex = jTable1.getColumnModel().getColumnCount() - 1;
-            TableColumn actionColumn = jTable1.getColumnModel().getColumn(lastColumnIndex);
-            actionColumn.setCellRenderer(new ButtonRenderer());
-            actionColumn.setCellEditor(new ButtonEditor(new JCheckBox()) {
-                @Override
-                public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-                    Component c = super.getTableCellEditorComponent(table, value, isSelected, row, column);
-
-                    // Remove previous action listeners to avoid multiple clicks
-                    for (java.awt.event.ActionListener al : button.getActionListeners()) {
-                        button.removeActionListener(al);
-                    }
-
-                    // Add new action listener
-                    button.addActionListener(e -> {
-                        int modelRow = table.convertRowIndexToModel(row);
-                        Object rawId = table.getModel().getValueAt(modelRow, 0);  // Get ID from the table (first column)
-                        Long id = Long.valueOf(rawId.toString());
-
-                        try {
-                            // Open PurchaseRequisitionView
-                            NavigationManager.getInstance().openFrame(new PurchaseRequisitionView(id), PurchaseRequsitionTable.this);  // Open the view page
-                        } catch (IOException ex) {
-                            Logger.getLogger(PurchaseRequsitionTable.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    });
-                    return c;
-                }
-            });
-
+            jTable2.setModel(Prr.getTableModel());
         } catch (IOException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
         }
-        
-        
+        // Hide the first column (ID column)
+        // Hide the first column (ID column)
+        TableColumn idColumn = jTable2.getColumnModel().getColumn(0);
+        idColumn.setMinWidth(0);
+        idColumn.setMaxWidth(0);
+        idColumn.setPreferredWidth(0);
+        idColumn.setResizable(false);
+        // Add button renderer and editor for the last column (View Button)
+        int lastColumnIndex = jTable2.getColumnModel().getColumnCount() - 1;
+        TableColumn actionColumn = jTable2.getColumnModel().getColumn(lastColumnIndex);
+        actionColumn.setCellRenderer(new ButtonRenderer());
+        actionColumn.setCellEditor(new ButtonEditor(new JCheckBox()) {
+            @Override
+            public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+                Component c = super.getTableCellEditorComponent(table, value, isSelected, row, column);
+                
+                // Remove previous action listeners to avoid multiple clicks
+                for (java.awt.event.ActionListener al : button.getActionListeners()) {
+                    button.removeActionListener(al);
+                }
+                
+                // Add new action listener
+                button.addActionListener(e -> {
+                    int modelRow = table.convertRowIndexToModel(row);
+                    Object rawId = table.getModel().getValueAt(modelRow, 0);  // Get ID from the table (first column)
+                    Long id = Long.valueOf(rawId.toString());
+                    
+                    try {
+                        // Open PurchaseRequisitionView
+                        NavigationManager.getInstance().openFrame(new PurchaseRequisitionView(id), PurchaseRequsitionTable.this);  // Open the view page
+                    } catch (IOException ex) {
+                        Logger.getLogger(PurchaseRequsitionTable.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                });
+                return c;
+            }
+        });
         
     }
     /**
@@ -115,14 +109,19 @@ public class PurchaseRequsitionTable extends javax.swing.JFrame {
         navBarSample1 = new component.NavBarSample();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
         newButton = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTable2 = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(1000, 800));
         setResizable(false);
         setSize(new java.awt.Dimension(1000, 800));
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowActivated(java.awt.event.WindowEvent evt) {
+                formWindowActivated(evt);
+            }
+        });
         getContentPane().add(navBarSample1, java.awt.BorderLayout.PAGE_START);
 
         jPanel2.setMinimumSize(new java.awt.Dimension(1000, 0));
@@ -130,27 +129,6 @@ public class PurchaseRequsitionTable extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Purchase Requsition");
-
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null}
-            },
-            new String [] {
-                "Purcahse Requisition Code", "Requested By", "Request Date", "Required Date", "Supplier Code", "Supplier Name", "Status", ""
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-        });
-        jScrollPane1.setViewportView(jTable1);
 
         newButton.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         newButton.setText("New");
@@ -160,19 +138,29 @@ public class PurchaseRequsitionTable extends javax.swing.JFrame {
             }
         });
 
+        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "", "", "", ""
+            }
+        ));
+        jScrollPane2.setViewportView(jTable2);
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 1000, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(newButton))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(50, 50, 50)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 900, Short.MAX_VALUE)))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 900, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(newButton))
                 .addGap(50, 50, 50))
         );
         jPanel2Layout.setVerticalGroup(
@@ -181,9 +169,9 @@ public class PurchaseRequsitionTable extends javax.swing.JFrame {
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(newButton, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(12, 12, 12)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 550, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 73, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 600, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 29, Short.MAX_VALUE))
         );
 
         getContentPane().add(jPanel2, java.awt.BorderLayout.CENTER);
@@ -192,10 +180,13 @@ public class PurchaseRequsitionTable extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void newButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newButtonActionPerformed
-        PurchaseRequisitionNew second = new PurchaseRequisitionNew();
-        second.setVisible(true);
-        this.dispose();
+        NavigationManager.getInstance().openFrame(new PurchaseRequisitionNew(), this);
     }//GEN-LAST:event_newButtonActionPerformed
+
+    private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
+        // TODO add your handling code here:
+        updateTable();
+    }//GEN-LAST:event_formWindowActivated
 
     /**
      * @param args the command line arguments
@@ -204,8 +195,8 @@ public class PurchaseRequsitionTable extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTable jTable2;
     private component.NavBarSample navBarSample1;
     private javax.swing.JButton newButton;
     // End of variables declaration//GEN-END:variables

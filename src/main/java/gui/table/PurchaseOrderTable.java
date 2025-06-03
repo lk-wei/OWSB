@@ -115,6 +115,11 @@ public class PurchaseOrderTable extends javax.swing.JFrame {
         setMinimumSize(new java.awt.Dimension(1000, 800));
         setResizable(false);
         setSize(new java.awt.Dimension(1000, 800));
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowActivated(java.awt.event.WindowEvent evt) {
+                formWindowActivated(evt);
+            }
+        });
         getContentPane().add(navBarSample1, java.awt.BorderLayout.PAGE_START);
 
         jPanel2.setMinimumSize(new java.awt.Dimension(1000, 0));
@@ -199,6 +204,11 @@ public class PurchaseOrderTable extends javax.swing.JFrame {
     private void newButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_newButtonMouseClicked
         // TODO add your handling code here:
     }//GEN-LAST:event_newButtonMouseClicked
+
+    private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
+        // TODO add your handling code here:
+        updateTable();
+    }//GEN-LAST:event_formWindowActivated
 
     /**
      * @param args the command line arguments
