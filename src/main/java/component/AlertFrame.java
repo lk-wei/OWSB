@@ -12,6 +12,8 @@ import component.ButtonEditor;
 import domain.User;
 import function.UserSession;
 import java.awt.Component;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JCheckBox;
 import javax.swing.JTable;
 import repository.AlertRepo;
@@ -43,17 +45,36 @@ public class AlertFrame extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
         }
         
-        TableColumn actionColumn = jTable1.getColumnModel().getColumn(2);
+        // Hide the ID column
+        TableColumn idColumn = jTable1.getColumnModel().getColumn(0);
+        idColumn.setMinWidth(0);
+        idColumn.setMaxWidth(0);
+        idColumn.setPreferredWidth(0);
+        idColumn.setResizable(false);
+        
+        TableColumn actionColumn = jTable1.getColumnModel().getColumn(3);
         actionColumn.setCellRenderer(new ButtonRenderer());
         actionColumn.setCellEditor(new ButtonEditor(new JCheckBox()) {
             @Override
             public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
                 Component c = super.getTableCellEditorComponent(table, value, isSelected, row, column);
+                
+                for (java.awt.event.ActionListener al : button.getActionListeners()) {
+                    button.removeActionListener(al);
+                }
 
                 button.addActionListener(e -> {
                     // add button function here
-                    String name = table.getValueAt(row, 1).toString();
-                    JOptionPane.showMessageDialog(table, "Editing: " + name);
+                    int modelRow = table.convertRowIndexToModel(row);
+                    Object rawId = table.getModel().getValueAt(modelRow, 0);
+                    Long id = Long.valueOf(rawId.toString());
+                    System.out.println("ID: " + id);
+                    
+                    try {
+                        new AlertView(AlertFrame.this, true, id).setVisible(true);
+                    } catch (IOException ex) {
+                        Logger.getLogger(AlertFrame.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 });
                 return c;
             }

@@ -9,6 +9,7 @@ import domain.User;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
@@ -29,21 +30,33 @@ public class AlertRepo extends MasterRepo<Alert>{
         DefaultTableModel model = new DefaultTableModel(
             new Object[][]{},
             // These column names must match what's in your JFrame
-            new String[]{"From", "Title", ""}
+            new String[]{"","From", "Title", ""}
         );
+        
+        List<Alert> alerts = new ArrayList<>();
+        
+        if("AD".equals(currentUserRole)){
+            alerts = getAll(); 
+        }else{
+            alerts = getByReciverRole(currentUserRole); 
+        }
 
-        List<Alert> alerts = getByReciverRole(currentUserRole); 
+        
         UserRepo userRepo = new UserRepo();    
 
         for (Alert alert : alerts) {
             User sender = userRepo.getUserById(alert.getSender());
-            
-            model.addRow(new Object[]{
-                sender.getUserName(),    // Sender Name
-                alert.getTitle(),   // Title
-                "View"                        // Empty column (action buttons?)
-            });
-        }
+
+            // If admin, show all alerts. If not admin, show only unread.
+            if ("AD".equals(currentUserRole) || "unread".equals(alert.getStatus())) {
+                model.addRow(new Object[]{
+                    alert.getId(),
+                    sender.getUserName(),
+                    alert.getTitle(),
+                    "View"
+                });
+            }
+}
         return model;
     }
     
