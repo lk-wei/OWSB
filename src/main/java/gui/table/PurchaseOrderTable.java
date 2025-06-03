@@ -9,6 +9,7 @@ import component.ButtonRenderer;
 import domain.User;
 import function.FrontendPermissionManager;
 import function.NavigationManager;
+import function.UserSession;
 import java.io.IOException;
 import javax.swing.JOptionPane;
 import repository.PurchaseOrderRepo;
@@ -29,12 +30,12 @@ public class PurchaseOrderTable extends javax.swing.JFrame {
     /**
      * Creates new form DashBoardSample
      */
-    User currentUser = new User();
+    private User currentUser;
     public PurchaseOrderTable() {
+        currentUser = UserSession.getInstance().getCurrentUser();
         
         initComponents();
-        
-        currentUser.setRole("AD");
+
         FrontendPermissionManager.applyButtonPermissions(
                 currentUser,
                 "po",
@@ -144,7 +145,7 @@ public class PurchaseOrderTable extends javax.swing.JFrame {
         jScrollPane1.setViewportView(jTable1);
 
         newButton.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        newButton.setText("Button");
+        newButton.setText("New");
         newButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 newButtonMouseClicked(evt);

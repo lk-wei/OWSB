@@ -9,7 +9,7 @@ import component.ButtonRenderer;
 import domain.User;
 import function.FrontendPermissionManager;
 import function.NavigationManager;
-import gui.PurchaseRequisitionEdit;
+import function.UserSession;
 import gui.PurchaseRequisitionNew;
 import gui.PurchaseRequisitionView;
 import java.awt.Component;
@@ -33,10 +33,9 @@ public class PurchaseRequsitionTable extends javax.swing.JFrame {
     User currentUser = new User();
     
     public PurchaseRequsitionTable() {
-        
+        currentUser = UserSession.getInstance().getCurrentUser();
         initComponents();
         
-        currentUser.setRole("AD");
         FrontendPermissionManager.applyButtonPermissions(
                 currentUser,
                 "pr",
@@ -154,7 +153,7 @@ public class PurchaseRequsitionTable extends javax.swing.JFrame {
         jScrollPane1.setViewportView(jTable1);
 
         newButton.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        newButton.setText("Button");
+        newButton.setText("New");
         newButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 newButtonActionPerformed(evt);

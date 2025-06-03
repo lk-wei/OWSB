@@ -19,13 +19,8 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws IOException {
-//        new Login().setVisible(true);
+        new Login().setVisible(true);
 
-        List<Alert> aList = new AlertRepo().getAll();
-        
-        for (Alert i : aList){
-            System.out.println(i.getMessage());
-        }
     }
     
 }

@@ -4,45 +4,26 @@
  */
 package gui;
 
-import component.ButtonEditor;
-import component.ButtonRenderer;
 import domain.Item;
 import domain.PurchaseOrder;
 import domain.PurchaseOrderItem;
 import domain.PurchaseRequisition;
-import domain.PurchaseRequisitionItem;
 import domain.Supplier;
 import domain.User;
-import function.IdGenerator;
+import function.FrontendPermissionManager;
 import function.NavigationManager;
+import function.PermissionService;
 import function.UserSession;
-import gui.table.PurchaseOrderTable;
-import gui.table.PurchaseRequsitionTable;
-import java.awt.Component;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
-import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import repository.ItemRepo;
 import repository.PurchaseOrderItemRepo;
 import repository.PurchaseOrderRepo;
-import repository.PurchaseRequisitionItemRepo;
 import repository.PurchaseRequisitionRepo;
 import repository.SupplierRepo;
 import repository.UserRepo;
@@ -71,6 +52,15 @@ public class PurchaseOrderView extends javax.swing.JFrame{
         initComponents();
         tableModel = (DefaultTableModel) jTable3.getModel();
         this.setLocationRelativeTo(null); //this will center your frame
+        
+        FrontendPermissionManager.applyButtonPermissions(
+                currentUser,
+                "po",
+                null,      
+                updateBtn,      
+                deleteBtn    
+        );
+        appBtn.setVisible(PermissionService.hasPermission(currentUser, "po:approve"));
         
          setView();
          updateTable();
@@ -191,6 +181,7 @@ public class PurchaseOrderView extends javax.swing.JFrame{
         orderDateField = new javax.swing.JTextField();
         expDeliveryDateField = new javax.swing.JTextField();
         deleteBtn = new javax.swing.JButton();
+        appBtn = new javax.swing.JButton();
 
         jTable4.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -313,7 +304,6 @@ public class PurchaseOrderView extends javax.swing.JFrame{
 
         cancelButton.setBackground(new java.awt.Color(153, 153, 153));
         cancelButton.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        cancelButton.setForeground(new java.awt.Color(255, 255, 255));
         cancelButton.setText("Back");
         cancelButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -323,7 +313,6 @@ public class PurchaseOrderView extends javax.swing.JFrame{
 
         updateBtn.setBackground(new java.awt.Color(51, 153, 255));
         updateBtn.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        updateBtn.setForeground(new java.awt.Color(255, 255, 255));
         updateBtn.setText("Edit");
         updateBtn.setPreferredSize(new java.awt.Dimension(84, 32));
         updateBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -352,11 +341,18 @@ public class PurchaseOrderView extends javax.swing.JFrame{
 
         deleteBtn.setBackground(new java.awt.Color(255, 0, 51));
         deleteBtn.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        deleteBtn.setForeground(new java.awt.Color(255, 255, 255));
         deleteBtn.setText("Delete");
         deleteBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 deleteBtnActionPerformed(evt);
+            }
+        });
+
+        appBtn.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        appBtn.setText("ApprovalForm");
+        appBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                appBtnActionPerformed(evt);
             }
         });
 
@@ -403,19 +399,23 @@ public class PurchaseOrderView extends javax.swing.JFrame{
                     .addGroup(inputPanelLayout.createSequentialGroup()
                         .addGap(72, 72, 72)
                         .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 680, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(inputPanelLayout.createSequentialGroup()
-                                .addComponent(deleteBtn)
+                                .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addGroup(inputPanelLayout.createSequentialGroup()
+                                        .addComponent(deleteBtn)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(appBtn)
+                                        .addGap(121, 121, 121))
+                                    .addComponent(jLabel14))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(cancelButton)
-                                .addGap(18, 18, 18)
-                                .addComponent(updateBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(4, 4, 4))
-                            .addGroup(inputPanelLayout.createSequentialGroup()
-                                .addGap(299, 299, 299)
-                                .addComponent(jLabel14)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(totalAmountField, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 680, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(totalAmountField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, inputPanelLayout.createSequentialGroup()
+                                        .addComponent(cancelButton)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(updateBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(4, 4, 4)))))))
                 .addGap(48, 48, 48))
         );
         inputPanelLayout.setVerticalGroup(
@@ -460,7 +460,8 @@ public class PurchaseOrderView extends javax.swing.JFrame{
                         .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(updateBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(deleteBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(deleteBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(appBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(supplierNamerField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(25, 25, 25))
         );
@@ -515,6 +516,15 @@ public class PurchaseOrderView extends javax.swing.JFrame{
             }
         }
     }//GEN-LAST:event_deleteBtnActionPerformed
+
+    private void appBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_appBtnActionPerformed
+        try {
+            // TODO add your handling code here:
+            NavigationManager.getInstance().openFrame(new PurchaseOrderApproval(viewId), this);
+        } catch (IOException ex) {
+            Logger.getLogger(PurchaseOrderView.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_appBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1058,7 +1068,7 @@ public class PurchaseOrderView extends javax.swing.JFrame{
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    new PurchaseOrderView(11L).setVisible(true);
+                    new PurchaseOrderView(10L).setVisible(true);
                 } catch (IOException ex) {
                     Logger.getLogger(PurchaseOrderView.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -1067,6 +1077,7 @@ public class PurchaseOrderView extends javax.swing.JFrame{
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton appBtn;
     private javax.swing.JButton cancelButton;
     private javax.swing.JButton deleteBtn;
     private javax.swing.JTextField expDeliveryDateField;

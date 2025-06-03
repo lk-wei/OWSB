@@ -4,6 +4,9 @@
  */
 package gui;
 
+import component.ButtonEditor;
+import component.ButtonRenderer;
+import domain.FinancialApproval;
 import domain.Item;
 import domain.PurchaseOrder;
 import domain.PurchaseOrderItem;
@@ -11,17 +14,20 @@ import domain.PurchaseRequisition;
 import domain.Supplier;
 import domain.User;
 import function.NavigationManager;
-import function.UserSession;
+import java.awt.Component;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+import repository.FinancialApprovalRepo;
 import repository.ItemRepo;
 import repository.PurchaseOrderItemRepo;
 import repository.PurchaseOrderRepo;
@@ -33,51 +39,57 @@ import repository.UserRepo;
  *
  * @author Kang Wei
  */
-public class PurchaseOrderEdit extends javax.swing.JFrame{
+public class PurchaseOrderApproval extends javax.swing.JFrame implements SelectionListener<PurchaseOrderItem>{
     /**
      * Creates new form DashBoardSample
      */
     private DefaultTableModel tableModel;
+    private List<PurchaseOrderItem> itemList = new ArrayList<>();
+    private List<PurchaseOrderItem> oriItemList = new ArrayList<>();
     private Supplier SelectedSupplier;
     private PurchaseRequisition SelectedPR;
     private double totalAmount;
-    private PurchaseOrder toEdit;
     private Long viewId;
-    private User currentUser; 
+    private PurchaseOrder toApprove;
+    private User currentUser;
     
-    public PurchaseOrderEdit(Long viewId) throws IOException {
-        currentUser = UserSession.getInstance().getCurrentUser();
-        
+    public PurchaseOrderApproval(Long viewId) throws IOException {
         this.viewId = viewId;
+        
+        currentUser = new User();
+        currentUser.setId(1L);
+        
+        
+        PurchaseOrderItemRepo poiRepo = new PurchaseOrderItemRepo();
+        itemList = poiRepo.getByPurchaseOrderId(viewId);
+        oriItemList = itemList;
         
         initComponents();
         tableModel = (DefaultTableModel) jTable3.getModel();
         this.setLocationRelativeTo(null); //this will center your frame
         
-         setView();
-         updateTable();
+        setView();
+        updateTable();
+        recalculateTotalAmount();
     }
-    // Custom Methods
     private void setView() {
         PurchaseOrderRepo por = new PurchaseOrderRepo();
         PurchaseRequisitionRepo prr = new PurchaseRequisitionRepo();
         
         try {
-            toEdit = por.getById(viewId);
-            PurchaseRequisition pr = prr.getById(toEdit.getPurchaseRequisitionId());
+            toApprove = por.getById(viewId);
+            PurchaseRequisition pr = prr.getById(toApprove.getPurchaseRequisitionId());
             User u = new UserRepo().getById(pr.getRequestedById());
-            Supplier s = new SupplierRepo().getById(toEdit.getSupplierId());
+            Supplier s = new SupplierRepo().getById(toApprove.getSupplierId());
             
-            if (this.toEdit == null) {
+            if (this.toApprove == null) {
                 System.out.println("po not found");
                 return;
             }
-            purchaseOrderCodeField.setText(toEdit.getPurchaseOrderCode());
-            orderDateField.setText(toEdit.getOrderDate().toString());
-            
-            Date dateToSet = Date.from(toEdit.getExpectedDeliveryDate().atStartOfDay(ZoneId.systemDefault()).toInstant());
-            expectedDeliveryDateField.setDate(dateToSet);
-            totalAmountField.setValue(toEdit.getTotalAmount());
+            purchaseOrderCodeField.setText(toApprove.getPurchaseOrderCode());
+            expDevDateField.setText(toApprove.getExpectedDeliveryDate().toString());
+            orderDateField.setText(toApprove.getOrderDate().toString());
+            totalAmountField.setValue(toApprove.getTotalAmount());
             
             if (pr == null) {
                 System.out.println("pr not found");
@@ -96,7 +108,7 @@ public class PurchaseOrderEdit extends javax.swing.JFrame{
                 return;
             }
             supplierCodeField.setText(s.getSupplierCode());
-            supplierNamerField.setText(s.getSuppliername());
+            supplierNameField.setText(s.getSuppliername());
             
             
             
@@ -106,12 +118,9 @@ public class PurchaseOrderEdit extends javax.swing.JFrame{
             Logger.getLogger(FinancialReportNew.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
     public void updateTable() throws IOException {
         removeAllRows();
         
-        List<PurchaseOrderItem> itemList = new PurchaseOrderItemRepo().getByPurchaseOrderId(viewId);
-
         if(itemList != null){
             for (PurchaseOrderItem poi : itemList) {
                 Item i = new ItemRepo().getById(poi.getItemId());
@@ -119,12 +128,13 @@ public class PurchaseOrderEdit extends javax.swing.JFrame{
                 double totalCost = i.getUnitCost() * poi.getQuantity();
                 
                 tableModel.addRow(new Object[]{
-                    i.getId(),
+                    poi.getId(),
                     i.getItemCode(), 
                     i.getItemName(), 
                     i.getUnitCost(),
                     poi.getQuantity(),
-                    totalCost});
+                    totalCost,
+                    "Edit"});
                 
                 System.out.println("table updated");
             }
@@ -136,6 +146,38 @@ public class PurchaseOrderEdit extends javax.swing.JFrame{
         idColumn.setPreferredWidth(0);
         idColumn.setResizable(false);
         
+        TableColumn actionColumn = jTable3.getColumnModel().getColumn(6);
+        actionColumn.setCellRenderer(new ButtonRenderer());
+        actionColumn.setCellEditor(new ButtonEditor(new JCheckBox()) {
+            @Override
+            public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+                Component c = super.getTableCellEditorComponent(table, value, isSelected, row, column);
+
+                button.addActionListener(e -> {
+                    fireEditingStopped();
+                    
+                    // add button function here
+                    Object rawId = table.getModel().getValueAt(row, 0);
+                    Long id = Long.valueOf(rawId.toString());
+                    System.out.println(id);
+                    
+                    try{ 
+                        new ApprovalItem(PurchaseOrderApproval.this, PurchaseOrderApproval.this, id).setVisible(true);
+                    } catch (IOException ex) {
+                        Logger.getLogger(PurchaseOrderApproval.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                 
+                    try {
+                        updateTable();
+                    } catch (IOException ex) {
+                        Logger.getLogger(PurchaseOrderApproval.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                });
+                return c;
+            }
+        });
+        
+        totalAmountField.setValue(totalAmount);
     }
     
     private void removeAllRows() {
@@ -144,6 +186,18 @@ public class PurchaseOrderEdit extends javax.swing.JFrame{
         }
     }
     
+    // Inside PurchaseOrderNew.java
+    private void recalculateTotalAmount() {
+        this.totalAmount = 0.0; // Reset class member totalAmount
+        if (itemList != null) {
+            for (PurchaseOrderItem poi : itemList) {
+                this.totalAmount += poi.getUnitCost() * poi.getQuantity(); // Make sure POItem has unitCost
+            }
+        }
+        totalAmountField.setValue(this.totalAmount); // Update the JSpinner
+        System.out.println("Recalculated total PO Amount: " + this.totalAmount);
+    }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -158,8 +212,7 @@ public class PurchaseOrderEdit extends javax.swing.JFrame{
         jLabel6 = new javax.swing.JLabel();
         reqByField = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
-        supplierCodeField = new javax.swing.JTextField();
-        purchaseOrderCodeField = new javax.swing.JTextField();
+        supplierNameField = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
@@ -167,12 +220,14 @@ public class PurchaseOrderEdit extends javax.swing.JFrame{
         jLabel14 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTable3 = new javax.swing.JTable();
-        expectedDeliveryDateField = new com.toedter.calendar.JDateChooser();
         cancelButton = new javax.swing.JButton();
-        updateBtn = new javax.swing.JButton();
+        approveBtn = new javax.swing.JButton();
         totalAmountField = new javax.swing.JSpinner();
-        supplierNamerField = new javax.swing.JTextField();
+        cancelButton1 = new javax.swing.JButton();
+        supplierCodeField = new javax.swing.JTextField();
         prCodeField = new javax.swing.JTextField();
+        purchaseOrderCodeField = new javax.swing.JTextField();
+        expDevDateField = new javax.swing.JTextField();
         orderDateField = new javax.swing.JTextField();
 
         jTable4.setModel(new javax.swing.table.DefaultTableModel(
@@ -227,14 +282,13 @@ public class PurchaseOrderEdit extends javax.swing.JFrame{
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Edit Purchase Order");
+        jLabel1.setText("Purchase Order Approval");
         jLabel1.setToolTipText("");
         jLabel1.setMaximumSize(new java.awt.Dimension(800, 100));
         jLabel1.setMinimumSize(new java.awt.Dimension(800, 100));
         jLabel1.setPreferredSize(new java.awt.Dimension(800, 100));
         jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
-        inputPanel.setEnabled(false);
         inputPanel.setMaximumSize(new java.awt.Dimension(800, 600));
         inputPanel.setMinimumSize(new java.awt.Dimension(800, 600));
 
@@ -246,18 +300,12 @@ public class PurchaseOrderEdit extends javax.swing.JFrame{
 
         reqByField.setEditable(false);
         reqByField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        reqByField.setEnabled(false);
 
         jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel7.setText("Supplier Code");
+        jLabel7.setText("Supplier Name");
 
-        supplierCodeField.setEditable(false);
-        supplierCodeField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        supplierCodeField.setEnabled(false);
-
-        purchaseOrderCodeField.setEditable(false);
-        purchaseOrderCodeField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        purchaseOrderCodeField.setEnabled(false);
+        supplierNameField.setEditable(false);
+        supplierNameField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         jLabel10.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel10.setText("Purchase Order Code");
@@ -269,23 +317,23 @@ public class PurchaseOrderEdit extends javax.swing.JFrame{
         jLabel12.setText("Order Date");
 
         jLabel13.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel13.setText("Supplier Name");
+        jLabel13.setText("Supplier Code");
 
         jLabel14.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         jTable3.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
             },
             new String [] {
-                "", "Item Code", "Name", "Unit Cost", "Qty", "Total"
+                "", "Item Code", "Name", "Unit Cost", "Qty", "Total", "Action"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false
+                false, false, false, false, false, false, true
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -294,9 +342,7 @@ public class PurchaseOrderEdit extends javax.swing.JFrame{
         });
         jScrollPane3.setViewportView(jTable3);
 
-        cancelButton.setBackground(new java.awt.Color(255, 0, 51));
         cancelButton.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        cancelButton.setForeground(new java.awt.Color(255, 255, 255));
         cancelButton.setText("Cancel");
         cancelButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -304,26 +350,40 @@ public class PurchaseOrderEdit extends javax.swing.JFrame{
             }
         });
 
-        updateBtn.setBackground(new java.awt.Color(51, 153, 255));
-        updateBtn.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        updateBtn.setForeground(new java.awt.Color(255, 255, 255));
-        updateBtn.setText("Update");
-        updateBtn.setPreferredSize(new java.awt.Dimension(84, 32));
-        updateBtn.addActionListener(new java.awt.event.ActionListener() {
+        approveBtn.setBackground(new java.awt.Color(102, 204, 0));
+        approveBtn.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        approveBtn.setText("Approve");
+        approveBtn.setPreferredSize(new java.awt.Dimension(84, 32));
+        approveBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                updateBtnActionPerformed(evt);
+                approveBtnActionPerformed(evt);
             }
         });
 
         totalAmountField.setEnabled(false);
 
-        supplierNamerField.setEditable(false);
-        supplierNamerField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        supplierNamerField.setEnabled(false);
+        cancelButton1.setBackground(new java.awt.Color(255, 102, 102));
+        cancelButton1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        cancelButton1.setText("Reject");
+        cancelButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelButton1ActionPerformed(evt);
+            }
+        });
+
+        supplierCodeField.setEditable(false);
+        supplierCodeField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         prCodeField.setEditable(false);
         prCodeField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        prCodeField.setEnabled(false);
+
+        purchaseOrderCodeField.setEditable(false);
+        purchaseOrderCodeField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        purchaseOrderCodeField.setEnabled(false);
+
+        expDevDateField.setEditable(false);
+        expDevDateField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        expDevDateField.setEnabled(false);
 
         orderDateField.setEditable(false);
         orderDateField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -336,56 +396,60 @@ public class PurchaseOrderEdit extends javax.swing.JFrame{
             .addGroup(inputPanelLayout.createSequentialGroup()
                 .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(inputPanelLayout.createSequentialGroup()
+                        .addGap(75, 75, 75)
+                        .addComponent(jLabel13)
+                        .addGap(261, 261, 261)
+                        .addComponent(jLabel7))
+                    .addGroup(inputPanelLayout.createSequentialGroup()
                         .addGap(420, 420, 420)
                         .addComponent(jLabel11))
                     .addGroup(inputPanelLayout.createSequentialGroup()
-                        .addGap(420, 420, 420)
-                        .addComponent(expectedDeliveryDateField, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(inputPanelLayout.createSequentialGroup()
-                        .addGap(72, 72, 72)
                         .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(inputPanelLayout.createSequentialGroup()
-                                .addGap(299, 299, 299)
-                                .addComponent(jLabel14)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(totalAmountField, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 680, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(inputPanelLayout.createSequentialGroup()
-                        .addGap(75, 75, 75)
-                        .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2)
-                            .addComponent(prCodeField, javax.swing.GroupLayout.PREFERRED_SIZE, 296, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(50, 50, 50)
+                                .addGap(75, 75, 75)
+                                .addComponent(jLabel2)
+                                .addGap(187, 187, 187))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, inputPanelLayout.createSequentialGroup()
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(prCodeField, javax.swing.GroupLayout.PREFERRED_SIZE, 299, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(50, 50, 50)))
                         .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel6)
                             .addComponent(reqByField, javax.swing.GroupLayout.PREFERRED_SIZE, 331, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(inputPanelLayout.createSequentialGroup()
-                        .addGap(75, 75, 75)
-                        .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(inputPanelLayout.createSequentialGroup()
-                                .addComponent(supplierNamerField, javax.swing.GroupLayout.PREFERRED_SIZE, 296, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(50, 50, 50)
-                                .addComponent(supplierCodeField, javax.swing.GroupLayout.PREFERRED_SIZE, 331, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(inputPanelLayout.createSequentialGroup()
-                                .addComponent(jLabel13)
-                                .addGap(261, 261, 261)
-                                .addComponent(jLabel7))))
+                        .addGap(72, 72, 72)
+                        .addComponent(supplierCodeField, javax.swing.GroupLayout.PREFERRED_SIZE, 299, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(50, 50, 50)
+                        .addComponent(supplierNameField, javax.swing.GroupLayout.PREFERRED_SIZE, 331, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(inputPanelLayout.createSequentialGroup()
                         .addGap(75, 75, 75)
+                        .addComponent(jLabel10)
+                        .addGap(214, 214, 214)
+                        .addComponent(jLabel12))
+                    .addGroup(inputPanelLayout.createSequentialGroup()
+                        .addGap(72, 72, 72)
                         .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel10)
-                            .addComponent(purchaseOrderCodeField, javax.swing.GroupLayout.PREFERRED_SIZE, 296, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(49, 49, 49)
-                        .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(orderDateField, javax.swing.GroupLayout.PREFERRED_SIZE, 331, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel12))))
+                            .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(inputPanelLayout.createSequentialGroup()
+                                    .addComponent(cancelButton)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(cancelButton1)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(approveBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(4, 4, 4))
+                                .addGroup(inputPanelLayout.createSequentialGroup()
+                                    .addGap(299, 299, 299)
+                                    .addComponent(jLabel14)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(totalAmountField, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 680, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(orderDateField, javax.swing.GroupLayout.PREFERRED_SIZE, 331, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(inputPanelLayout.createSequentialGroup()
+                                    .addComponent(purchaseOrderCodeField, javax.swing.GroupLayout.PREFERRED_SIZE, 296, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(52, 52, 52)
+                                    .addComponent(expDevDateField, javax.swing.GroupLayout.PREFERRED_SIZE, 331, javax.swing.GroupLayout.PREFERRED_SIZE))))))
                 .addGap(48, 48, 48))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, inputPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(cancelButton)
-                .addGap(18, 18, 18)
-                .addComponent(updateBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(52, 52, 52))
         );
         inputPanelLayout.setVerticalGroup(
             inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -402,34 +466,34 @@ public class PurchaseOrderEdit extends javax.swing.JFrame{
                     .addComponent(jLabel13)
                     .addComponent(jLabel7))
                 .addGap(6, 6, 6)
+                .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(supplierNameField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(supplierCodeField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
                 .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel10)
                     .addGroup(inputPanelLayout.createSequentialGroup()
-                        .addComponent(supplierCodeField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel10)
-                            .addGroup(inputPanelLayout.createSequentialGroup()
-                                .addGap(2, 2, 2)
-                                .addComponent(jLabel12)))
-                        .addGap(5, 5, 5)
-                        .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(purchaseOrderCodeField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(orderDateField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(20, 20, 20)
-                        .addComponent(jLabel11)
-                        .addGap(10, 10, 10)
-                        .addComponent(expectedDeliveryDateField, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(40, 40, 40)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel14)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(totalAmountField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(31, 31, 31)
-                        .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(updateBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(supplierNamerField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(2, 2, 2)
+                        .addComponent(jLabel12)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(purchaseOrderCodeField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(orderDateField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(21, 21, 21)
+                .addComponent(jLabel11)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(expDevDateField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(45, 45, 45)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel14)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(totalAmountField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(31, 31, 31)
+                .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(approveBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cancelButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(25, 25, 25))
         );
 
@@ -445,32 +509,95 @@ public class PurchaseOrderEdit extends javax.swing.JFrame{
         NavigationManager.getInstance().goBack();
     }//GEN-LAST:event_cancelButtonActionPerformed
 
-    private void updateBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateBtnActionPerformed
+    private void approveBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_approveBtnActionPerformed
         // TODO add your handling code here:
-        if (expectedDeliveryDateField.getDate() == null) {
-            JOptionPane.showMessageDialog(null, "Please fill in all the fields.");
+        FinancialApprovalRepo far = new FinancialApprovalRepo();
+        PurchaseOrderRepo por = new PurchaseOrderRepo();
+        PurchaseOrderItemRepo poir = new PurchaseOrderItemRepo();
+        
+        if(itemList == null){
+            System.out.println("Empty item list");
             return;
         }
         
-        
-        // Convert Date to LocalDate
-        LocalDate expectedDate = expectedDeliveryDateField.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        
-        toEdit.setExpectedDeliveryDate(expectedDate);
-        
         try {
-            new PurchaseOrderRepo().update(toEdit);
+             // update status to PO to approved
+            toApprove.setTotalAmount(totalAmount);
+            toApprove.setStatus("Approved");
+            por.update(toApprove);
             
-            JOptionPane.showMessageDialog(null, "PO Updated successfully!");
+            
+            // Modified PO items
+            for(PurchaseOrderItem i : itemList){
+                poir.update(i);
+            }
+            
+            // create the Financial Approval
+            far.create(new FinancialApproval(
+                    null,
+                    toApprove.getId(),
+                    currentUser.getId(),
+                    LocalDate.now()
+            ));
+            JOptionPane.showMessageDialog(null, "PO Approved. Any Modification will be reflected on the PO!");
             NavigationManager.getInstance().goBack();
         } catch (IOException ex) {
-            Logger.getLogger(PurchaseOrderEdit.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrderApproval.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-                
-            
-    }//GEN-LAST:event_updateBtnActionPerformed
+    }//GEN-LAST:event_approveBtnActionPerformed
 
+    private void cancelButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButton1ActionPerformed
+        // TODO add your handling code here:
+        FinancialApprovalRepo far = new FinancialApprovalRepo();
+        PurchaseOrderRepo por = new PurchaseOrderRepo();
+        PurchaseOrderItemRepo poir = new PurchaseOrderItemRepo();
+        
+        if(itemList == null){
+            System.out.println("Empty item list");
+            return;
+        }
+        
+        try {
+             // update status to PO to approved
+            toApprove.setStatus("Rejected");
+            por.update(toApprove);
+            
+            // create the Financial Approval
+            far.create(new FinancialApproval(
+                    null,
+                    toApprove.getId(),
+                    currentUser.getId(),
+                    LocalDate.now()
+            ));
+            
+            JOptionPane.showMessageDialog(null, "PO Rejected!");
+            NavigationManager.getInstance().goBack();
+        } catch (IOException ex) {
+            Logger.getLogger(PurchaseOrderApproval.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_cancelButton1ActionPerformed
+
+    @Override
+    public void onSelected(PurchaseOrderItem item) {
+        try {
+            updateList(item);
+        } catch (IOException ex) {
+            Logger.getLogger(PurchaseOrderApproval.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        System.out.println(item.getQuantity());// Or any custom logic
+    }
+    
+    public void updateList(PurchaseOrderItem poItem) throws IOException{
+        for(PurchaseOrderItem i : itemList){
+            if(Objects.equals(i.getId(), poItem.getId())){
+                i.setQuantity(poItem.getQuantity());
+            }
+        }
+            
+        recalculateTotalAmount();
+        updateTable();
+    }
     /**
      * @param args the command line arguments
      */
@@ -488,13 +615,13 @@ public class PurchaseOrderEdit extends javax.swing.JFrame{
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(PurchaseOrderEdit.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PurchaseOrderApproval.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(PurchaseOrderEdit.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PurchaseOrderApproval.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(PurchaseOrderEdit.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PurchaseOrderApproval.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(PurchaseOrderEdit.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PurchaseOrderApproval.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
         //</editor-fold>
@@ -757,17 +884,19 @@ public class PurchaseOrderEdit extends javax.swing.JFrame{
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    new PurchaseOrderEdit(10L).setVisible(true);
+                    new PurchaseOrderApproval(10L).setVisible(true);
                 } catch (IOException ex) {
-                    Logger.getLogger(PurchaseOrderEdit.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(PurchaseOrderApproval.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton approveBtn;
     private javax.swing.JButton cancelButton;
-    private com.toedter.calendar.JDateChooser expectedDeliveryDateField;
+    private javax.swing.JButton cancelButton1;
+    private javax.swing.JTextField expDevDateField;
     private javax.swing.JPanel inputPanel;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -789,8 +918,7 @@ public class PurchaseOrderEdit extends javax.swing.JFrame{
     private javax.swing.JTextField purchaseOrderCodeField;
     private javax.swing.JTextField reqByField;
     private javax.swing.JTextField supplierCodeField;
-    private javax.swing.JTextField supplierNamerField;
+    private javax.swing.JTextField supplierNameField;
     private javax.swing.JSpinner totalAmountField;
-    private javax.swing.JButton updateBtn;
     // End of variables declaration//GEN-END:variables
 }

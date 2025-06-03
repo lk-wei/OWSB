@@ -9,8 +9,12 @@ import domain.Item;
 import domain.PurchaseRequisition;
 import domain.PurchaseRequisitionItem;
 import domain.Supplier;
+import domain.User;
+import function.FrontendPermissionManager;
 import function.IdGenerator;  // Import the IdGenerator class
 import function.NavigationManager;
+import function.PermissionService;
+import function.UserSession;
 import repository.ItemRepo;
 import repository.PurchaseRequisitionItemRepo;
 import repository.PurchaseRequisitionRepo;
@@ -44,8 +48,13 @@ public class PurchaseRequisitionView extends javax.swing.JFrame{
     private List<PurchaseRequisitionItem> oriItemList = new ArrayList<>();
     private List<PurchaseRequisitionItem> itemList = new ArrayList<>();
     private Long viewId;
+    private User currentUser;
     
     public PurchaseRequisitionView(Long viewId) throws IOException {
+        currentUser = UserSession.getInstance().getCurrentUser();
+        currentUser = new User();
+        currentUser.setRole("SM");
+        
         this.viewId =  viewId;
         oriItemList = new PurchaseRequisitionItemRepo().getItemsByRequisitionId(viewId);
         if (oriItemList == null) { // defensively handle null from repo
@@ -57,6 +66,15 @@ public class PurchaseRequisitionView extends javax.swing.JFrame{
         initComponents();
         tableModel = (DefaultTableModel) jTable2.getModel();
         this.setLocationRelativeTo(null); //this will center your frame
+        
+        FrontendPermissionManager.applyButtonPermissions(
+                currentUser,
+                "pr",
+                null,      
+                updateBtn,      
+                deleteBtn    
+        );
+        
         setView();
         updateTable();
     }
