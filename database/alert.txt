@@ -4,10 +4,10 @@
 4|4|FM|PO Submitted for Approval|PO #PO003 is awaiting financial approval.|unread
 5|3|PM|New PR Created|PR #PR003 needs review for PO creation.|unread
 6|6|PM|New PR Created|PR #PR004 needs review for PO creation.|unread
-7|8|SM|Low Stock Warning|Item C001 (Wireless Mouse) is below minimum stock.|unread
+7|8|SM|Low Stock Warning|Item C001 (Wireless Mouse) is below minimum stock.|read
 8|4|FM|Payment Processed|Payment for PO #PO002 to supplier S002 has been processed.|read
 9|3|PM|New PR Created|PR #PR005 needs review for PO creation.|unread
 10|1|AD|System Maintenance Alert|Scheduled maintenance tonight at 2 AM.|unread
 11|1|PM|New Purchase Requisition Created: TestAlert|Purchase Requisition TestAlert has been submitted and is awaiting your review for PO generation.|read
-12|1|PM|New Purchase Requisition Created: NewPR|Purchase Requisition NewPR has been submitted and is awaiting your review for PO generation.|unread
-13|1|FM|New Purchase Requisition Created: asdasdsad|Purchase Requisition asdasdsad has been submitted and is awaiting your review for PO generation.|unread
+12|1|PM|New Purchase Requisition Created: NewPR|Purchase Requisition NewPR has been submitted and is awaiting your review for PO generation.|read
+13|1|FM|New Purchase Requisition Created: asdasdsad|Purchase Requisition asdasdsad has been submitted and is awaiting your review for PO generation.|read

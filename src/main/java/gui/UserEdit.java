@@ -246,17 +246,8 @@ public class UserEdit extends javax.swing.JFrame {
             return;
         }
         
-        UserRepo userRepo = new UserRepo();
         
         try {
-            User existingUser = userRepo.getUserByUsername(usernameField.getText().trim());
-        
-            if (existingUser != null) {
-                // If the username exists in the file, show an error message
-                JOptionPane.showMessageDialog(null, "Username already exists! Please choose another username.");
-                return;
-            }
-            
             new UserRepo().update(toEdit);
             
             JOptionPane.showMessageDialog(null, "User Updated successfully!");

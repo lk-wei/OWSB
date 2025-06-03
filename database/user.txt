@@ -8,3 +8,7 @@
 8|salesmgr02|rootadmin|Henry Goh|SM
 9|inventory02|stockpass|Ivy Chew|IM
 10|money123|money123|Jason Yip|PM
+11|alex|al123|Alex Chia|FM
+12|alexFinance|alex123|Alex Chia |FM
+13|thisisanewuser edited|123|thi is a new user|SM
+14|new user|1232|Full name|PM
