@@ -316,7 +316,11 @@ public class PurchaseRequisitionView extends javax.swing.JFrame{
     }//GEN-LAST:event_cancelBtnActionPerformed
 
     private void updateBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateBtnActionPerformed
-        
+        try {
+            NavigationManager.getInstance().openFrame(new PurchaseRequisitionEdit(viewId), this);
+        } catch (IOException ex) {
+            Logger.getLogger(PurchaseRequisitionView.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_updateBtnActionPerformed
 
     private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBtnActionPerformed
