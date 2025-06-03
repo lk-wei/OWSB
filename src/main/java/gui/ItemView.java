@@ -6,13 +6,9 @@ package gui;
 
 import domain.Item;
 import domain.User;
+import function.FrontendPermissionManager;
 import function.NavigationManager;
 import function.UserSession;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -36,10 +32,19 @@ public class ItemView extends javax.swing.JFrame {
      */
     public ItemView(Long viewId) {
         currentUser = UserSession.getInstance().getCurrentUser();
-        
+
         this.viewId = viewId;
         initComponents();
         this.setLocationRelativeTo(null); //this will center your frame
+        
+        FrontendPermissionManager.applyButtonPermissions(
+                currentUser,
+                "item",
+                null,
+                jButton2,
+                DeleteButton
+        );
+        
         setView();
     }
 
@@ -82,30 +87,6 @@ public class ItemView extends javax.swing.JFrame {
             Logger.getLogger(ItemNew.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-//    private void setView() {
-//        ItemRepo ir = new ItemRepo();
-//
-//        try {
-//            item = ir.getById(viewId);
-//
-//            if (this.item == null) {
-//                return;
-//            }
-//
-//            // Ensure the fields are not null before setting text
-//            if (ItemNameField != null) ItemNameField.setText(item.getItemName());
-//            if (ItemCodeField != null) ItemCodeField.setText(item.getItemCode());
-//            if (CurrentStockField != null) CurrentStockField.setText(String.valueOf(item.getCurrentStock()));
-//            if (MinStockField != null) MinStockField.setText(String.valueOf(item.getMinStock()));
-//            if (UnitCostField != null) UnitCostField.setText(String.valueOf(item.getUnitCost()));
-//
-//        } catch (IllegalArgumentException e) {
-//            JOptionPane.showMessageDialog(this, e.getMessage(), "Input Error", JOptionPane.ERROR_MESSAGE);
-//        } catch (IOException ex) {
-//            Logger.getLogger(ItemNew.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//    }
-
     // Custom Methods
     /**
      * This method is called from within the constructor to initialize the form.
@@ -385,70 +366,7 @@ public class ItemView extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ItemView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ItemView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ItemView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ItemView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-
-            public void run() {
-                // new ItemView(id).setVisible(true);
-            }
-        });
-    }
-
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField CurrentStockField;
     private javax.swing.JButton DeleteButton;

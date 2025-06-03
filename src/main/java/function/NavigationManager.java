@@ -31,16 +31,24 @@ public class NavigationManager {
         return instance;
     }
 
- public void openFrame(JFrame newFrameToShow, JFrame frameCurrentlyVisible) {
+    public void openFrame(JFrame newFrameToShow, JFrame frameCurrentlyVisible) {
         if (frameCurrentlyVisible != null) {
             frameCurrentlyVisible.setVisible(false);
             frameStack.push(frameCurrentlyVisible);
             System.out.println("Pushed to stack: " + getFrameTitle(frameCurrentlyVisible) + ". Stack size: " + frameStack.size());
         }
-        
+
         if (newFrameToShow != null) {
             this.currentManagedFrame = newFrameToShow;
-            newFrameToShow.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+            newFrameToShow.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+            newFrameToShow.addWindowListener(new java.awt.event.WindowAdapter() {
+                @Override
+                public void windowClosing(java.awt.event.WindowEvent e) {
+                    NavigationManager.getInstance().goBack();
+                }
+            });
+
             newFrameToShow.setVisible(true);
             System.out.println("Opened and set as current: " + getFrameTitle(newFrameToShow));
         }
@@ -89,7 +97,8 @@ public class NavigationManager {
         frameStack.clear();
 
         // Dispose the current active frame if it's not null and displayable
-        if (this.currentManagedFrame != null && this.currentManagedFrame.isDisplayable()) {
+        if (this.currentManagedFrame != null) {
+            this.currentManagedFrame.setVisible(false);
             this.currentManagedFrame.dispose();
             System.out.println("Disposed current managed frame: " + getFrameTitle(this.currentManagedFrame));
         }

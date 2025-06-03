@@ -7,8 +7,6 @@ package component;
 import java.io.IOException;
 import javax.swing.JOptionPane;
 import javax.swing.table.TableColumn;
-import component.ButtonRenderer;
-import component.ButtonEditor;
 import domain.User;
 import function.UserSession;
 import java.awt.Component;
@@ -27,14 +25,12 @@ public class AlertFrame extends javax.swing.JDialog {
     /**
      * Creates new form AlertFrame
      */
-    private User currentUser;
+    private final User currentUser;
     
     public AlertFrame(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
-//        currentUser = UserSession.getInstance().getCurrentUser();
-        currentUser = new User();
-        currentUser.setRole("PM");
-        System.out.println(currentUser.getId());
+        currentUser = UserSession.getInstance().getCurrentUser();
+        
         initComponents();
         this.setLocationRelativeTo(null);
         updateTable();
@@ -163,37 +159,6 @@ public class AlertFrame extends javax.swing.JDialog {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(AlertFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(AlertFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(AlertFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(AlertFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new AlertFrame(new javax.swing.JFrame(), true).setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;

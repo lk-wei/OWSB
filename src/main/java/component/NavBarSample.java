@@ -6,6 +6,7 @@ package component;
 
 import function.NavigationManager;
 import javax.swing.*;
+import main.Login;
 
 /**
  *
@@ -168,10 +169,33 @@ public class NavBarSample extends javax.swing.JPanel {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
+        
+        
+        int confirm = JOptionPane.showConfirmDialog(
+                    this,
+                    "Do You Want To Log Out?",
+                    "",
+                    JOptionPane.YES_NO_OPTION);
+        
+                if (confirm == JOptionPane.YES_OPTION) {
+                    JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
+                    NavigationManager.getInstance().openFrame(null, topFrame);
+                    NavigationManager.getInstance().clearHistoryAndDisposeAll(new Login());
+                }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
+        int confirm = JOptionPane.showConfirmDialog(
+            this,
+            "Are you sure you want to exit the application?",
+            "Exit Confirmation",
+            JOptionPane.YES_NO_OPTION
+        );
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            System.exit(0);
+        }
     }//GEN-LAST:event_jButton2ActionPerformed
 
 
