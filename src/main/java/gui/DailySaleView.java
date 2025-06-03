@@ -54,32 +54,36 @@ public class DailySaleView extends javax.swing.JFrame {
     
     // Custom Methods
     
-    private void setView(){
+    private void setView() {
         DailySaleRepo dsr = new DailySaleRepo();
-        
+
         try {
+            // Check if the sale exists before attempting to access its properties
             sale = dsr.getById(viewId);
-            User u = new UserRepo().getById(sale.getRecordedById());
-            Item i = new ItemRepo().getById(sale.getItemId());
-            
-            if (this.sale == null){
+
+            if (sale == null) {
                 return;
             }
-            
+
+            // Fetch related user and item information
+            User u = new UserRepo().getById(sale.getRecordedById());
+            Item i = new ItemRepo().getById(sale.getItemId());
+
+            // Set the fields with sale, user, and item data
             saleCodeField.setText(sale.getSaleCode());
             saleDateField.setText(String.valueOf(sale.getSaleDate()));
             itemCodeField.setText(i.getItemCode());
             itemNameField.setText(i.getItemName());
             quantitySoldField.setText(String.valueOf(sale.getQuantitySold()));
             recordedByField.setText(u.getFullName());
-            
 
-        }catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             JOptionPane.showMessageDialog(this, e.getMessage(), "Input Error", JOptionPane.ERROR_MESSAGE);
         } catch (IOException ex) {
             Logger.getLogger(DailySaleNew.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -337,13 +341,12 @@ public class DailySaleView extends javax.swing.JFrame {
 
         if (confirm == JOptionPane.YES_OPTION) {
             DailySaleRepo dsr = new DailySaleRepo();
-            try {
+            try {       
                 manageStock.addStockQuantity(sale.getId());
                 
                 dsr.delete(sale); 
                 JOptionPane.showMessageDialog(this, "Sale record deleted successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
-                //NavigationManager.getInstance().goBack();
-                NavigationManager.getInstance().openFrame(new DailySaleTable(), this);
+                NavigationManager.getInstance().goBack();
             } catch (IOException ex) {
                 Logger.getLogger(DailySaleView.class.getName()).log(Level.SEVERE, null, ex);
                 JOptionPane.showMessageDialog(this, "Failed to delete the sale record. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
