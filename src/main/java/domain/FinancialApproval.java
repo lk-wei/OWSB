@@ -15,19 +15,17 @@ public class FinancialApproval implements Identifiable<Long>{
     private Long purchaseOrderId; // FK to PurchaseOrder
     private Long approvedById; // FK to User
     private LocalDate approvalDate;
-    private Double approvedAmount;
     
     // Constructors
     public FinancialApproval() {
     }
 
     public FinancialApproval(Long id, Long purchaseOrderId, 
-                            Long approvedById, LocalDate approvalDate, Double approvedAmount) {
+                            Long approvedById, LocalDate approvalDate) {
         this.id = id;
         this.purchaseOrderId = purchaseOrderId;
         this.approvedById = approvedById;
         this.approvalDate = approvalDate;
-        this.approvedAmount = approvedAmount;
     }
     
     // Getters and Setters
@@ -62,13 +60,4 @@ public class FinancialApproval implements Identifiable<Long>{
     public void setApprovalDate(LocalDate approvalDate) {
         this.approvalDate = approvalDate;
     }
-
-    public Double getApprovedAmount() {
-        return approvedAmount;
-    }
-
-    public void setApprovedAmount(Double approvedAmount) {
-        this.approvedAmount = approvedAmount;
-    }
-    
 }

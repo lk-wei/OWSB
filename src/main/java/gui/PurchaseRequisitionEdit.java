@@ -1,94 +1,147 @@
-package gui;
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-
-
+package gui;
+import component.ButtonEditor;
+import component.ButtonRenderer;
 import domain.Item;
 import domain.PurchaseRequisition;
 import domain.PurchaseRequisitionItem;
 import domain.Supplier;
-import gui.table.PurchaseRequsitionTable;
-import java.io.IOException;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JOptionPane;
-import sample.*;
-import javax.swing.table.DefaultTableModel;
+import function.IdGenerator;  // Import the IdGenerator class
+import function.NavigationManager;
 import repository.ItemRepo;
 import repository.PurchaseRequisitionItemRepo;
 import repository.PurchaseRequisitionRepo;
 import repository.SupplierRepo;
-import repository.UserRepo;
+import javax.swing.*;
+import java.io.IOException;
+import java.util.List;
+import gui.table.PurchaseRequsitionTable;
+import java.awt.Component;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 
 /**
  *
  * @author Kang Wei
  */
-public class PurchaseRequisitionEdit extends javax.swing.JFrame {
+public class PurchaseRequisitionEdit extends javax.swing.JFrame implements SelectionListener<PurchaseRequisitionItem>{
     /**
      * Creates new form DashBoardSample
      */
-    private Long viewId;
-    private PurchaseRequisition toEdit;
     private DefaultTableModel tableModel;
+    private PurchaseRequisition purchaseR;
+    private List<PurchaseRequisitionItem> oriItemList = new ArrayList<>();
+    private List<PurchaseRequisitionItem> itemList = new ArrayList<>();
+    private Long viewId;
     
-    public PurchaseRequisitionEdit(Long viewId) {
-        this.viewId = viewId;
+    public PurchaseRequisitionEdit(Long viewId) throws IOException {
+        this.viewId =  viewId;
+        oriItemList = new PurchaseRequisitionItemRepo().getItemsByRequisitionId(viewId);
+        if (oriItemList == null) { // defensively handle null from repo
+            oriItemList = new ArrayList<>();
+        }
+        itemList = new ArrayList<>(oriItemList);
+        
+        
         initComponents();
-        this.setLocationRelativeTo(null); // Center the frame
+        tableModel = (DefaultTableModel) jTable2.getModel();
+        this.setLocationRelativeTo(null); //this will center your frame
         setView();
+        updateTable();
     }
     
     // Custom Methods
     private void setView() {
-        PurchaseRequisitionRepo prRepo = new PurchaseRequisitionRepo();
-        UserRepo userRepo = new UserRepo();
-        SupplierRepo supplierRepo = new SupplierRepo();
-        PurchaseRequisitionItemRepo prItemRepo = new PurchaseRequisitionItemRepo();
-        ItemRepo itemRepo = new ItemRepo();
-
+        PurchaseRequisitionRepo prr = new PurchaseRequisitionRepo();
+        
         try {
-            // Fetch the Purchase Requisition details by ID
-            toEdit = prRepo.getPurchaseRequisitionById(viewId);
-
-            if (toEdit != null) {
-                purchaseRequisitionCodeField.setText(toEdit.getPurchaseRequisitionCode());
-                requestedUserField.setText(userRepo.getUserById(toEdit.getRequestedById()).getFullName());
-                requestedDateField.setText(toEdit.getRequestDate().toString());
-                requiredDateField.setText(toEdit.getRequiredDate().toString());
-                statusField.setText(toEdit.getStatus());
-
-                // Fetch item details from the item repository using item ID
-                List<PurchaseRequisitionItem> prItems = prItemRepo.getItemsByRequisitionId(toEdit.getId());
-                PurchaseRequisitionItem prItem = prItems.isEmpty() ? null : prItems.get(0);
-
-                // Default values
-                String itemName = "Unknown Item";
-                String supplierCode = "Unknown Supplier Code";  // Default value for Supplier Code
-
-                if (prItem != null) {
-                    // Retrieve item name using ItemRepo
-                    Item item = itemRepo.getById(prItem.getItemId());
-                    itemName = (item != null) ? item.getItemName() : "Unknown Item";
-
-                    // Fetch supplier data using SupplierRepo
-                    Supplier supplier = supplierRepo.getSupplierById(prItem.getSupplierId());  // Ensure you use the correct field
-                    supplierCode = (supplier != null) ? supplier.getSupplierCode() : "Unknown Supplier Code";  // Set supplier code
-                }
-
-                // Set the editable fields
-                itemNameField.setText(itemName);
-                quantityField.setText(String.valueOf(prItem != null ? prItem.getQuantity() : 0));
-                supplierCodeField.setText(supplierCode);  // Set the supplier code
+            purchaseR = prr.getById(viewId);
+            
+            if (this.purchaseR == null) {
+                return;
             }
+            
+            codeField.setText(purchaseR.getPurchaseRequisitionCode());
+            requestDateField.setText(purchaseR.getRequestDate().toString());
+            requiredDateField.setText(purchaseR.getRequestDate().toString());
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Input Error", JOptionPane.ERROR_MESSAGE);
         } catch (IOException ex) {
-            Logger.getLogger(PurchaseRequisitionEdit.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(FinancialReportNew.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
     
-    }  
+    public void updateTable() throws IOException {
+        removeAllRows();
+
+        if(itemList != null){
+            for (PurchaseRequisitionItem pri : itemList) {
+                Item i = new ItemRepo().getById(pri.getItemId());
+
+                
+                tableModel.addRow(new Object[]{
+                    i.getId(),
+                    i.getItemCode(), 
+                    i.getItemName(), 
+                    pri.getQuantity(), 
+                    "Delete"});
+                
+                System.out.println("table updated");
+            }
+        }
+        
+        TableColumn idColumn = jTable2.getColumnModel().getColumn(0);
+        idColumn.setMinWidth(0);
+        idColumn.setMaxWidth(0);
+        idColumn.setPreferredWidth(0);
+        idColumn.setResizable(false);
+        
+        TableColumn actionColumn = jTable2.getColumnModel().getColumn(4);
+        actionColumn.setCellRenderer(new ButtonRenderer());
+        actionColumn.setCellEditor(new ButtonEditor(new JCheckBox()) {
+            @Override
+            public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+                Component c = super.getTableCellEditorComponent(table, value, isSelected, row, column);
+
+                button.addActionListener(e -> {
+                    fireEditingStopped();
+                    
+                    // add button function here
+                    Object rawId = table.getModel().getValueAt(row, 0);
+                    Long id = Long.valueOf(rawId.toString());
+                    System.out.println(id);
+                    
+                    for(PurchaseRequisitionItem pri : itemList){
+                        if(Objects.equals(pri.getItemId(), id)){
+                            itemList.remove(pri);
+                            System.out.println("Removed Item Id: "+ pri.getItemId());
+                            break;
+                        }
+                    }
+                    
+                    tableModel.removeRow(row);
+                });
+                return c;
+            }
+        });
+    }
+    
+    private void removeAllRows() {
+        while (tableModel.getRowCount() > 0) {
+            tableModel.removeRow(0);
+        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -105,23 +158,16 @@ public class PurchaseRequisitionEdit extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         inputPanel = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
-        purchaseRequisitionCodeField = new javax.swing.JTextField();
-        supplierCodeField = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
-        updateButton = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTable2 = new javax.swing.JTable();
+        cancelBtn = new javax.swing.JButton();
+        updateBtn = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
-        requestedUserField = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
-        itemNameField = new javax.swing.JTextField();
-        requestedDateField = new javax.swing.JTextField();
-        jLabel8 = new javax.swing.JLabel();
+        addItemBtn = new javax.swing.JButton();
+        requestDateField = new javax.swing.JTextField();
         requiredDateField = new javax.swing.JTextField();
-        jLabel9 = new javax.swing.JLabel();
-        statusField = new javax.swing.JTextField();
-        jLabel10 = new javax.swing.JLabel();
-        quantityField = new javax.swing.JTextField();
-        jLabel11 = new javax.swing.JLabel();
-        jLabel13 = new javax.swing.JLabel();
+        codeField = new javax.swing.JTextField();
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -149,7 +195,7 @@ public class PurchaseRequisitionEdit extends javax.swing.JFrame {
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Purchase Requisition Edit");
+        jLabel1.setText("Edit Purchase Requisition");
         jLabel1.setToolTipText("");
         jLabel1.setMaximumSize(new java.awt.Dimension(800, 100));
         jLabel1.setMinimumSize(new java.awt.Dimension(800, 100));
@@ -159,164 +205,113 @@ public class PurchaseRequisitionEdit extends javax.swing.JFrame {
         inputPanel.setMinimumSize(new java.awt.Dimension(800, 600));
 
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel6.setText("Purchase Requsition Code:");
+        jLabel6.setText("PR Code");
 
-        purchaseRequisitionCodeField.setEditable(false);
-        purchaseRequisitionCodeField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null}
+            },
+            new String [] {
+                "", "Item Code", "Name", "Qty", "Action"
+            }
+        ));
+        jTable2.setShowGrid(true);
+        jScrollPane3.setViewportView(jTable2);
 
-        supplierCodeField.setEditable(false);
-        supplierCodeField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-
-        jButton1.setBackground(new java.awt.Color(255, 0, 51));
-        jButton1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("Cancel");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        cancelBtn.setBackground(new java.awt.Color(255, 0, 51));
+        cancelBtn.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        cancelBtn.setForeground(new java.awt.Color(255, 255, 255));
+        cancelBtn.setText("Cancel");
+        cancelBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                cancelBtnActionPerformed(evt);
             }
         });
 
-        updateButton.setBackground(new java.awt.Color(102, 204, 0));
-        updateButton.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        updateButton.setForeground(new java.awt.Color(255, 255, 255));
-        updateButton.setText("Update");
-        updateButton.setPreferredSize(new java.awt.Dimension(84, 32));
-        updateButton.addActionListener(new java.awt.event.ActionListener() {
+        updateBtn.setBackground(new java.awt.Color(51, 153, 255));
+        updateBtn.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        updateBtn.setForeground(new java.awt.Color(255, 255, 255));
+        updateBtn.setText("Update");
+        updateBtn.setPreferredSize(new java.awt.Dimension(84, 32));
+        updateBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                updateButtonActionPerformed(evt);
+                updateBtnActionPerformed(evt);
             }
         });
 
         jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel5.setText("Requested By User:");
-
-        requestedUserField.setEditable(false);
-        requestedUserField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel5.setText("Request Date");
 
         jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel7.setText("Supplier Code");
+        jLabel7.setText("Required Date");
 
-        itemNameField.setEditable(false);
-        itemNameField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        addItemBtn.setText("+ Add");
+        addItemBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addItemBtnActionPerformed(evt);
+            }
+        });
 
-        requestedDateField.setEditable(false);
-        requestedDateField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-
-        jLabel8.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel8.setText("Requsted Date");
+        requestDateField.setEditable(false);
+        requestDateField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         requiredDateField.setEditable(false);
         requiredDateField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
-        jLabel9.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel9.setText("Required Date");
-
-        statusField.setEditable(false);
-        statusField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        statusField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                statusFieldActionPerformed(evt);
-            }
-        });
-
-        jLabel10.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel10.setText("Status");
-
-        quantityField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-
-        jLabel11.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel11.setText("Quantity");
-
-        jLabel13.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel13.setText("Item Name");
+        codeField.setEditable(false);
+        codeField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         javax.swing.GroupLayout inputPanelLayout = new javax.swing.GroupLayout(inputPanel);
         inputPanel.setLayout(inputPanelLayout);
         inputPanelLayout.setHorizontalGroup(
             inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(inputPanelLayout.createSequentialGroup()
-                .addGap(75, 75, 75)
-                .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(inputPanelLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(updateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(536, 536, 536)
+                        .addComponent(cancelBtn)
+                        .addGap(18, 18, 18)
+                        .addComponent(updateBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(inputPanelLayout.createSequentialGroup()
+                        .addGap(75, 75, 75)
                         .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(inputPanelLayout.createSequentialGroup()
-                                .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(purchaseRequisitionCodeField)
-                                    .addComponent(requestedUserField)
-                                    .addComponent(jLabel5)
-                                    .addComponent(requestedDateField)
-                                    .addComponent(jLabel8)
-                                    .addComponent(statusField)
-                                    .addComponent(jLabel10))
-                                .addGap(50, 50, 50))
-                            .addGroup(inputPanelLayout.createSequentialGroup()
-                                .addComponent(jLabel6)
-                                .addGap(175, 175, 175)))
+                            .addComponent(addItemBtn)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 650, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(inputPanelLayout.createSequentialGroup()
+                        .addGap(75, 75, 75)
                         .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(supplierCodeField, javax.swing.GroupLayout.DEFAULT_SIZE, 313, Short.MAX_VALUE)
-                            .addComponent(itemNameField)
-                            .addComponent(requiredDateField)
-                            .addComponent(quantityField)
-                            .addGroup(inputPanelLayout.createSequentialGroup()
-                                .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel7)
-                                    .addComponent(jLabel9)
-                                    .addComponent(jLabel11)
-                                    .addComponent(jLabel13))
-                                .addGap(0, 0, Short.MAX_VALUE)))))
+                            .addComponent(jLabel6)
+                            .addComponent(codeField, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(37, 37, 37)
+                        .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel5)
+                            .addComponent(jLabel7)
+                            .addComponent(requestDateField)
+                            .addComponent(requiredDateField))))
                 .addGap(75, 75, 75))
         );
         inputPanelLayout.setVerticalGroup(
             inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, inputPanelLayout.createSequentialGroup()
-                .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel6)
-                    .addComponent(jLabel7))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(inputPanelLayout.createSequentialGroup()
-                        .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(purchaseRequisitionCodeField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(supplierCodeField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(inputPanelLayout.createSequentialGroup()
-                                .addComponent(jLabel5)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(requestedUserField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(inputPanelLayout.createSequentialGroup()
-                                .addComponent(jLabel13)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(itemNameField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel8)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(requestedDateField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(inputPanelLayout.createSequentialGroup()
-                        .addComponent(jLabel9)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(requiredDateField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(inputPanelLayout.createSequentialGroup()
-                        .addComponent(jLabel10)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(statusField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(inputPanelLayout.createSequentialGroup()
-                        .addComponent(jLabel11)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(quantityField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 326, Short.MAX_VALUE)
+            .addGroup(inputPanelLayout.createSequentialGroup()
                 .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(updateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18))
+                    .addComponent(jLabel6)
+                    .addComponent(jLabel5))
+                .addGap(6, 6, 6)
+                .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(requestDateField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(codeField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(jLabel7)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(requiredDateField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(24, 24, 24)
+                .addComponent(addItemBtn)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(45, 45, 45)
+                .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(updateBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cancelBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -335,7 +330,7 @@ public class PurchaseRequisitionEdit extends javax.swing.JFrame {
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(inputPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(24, Short.MAX_VALUE))
+                .addContainerGap(41, Short.MAX_VALUE))
         );
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
@@ -343,46 +338,115 @@ public class PurchaseRequisitionEdit extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        PurchaseRequsitionTable second = new PurchaseRequsitionTable();
-        second.setVisible(true);
-        this.dispose();
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void cancelBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelBtnActionPerformed
+        NavigationManager.getInstance().goBack();
+    }//GEN-LAST:event_cancelBtnActionPerformed
 
-    private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateButtonActionPerformed
+    private void updateBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateBtnActionPerformed
+        if (this.purchaseR == null) {
+            JOptionPane.showMessageDialog(this, "No Purchase Requisition loaded to update.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        if (itemList == null) { 
+            JOptionPane.showMessageDialog(this, "Item list is not initialized.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Update PR Items
+        PurchaseRequisitionItemRepo prItemRepo = new PurchaseRequisitionItemRepo();
+
         try {
-            // Update the quantity in the Purchase Requisition Item
-            int newQuantity = Integer.parseInt(quantityField.getText());
-
-            // Fetch the PurchaseRequisitionItem corresponding to this PurchaseRequisition
-            List<PurchaseRequisitionItem> prItems = new PurchaseRequisitionItemRepo().getItemsByRequisitionId(toEdit.getId());
-
-            if (!prItems.isEmpty()) {
-                PurchaseRequisitionItem prItem = prItems.get(0);  // Get the first item (adjust if there are multiple)
-                prItem.setQuantity(newQuantity);  // Update the quantity field
-
-                // Save the updated Purchase Requisition Item back to the purchaseRequisitionItem.txt file
-                PurchaseRequisitionItemRepo prItemRepo = new PurchaseRequisitionItemRepo();
-                prItemRepo.update(prItem);  // This will update the corresponding entry in purchaseRequisitionItem.txt
+            // DELETE:
+         
+            List<PurchaseRequisitionItem> itemsToDeleteInDB = new ArrayList<>();
+            for (PurchaseRequisitionItem oriItem : oriItemList) {
+                boolean stillExistsInCurrentList = false;
+                if (oriItem.getId() != null) {
+                    for (PurchaseRequisitionItem currentItem : itemList) {
+                        if (oriItem.getId().equals(currentItem.getId())) {
+                            stillExistsInCurrentList = true;
+                            break;
+                        }
+                    }
+                }
+                if (!stillExistsInCurrentList && oriItem.getId() != null) {
+                    itemsToDeleteInDB.add(oriItem);
+                }
+            }
+            for (PurchaseRequisitionItem itemToDelete : itemsToDeleteInDB) {
+                prItemRepo.delete(itemToDelete);
+                System.out.println("Deleted PR Item ID: " + itemToDelete.getId() + " (Item ID: " + itemToDelete.getItemId() +")");
             }
 
-            // Inform the user that the update was successful
-            JOptionPane.showMessageDialog(this, "Quantity updated successfully!");
+            // ADD 
+            for (PurchaseRequisitionItem currentItem : itemList) {
+                if (currentItem.getId() == null) {
+                    currentItem.setPurchaseRequisitionId(this.viewId);
+                    prItemRepo.create(currentItem);
+                    System.out.println("Created new PR Item for Item ID: " + currentItem.getItemId() + " with Qty: " + currentItem.getQuantity());
+                }
+            }
 
-            // Optionally, close the window or navigate back to the previous screen
-            PurchaseRequsitionTable tablePage = new PurchaseRequsitionTable();
-            tablePage.setVisible(true);
-            this.dispose();
+            // After all DB operations, refresh oriItemList to match current state for next edit cycle (if any)
+            this.oriItemList = new ArrayList<>(prItemRepo.getItemsByRequisitionId(viewId));
+            // And refresh the table
+            updateTable();
 
-        } catch (IOException | NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "Error updating quantity: " + ex.getMessage());
+            JOptionPane.showMessageDialog(this, "Purchase Requisition updated successfully!");
+            NavigationManager.getInstance().goBack();
+
+        } catch (IOException ex) {
+            Logger.getLogger(PurchaseRequisitionEdit.class.getName()).log(Level.SEVERE, "Error updating purchase requisition items", ex);
+            JOptionPane.showMessageDialog(this, "Error updating items: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
-    }//GEN-LAST:event_updateButtonActionPerformed
+    }//GEN-LAST:event_updateBtnActionPerformed
 
-    private void statusFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_statusFieldActionPerformed
+    private void addItemBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addItemBtnActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_statusFieldActionPerformed
+        try {
+            new RequisitionItem(this, this).setVisible(true);
+        } catch (IOException ex) {
+            Logger.getLogger(DailySaleNew.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_addItemBtnActionPerformed
 
+    @Override
+    public void onSelected(PurchaseRequisitionItem item) {
+        addToList(item);
+        System.out.println(item.getQuantity());// Or any custom logic
+    }
+    
+    public void addToList(PurchaseRequisitionItem prItem){
+        
+        // check for duplicate items
+        boolean itemExists = false;
+        for (PurchaseRequisitionItem existingItem : itemList) {
+            if (existingItem.getItemId().equals(prItem.getItemId())) {
+                itemExists = true;
+                break;
+            }
+        }
+        
+         if (!itemExists) {
+
+            itemList.add(prItem);
+            
+            System.out.println("Added to list: ");
+            try {
+                updateTable(); 
+            } catch (IOException ex) {
+                Logger.getLogger(SupplierNew.class.getName()).log(Level.SEVERE, "Error updating table after adding item", ex);
+            }
+        } else {
+            System.out.println("Item is already in the list for this supplier.");
+            JOptionPane.showMessageDialog(
+                this,
+                "Item is already added.",
+                "Duplicate Item",
+                JOptionPane.INFORMATION_MESSAGE
+            );
+        }
+    }
     /**
      * @param args the command line arguments
      */
@@ -440,38 +504,131 @@ public class PurchaseRequisitionEdit extends javax.swing.JFrame {
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-//                new PurchaseRequisitionEdit().setVisible(true);
+                try {
+                    new PurchaseRequisitionEdit(12L).setVisible(true);
+                } catch (IOException ex) {
+                    Logger.getLogger(PurchaseRequisitionEdit.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton addItemBtn;
+    private javax.swing.JButton cancelBtn;
+    private javax.swing.JTextField codeField;
     private javax.swing.JPanel inputPanel;
-    private javax.swing.JTextField itemNameField;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTextField purchaseRequisitionCodeField;
-    private javax.swing.JTextField quantityField;
-    private javax.swing.JTextField requestedDateField;
-    private javax.swing.JTextField requestedUserField;
+    private javax.swing.JTable jTable2;
+    private javax.swing.JTextField requestDateField;
     private javax.swing.JTextField requiredDateField;
-    private javax.swing.JTextField statusField;
-    private javax.swing.JTextField supplierCodeField;
-    private javax.swing.JButton updateButton;
+    private javax.swing.JButton updateBtn;
     // End of variables declaration//GEN-END:variables
 }

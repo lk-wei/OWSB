@@ -21,8 +21,6 @@ public class PurchaseOrder implements Identifiable<Long>{
     private LocalDate orderDate; 
     private LocalDate expectedDeliveryDate;
     private String status; // Draft/PendingApproval/Approved/Rejected/Shipped/Received
-    private LocalDate approvalDate;
-    private Long approvedById; // FK to User
     private Double totalAmount; //d
     private List<PurchaseOrderItem> item;
 
@@ -30,7 +28,7 @@ public class PurchaseOrder implements Identifiable<Long>{
     public PurchaseOrder() {
     }
 
-    public PurchaseOrder(Long id, String purchaseOrderCode, Long purchaseRequisitionId, Long createdById, Long supplierId, LocalDate orderDate, LocalDate expectedDeliveryDate, String status, LocalDate approvalDate, Long approvedById, Double totalAmount, List<PurchaseOrderItem> item) {
+    public PurchaseOrder(Long id, String purchaseOrderCode, Long purchaseRequisitionId, Long createdById, Long supplierId, LocalDate orderDate, LocalDate expectedDeliveryDate, String status, Double totalAmount, List<PurchaseOrderItem> item) {
         this.id = id;
         this.purchaseOrderCode = purchaseOrderCode;
         this.purchaseRequisitionId = purchaseRequisitionId;
@@ -39,8 +37,6 @@ public class PurchaseOrder implements Identifiable<Long>{
         this.orderDate = orderDate;
         this.expectedDeliveryDate = expectedDeliveryDate;
         this.status = status;
-        this.approvalDate = approvalDate;
-        this.approvedById = approvedById;
         this.totalAmount = totalAmount;
         this.item = item;
     }
@@ -101,22 +97,6 @@ public class PurchaseOrder implements Identifiable<Long>{
         this.status = status;
     }
 
-    public LocalDate getApprovalDate() {
-        return approvalDate;
-    }
-
-    public void setApprovalDate(LocalDate approvalDate) {
-        this.approvalDate = approvalDate;
-    }
-
-    public Long getApprovedById() {
-        return approvedById;
-    }
-
-    public void setApprovedById(Long approvedById) {
-        this.approvedById = approvedById;
-    }
-
     public Double getTotalAmount() {
         return totalAmount;
     }
@@ -143,18 +123,6 @@ public class PurchaseOrder implements Identifiable<Long>{
     // toString method
     @Override
     public String toString() {
-        return "PurchaseOrder{" +
-                "purchaseOrderId=" + id +
-                ",purchaseOrderCode=" + purchaseOrderCode +
-                ", purchaseRequisitionId=" + purchaseRequisitionId +
-                ", createdById=" + createdById +
-                ", supplierId=" + supplierId +
-                ", orderDate=" + orderDate +
-                ", expectedDeliveryDate=" + expectedDeliveryDate +
-                ", status='" + status + '\'' +
-                ", approvalDate='" +approvalDate +
-                ", approvedById=" + approvedById +
-                ", totalAmount=" + totalAmount +
-                '}';
+        return purchaseOrderCode;
     }
 }

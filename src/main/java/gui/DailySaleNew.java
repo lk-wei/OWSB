@@ -9,6 +9,7 @@ import component.ButtonRenderer;
 import domain.DailySale;
 import domain.Item;
 import domain.User;
+import function.AlertManager;
 import function.NavigationManager;
 import gui.table.DailySaleTable;
 import java.awt.Component;
@@ -358,6 +359,7 @@ public class DailySaleNew extends javax.swing.JFrame {
                 }
 
             JOptionPane.showMessageDialog(null, "Daily Sale added successfully!");
+            AlertManager.triggerLowStock();
             NavigationManager.getInstance().openFrame(new DailySaleTable(), this);
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(null, "Please enter valid numbers for stock and unit cost.");

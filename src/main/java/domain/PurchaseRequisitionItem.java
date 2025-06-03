@@ -16,18 +16,16 @@ public class PurchaseRequisitionItem implements Identifiable<Long>{
     private Long purchaseRequisitionId; //FK to PurchaseRequisition
     private Long itemId; //FK to Item
     private int quantity; 
-    private Long supplierId;  //FK to Supplier
     
     public PurchaseRequisitionItem(){
         
     }
 
-    public PurchaseRequisitionItem(Long id, Long purchaseRequisitionId, Long itemId, int quantity, Long supplierId) {
+    public PurchaseRequisitionItem(Long id, Long purchaseRequisitionId, Long itemId, int quantity) {
         this.id = id;
         this.purchaseRequisitionId = purchaseRequisitionId;
         this.itemId = itemId;
         this.quantity = quantity;
-        this.supplierId = supplierId;
     }
 
     public Long getId() {
@@ -61,18 +59,4 @@ public class PurchaseRequisitionItem implements Identifiable<Long>{
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
-
-    public Long getSupplierId() {
-        return supplierId;
-    }
-
-    public void setSupplierId(Long supplierId) {
-        this.supplierId = supplierId;
-    }
-
-    
-    
-    
-    
-    
 }

@@ -60,7 +60,6 @@ public class PurchaseOrderRepo extends MasterRepo<PurchaseOrder>{
             "Created By", 
             "Suppplier Code",
             "Supplier Name",
-            "Approve by ", 
             "Order Date", 
             "Expected Delivery Date", 
             "Status", 
@@ -76,7 +75,6 @@ public class PurchaseOrderRepo extends MasterRepo<PurchaseOrder>{
     for (PurchaseOrder report : reports) {
         Supplier supp = supplierRepo.getSupplierById(report.getSupplierId());
         User createdUser = userRepo.getUserById(report.getCreatedById());
-        User approvedUser = userRepo.getUserById(report.getApprovedById());
         
         model.addRow(new Object[]{
             report.getId(),
@@ -84,7 +82,6 @@ public class PurchaseOrderRepo extends MasterRepo<PurchaseOrder>{
             createdUser.getFullName(),
             supp.getSupplierCode(),
             supp.getSuppliername(),
-            approvedUser.getFullName(),
             report.getOrderDate(),
             report.getExpectedDeliveryDate(),
             report.getStatus(),
@@ -111,16 +108,14 @@ public class PurchaseOrderRepo extends MasterRepo<PurchaseOrder>{
             po.getOrderDate().toString(),
             po.getExpectedDeliveryDate().toString(),
             po.getStatus(),
-            po.getApprovalDate().toString(),
-            po.getApprovedById().toString(),
             po.getTotalAmount().toString()
         );
     }
 
+
     // Converts pipe-delimited string back to PurchaseOrder object
     @Override
     protected PurchaseOrder stringToObject(String line) {
-        PurchaseOrderItemRepo itemRepo = new PurchaseOrderItemRepo();
         String[] parts = line.split("\\|", -1); // -1 keeps empty values
 
         return new PurchaseOrder(
@@ -132,9 +127,7 @@ public class PurchaseOrderRepo extends MasterRepo<PurchaseOrder>{
             LocalDate.parse(parts[5]),           // orderDate
             LocalDate.parse(parts[6]),           // expectedDeliveryDate
             parts[7],                            // status
-            LocalDate.parse(parts[8]),           // approvalDate
-            Long.valueOf(parts[9]),              // approvedById
-            Double.valueOf(parts[10]),            // totalAmount
+            Double.valueOf(parts[8]),            // totalAmount
             new ArrayList<>() // item list
         );
     }

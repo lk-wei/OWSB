@@ -102,4 +102,8 @@ public class PurchaseRequisition implements Identifiable<Long>{
         this.purchaseRequisitionItemId = purchaseRequisitionItemId;
     }
 
+    @Override
+    public String toString() {
+        return purchaseRequisitionCode;
+    }
 }

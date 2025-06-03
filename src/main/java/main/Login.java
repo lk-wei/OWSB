@@ -136,19 +136,21 @@ public class Login extends javax.swing.JFrame {
 
     private void assignRoleDashboard(String userRole){
         if (userRole.equalsIgnoreCase("AD")) { // Or use your role constants from PermissionService
-        new AdminDashBoard().setVisible(true);
-    } else if (userRole.equalsIgnoreCase("PM")) {
-        new PurchaseManagerDashboard().setVisible(true);
-    } else if (userRole.equalsIgnoreCase("SM")) {
-        new SaleManagerDashBoard().setVisible(true);
-    } else if (userRole.equalsIgnoreCase("IM")) {
-        new InventoryManagerDashboard().setVisible(true);
-    } else if (userRole.equalsIgnoreCase("FM")) {
-        new FinanceManagerDashBoard().setVisible(true);
-    } else {
-        JOptionPane.showMessageDialog(null, "No dashboard defined for role: " + userRole, "Error", JOptionPane.ERROR_MESSAGE);
-        // Potentially bring back login screen or handle as an error
-    }
+            new AdminDashBoard().setVisible(true);
+        } else if (userRole.equalsIgnoreCase("PM")) {
+            new PurchaseManagerDashboard().setVisible(true);
+        } else if (userRole.equalsIgnoreCase("SM")) {
+            new SaleManagerDashBoard().setVisible(true);
+        } else if (userRole.equalsIgnoreCase("IM")) {
+            new InventoryManagerDashboard().setVisible(true);
+        } else if (userRole.equalsIgnoreCase("FM")) {
+            new FinanceManagerDashBoard().setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(null, "No dashboard defined for role: " + userRole, "Error", JOptionPane.ERROR_MESSAGE);
+            // Potentially bring back login screen or handle as an error
+        }
+        
+        this.dispose();
     }
     
     /**

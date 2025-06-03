@@ -5,12 +5,17 @@
 package function;
 
 import domain.Alert;
+import domain.Item;
+import domain.PurchaseOrder;
 import domain.PurchaseRequisition;
 import domain.User; // To get sender ID if a User object is passed or from UserSession
 import repository.AlertRepo;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import repository.ItemRepo;
 
 /**
  *
@@ -77,7 +82,7 @@ public class AlertManager {
     }
 
 
-    public void savePurchaseRequisition(PurchaseRequisition pr) {
+    public static void savePurchaseRequisition(PurchaseRequisition pr) {
 
         boolean alertSent = AlertManager.sendAlert(
             "PM",
@@ -92,13 +97,54 @@ public class AlertManager {
         }
     }
     
-//    public void lowStockAlert(){
-//        boolean alertSent = AlertManager.sendAlert(
-//            "PM",
-//            "New Purchase Requisition Created: " + pr.getPurchaseRequisitionCode(), // Alert Title
-//            "Purchase Requisition " + pr.getPurchaseRequisitionCode()+ " has been submitted and is awaiting your review for PO generation."
-//        );
-//        
-//        
-//    }
+    public static void savePurchaseOrder(PurchaseOrder po) {
+
+        boolean alertSent = AlertManager.sendAlert(
+            "FM",
+            "New Purchase Requisition Created: " + po.getPurchaseOrderCode(), // Alert Title
+            "Purchase Requisition " + po.getPurchaseOrderCode()+ " has been submitted and is awaiting your review for PO generation."
+        );
+
+        if (alertSent) {
+            System.out.println("Notification sent to Purchase Manager for PR: " + po.getPurchaseOrderCode());
+        } else {
+            System.err.println("Failed to send notification to Purchase Manager for PR: " + po.getPurchaseOrderCode());
+        }
+        
+
+    }
+    
+    public static void triggerLowStock() throws IOException {
+        List<Item> itemToCheck = new ItemRepo().getAll();
+        List<Item> lowStockItem = new ArrayList<>();
+
+        for (Item i : itemToCheck) {
+            if (i.getCurrentStock() < i.getMinStock()) {
+                lowStockItem.add(i);
+            }
+        }
+
+        if (!lowStockItem.isEmpty()) {
+            
+
+            boolean alertSentIM = AlertManager.sendAlert(
+                "IM",
+                "Low Stock",
+                "Please Check The Item Stocks Levels as there Items That need restocking"
+            );
+            
+            boolean alertSentSM = AlertManager.sendAlert(
+                "SM",
+                "Low Stock",
+                "Please Check The Item Stocks Levels as there Items That need restocking"
+            );
+
+            if (alertSentIM) {
+                System.out.println("Low Stock Detected, Notification Sent to IM");
+            }
+            if (alertSentSM) {
+                System.out.println("Low Stock Detected, Notification Sent to SM");
+            }
+        }
+    }
 }

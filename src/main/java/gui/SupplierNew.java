@@ -33,7 +33,7 @@ import repository.SupplierRepo;
  *
  * @author jacks
  */
-public class SupplierNew extends javax.swing.JFrame implements ItemSelectionListener{
+public class SupplierNew extends javax.swing.JFrame implements SelectionListener<Item>{
     /**
      * Creates new form DashBoardSample
      */
@@ -374,7 +374,7 @@ public class SupplierNew extends javax.swing.JFrame implements ItemSelectionList
     }//GEN-LAST:event_addItemBtnActionPerformed
 
     @Override
-    public void onItemSelected(Item item) {
+    public void onSelected(Item item) {
         addToList(item); // Or any custom logic
     }
     

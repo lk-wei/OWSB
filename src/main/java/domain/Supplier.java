@@ -75,4 +75,8 @@ public class Supplier implements Identifiable<Long>{
     public String toString() {
         return suppliername;
     }
+
+    public String getItemCode() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }

@@ -25,14 +25,14 @@ public class ItemSupplierRepo extends MasterRepo<ItemSupplier>{
     }
     
     // match id get with the id stored in txt file
-    public List<ItemSupplier> getByItemSupplierId(Long isid) throws IOException{
+    public List<ItemSupplier> getByItemId(Long itemId) throws IOException{
         List<ItemSupplier> ItemSupplierList = new ArrayList<>();
         List<String> lines = Files.readAllLines(filePath);
    
         for(String line : lines){
             ItemSupplier is = stringToObject(line);
             
-            if(Objects.equals(is.getId(), isid)){
+            if(Objects.equals(is.getItemId(), itemId)){
                 ItemSupplierList.add(is);
             }
         }

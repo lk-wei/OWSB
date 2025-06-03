@@ -15,6 +15,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  *
@@ -24,20 +25,7 @@ public class PurchaseRequisitionItemRepo extends MasterRepo<PurchaseRequisitionI
     public PurchaseRequisitionItemRepo() {
         super(Path.of("database/purchaseRequisitionItem.txt"));
     }
-
-    // Read by ID
-    public PurchaseRequisitionItem getPurchaseRequisitionItemById(long itemId) throws IOException {
-        List<String> lines = Files.readAllLines(filePath);
-
-        for (String line : lines) {
-            PurchaseRequisitionItem item = stringToObject(line);
-            if (item.getId() == itemId) {
-                return item;
-            }
-        }
-        return null;
-    }
-    
+   
     public List<PurchaseRequisitionItem> getItemsByRequisitionId(long requisitionId) throws IOException {
         List<String> lines = Files.readAllLines(filePath);
         List<PurchaseRequisitionItem> items = new ArrayList<>();
@@ -51,43 +39,20 @@ public class PurchaseRequisitionItemRepo extends MasterRepo<PurchaseRequisitionI
         return items;  // Return the list of items for this PurchaseRequisition
     }
     
-    public void delete(PurchaseRequisitionItem prItem) throws IOException {
+    // for PR deletion
+    public void deleteByPRID(Long prid) throws IOException{
         List<String> lines = Files.readAllLines(filePath);
         List<String> updatedLines = new ArrayList<>();
 
-        // Filter out the line corresponding to the PurchaseRequisitionItem you want to delete
         for (String line : lines) {
-            PurchaseRequisitionItem existingPrItem = stringToObject(line);
-            if (!existingPrItem.getId().equals(prItem.getId())) {
+            PurchaseRequisitionItem is = stringToObject(line);
+
+            if (!Objects.equals(is.getPurchaseRequisitionId(), prid)) {
                 updatedLines.add(line);
             }
         }
-
-        // Write the updated lines back to the file
         Files.write(filePath, updatedLines);
     }
-    
-    public void save(PurchaseRequisitionItem prItem) throws IOException {
-        List<String> lines = Files.readAllLines(filePath);
-        lines.add(objectToString(prItem)); // Convert the object to string and add to the list
-        Files.write(filePath, lines);  // Save the lines back to the file
-    }
-    
-    
-    public void update(PurchaseRequisitionItem prItem) throws IOException {
-        List<String> lines = Files.readAllLines(filePath);
-        for (int i = 0; i < lines.size(); i++) {
-            String[] parts = lines.get(i).split("\\|");
-            if (Long.parseLong(parts[0]) == prItem.getId()) {
-                // Update the specific line for this PurchaseRequisitionItem
-                lines.set(i, objectToString(prItem));  // Replace the old entry with the updated one
-                break;
-            }
-        }
-        // Write the updated lines back to the file
-        Files.write(filePath, lines);
-    }
-    
 
     // Convert object to string for file storage
     @Override
@@ -96,8 +61,7 @@ public class PurchaseRequisitionItemRepo extends MasterRepo<PurchaseRequisitionI
                 String.valueOf(item.getId()),
                 String.valueOf(item.getPurchaseRequisitionId()),
                 String.valueOf(item.getItemId()),
-                String.valueOf(item.getQuantity()),
-                String.valueOf(item.getSupplierId())
+                String.valueOf(item.getQuantity())
         );
     }
 
@@ -111,7 +75,6 @@ public class PurchaseRequisitionItemRepo extends MasterRepo<PurchaseRequisitionI
         item.setPurchaseRequisitionId(Long.valueOf(parts[1]));
         item.setItemId(Long.valueOf(parts[2]));
         item.setQuantity(Integer.parseInt(parts[3]));
-        item.setSupplierId(Long.valueOf(parts[4]));
 
         return item;
     }

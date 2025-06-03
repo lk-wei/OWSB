@@ -30,42 +30,6 @@ public class PurchaseRequisitionRepo extends MasterRepo<PurchaseRequisition>{
     }
     
     // Read by ID
-    public PurchaseRequisition getPurchaseRequisitionById(long prId) throws IOException {
-        List<String> lines = Files.readAllLines(filePath);
-
-        for (String line : lines) {
-            PurchaseRequisition pr = stringToObject(line);
-            if (pr.getId() == prId) {
-                return pr;
-            }
-        }
-        return null;
-    }
-    
-    public void save(PurchaseRequisition pr) throws IOException {
-        List<String> lines = Files.readAllLines(filePath);
-        lines.add(objectToString(pr)); // Convert the object to string and add to the list
-        Files.write(filePath, lines);  // Save the lines back to the file
-    }
-    
-    
-    public void delete(PurchaseRequisition pr) throws IOException {
-        List<String> lines = Files.readAllLines(filePath);
-        List<String> updatedLines = new ArrayList<>();
-
-        // Filter out the line corresponding to the PurchaseRequisition you want to delete
-        for (String line : lines) {
-            PurchaseRequisition existingPr = stringToObject(line);
-            if (!existingPr.getId().equals(pr.getId())) {
-                updatedLines.add(line);
-            }
-        }
-
-        // Write the updated lines back to the file
-        Files.write(filePath, updatedLines);
-    }
-
-        
     public DefaultTableModel getTableModel() throws IOException {
         DefaultTableModel model = new DefaultTableModel(
                 new Object[][]{},
@@ -75,8 +39,6 @@ public class PurchaseRequisitionRepo extends MasterRepo<PurchaseRequisition>{
                     "Requested By", 
                     "Request Date", 
                     "Required Date", 
-                    "Supplier Code", 
-                    "Supplier Name", 
                     "Status", 
                     "View"
                 }
@@ -98,7 +60,6 @@ public class PurchaseRequisitionRepo extends MasterRepo<PurchaseRequisition>{
                 // Process the items and populate the table
                 for (PurchaseRequisitionItem item : items) {
                     User user = userRepo.getUserById(report.getRequestedById());
-                    Supplier supplierObj = supplierRepo.getSupplierById(item.getSupplierId());
 
                     model.addRow(new Object[]{
                         report.getId().toString(),
@@ -106,8 +67,6 @@ public class PurchaseRequisitionRepo extends MasterRepo<PurchaseRequisition>{
                         user.getFullName(),
                         report.getRequestDate(),
                         report.getRequiredDate(),
-                        supplierObj.getSupplierCode(),
-                        supplierObj.getSuppliername(), // or supplier name
                         report.getStatus(),
                         "View"
                     });

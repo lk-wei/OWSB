@@ -9,14 +9,14 @@ import component.ButtonRenderer;
 import domain.User;
 import function.FrontendPermissionManager;
 import function.NavigationManager;
-import gui.FinancialReportView;
 import java.io.IOException;
 import javax.swing.JOptionPane;
 import repository.PurchaseOrderRepo;
-import gui.PurchaseOrderEdit;
 import gui.PurchaseOrderNew;
 import gui.PurchaseOrderView;
 import java.awt.Component;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JCheckBox;
 import javax.swing.JTable;
 import javax.swing.table.TableColumn;
@@ -82,7 +82,11 @@ public class PurchaseOrderTable extends javax.swing.JFrame {
                     Long id = Long.valueOf(rawId.toString());
                     System.out.println("ID: " + id);
 
-                    NavigationManager.getInstance().openFrame(new PurchaseOrderView(id), PurchaseOrderTable.this);
+                    try {
+                        NavigationManager.getInstance().openFrame(new PurchaseOrderView(id), PurchaseOrderTable.this);
+                    } catch (IOException ex) {
+                        Logger.getLogger(PurchaseOrderTable.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 });
                 return c;
             }
@@ -99,6 +103,7 @@ public class PurchaseOrderTable extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        navBarSample1 = new component.NavBarSample();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -109,6 +114,7 @@ public class PurchaseOrderTable extends javax.swing.JFrame {
         setMinimumSize(new java.awt.Dimension(1000, 800));
         setResizable(false);
         setSize(new java.awt.Dimension(1000, 800));
+        getContentPane().add(navBarSample1, java.awt.BorderLayout.PAGE_START);
 
         jPanel2.setMinimumSize(new java.awt.Dimension(1000, 0));
 
@@ -154,7 +160,6 @@ public class PurchaseOrderTable extends javax.swing.JFrame {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
@@ -164,6 +169,7 @@ public class PurchaseOrderTable extends javax.swing.JFrame {
                         .addGap(50, 50, 50)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 900, Short.MAX_VALUE)))
                 .addGap(50, 50, 50))
+            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -173,7 +179,7 @@ public class PurchaseOrderTable extends javax.swing.JFrame {
                 .addComponent(newButton, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(12, 12, 12)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 550, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 117, Short.MAX_VALUE))
+                .addGap(0, 73, Short.MAX_VALUE))
         );
 
         getContentPane().add(jPanel2, java.awt.BorderLayout.CENTER);
@@ -182,12 +188,11 @@ public class PurchaseOrderTable extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void newButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newButtonActionPerformed
-        // Open SecondFrame
-    PurchaseOrderNew second = new PurchaseOrderNew();
-    second.setVisible(true);
-
-    // Close or hide current frame (optional)
-    this.dispose(); // or this.setVisible(false);
+        try {
+            NavigationManager.getInstance().openFrame(new PurchaseOrderNew(), this);
+        } catch (IOException ex) {
+            Logger.getLogger(PurchaseOrderTable.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_newButtonActionPerformed
 
     private void newButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_newButtonMouseClicked
@@ -265,6 +270,7 @@ public class PurchaseOrderTable extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
+    private component.NavBarSample navBarSample1;
     private javax.swing.JButton newButton;
     // End of variables declaration//GEN-END:variables
 }

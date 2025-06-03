@@ -26,8 +26,7 @@ public class FinancialApprovalRepo extends MasterRepo<FinancialApproval>{
             fa.getId().toString(),
             fa.getPurchaseOrderId().toString(),
             fa.getApprovedById().toString(),
-            fa.getApprovalDate().toString(),
-            fa.getApprovedAmount().toString()
+            fa.getApprovalDate().toString()
         );
     }
 
@@ -40,8 +39,7 @@ public class FinancialApprovalRepo extends MasterRepo<FinancialApproval>{
             Long.valueOf(parts[0]), // financialApprovalId
             Long.valueOf(parts[1]), // purchaseOrderId
             Long.valueOf(parts[2]), // approvedById
-            LocalDate.parse(parts[3]), // approvalDate
-            Double.valueOf(parts[4]) // approvedAmount
+            LocalDate.parse(parts[3]) // approvalDate
         );
     }
     

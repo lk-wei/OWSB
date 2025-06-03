@@ -35,6 +35,21 @@ public class PurchaseOrderItemRepo extends MasterRepo<PurchaseOrderItem>{
         return PurchaseOrderItemList;
     }
     
+    // for PR deletion
+    public void deleteByPOID(Long poid) throws IOException{
+        List<String> lines = Files.readAllLines(filePath);
+        List<String> updatedLines = new ArrayList<>();
+
+        for (String line : lines) {
+            PurchaseOrderItem poi = stringToObject(line);
+
+            if (!Objects.equals(poi.getPurchaseOrderId(), poid)) {
+                updatedLines.add(line);
+            }
+        }
+        Files.write(filePath, updatedLines);
+    }
+    
     // Converts object to string for text file storage
     @Override
     protected String objectToString(PurchaseOrderItem item) {

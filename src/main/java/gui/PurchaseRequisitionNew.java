@@ -3,9 +3,15 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package gui;
+import component.ButtonEditor;
+import component.ButtonRenderer;
+import domain.Item;
 import domain.PurchaseRequisition;
 import domain.PurchaseRequisitionItem;
+import domain.Supplier;
+import function.AlertManager;
 import function.IdGenerator;  // Import the IdGenerator class
+import function.NavigationManager;
 import repository.ItemRepo;
 import repository.PurchaseRequisitionItemRepo;
 import repository.PurchaseRequisitionRepo;
@@ -14,38 +20,96 @@ import javax.swing.*;
 import java.io.IOException;
 import java.util.List;
 import gui.table.PurchaseRequsitionTable;
+import java.awt.Component;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import sample.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 
 /**
  *
  * @author Kang Wei
  */
-public class PurchaseRequisitionNew extends javax.swing.JFrame {
+public class PurchaseRequisitionNew extends javax.swing.JFrame implements SelectionListener<PurchaseRequisitionItem>{
     /**
      * Creates new form DashBoardSample
      */
     private DefaultTableModel tableModel;
+    private List<PurchaseRequisitionItem> itemList = new ArrayList<>();
     
     public PurchaseRequisitionNew() {
         initComponents();
+        tableModel = (DefaultTableModel) jTable2.getModel();
         this.setLocationRelativeTo(null); //this will center your frame
         
-        initTableModel();
     }
     
     // Custom Methods
-    
-    private void initTableModel() {
-        tableModel = (DefaultTableModel) jTable2.getModel();
-        tableModel.setRowCount(0);
+    public void updateTable() throws IOException {
+        removeAllRows();
+
+        if(itemList != null){
+            for (PurchaseRequisitionItem pri : itemList) {
+                Item i = new ItemRepo().getById(pri.getItemId());
+
+                
+                tableModel.addRow(new Object[]{
+                    i.getId(),
+                    i.getItemCode(), 
+                    i.getItemName(), 
+                    pri.getQuantity(), 
+                    "Delete"});
+                
+                System.out.println("table updated");
+            }
+        }
         
-        tableModel.addRow(new Object[]{"", "", "", ""});
+        TableColumn idColumn = jTable2.getColumnModel().getColumn(0);
+        idColumn.setMinWidth(0);
+        idColumn.setMaxWidth(0);
+        idColumn.setPreferredWidth(0);
+        idColumn.setResizable(false);
+        
+        TableColumn actionColumn = jTable2.getColumnModel().getColumn(4);
+        actionColumn.setCellRenderer(new ButtonRenderer());
+        actionColumn.setCellEditor(new ButtonEditor(new JCheckBox()) {
+            @Override
+            public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+                Component c = super.getTableCellEditorComponent(table, value, isSelected, row, column);
+
+                button.addActionListener(e -> {
+                    fireEditingStopped();
+                    
+                    // add button function here
+                    Object rawId = table.getModel().getValueAt(row, 0);
+                    Long id = Long.valueOf(rawId.toString());
+                    System.out.println(id);
+                    
+                    for(PurchaseRequisitionItem pri : itemList){
+                        if(Objects.equals(pri.getItemId(), id)){
+                            itemList.remove(pri);
+                            System.out.println("Removed Item Id: "+ pri.getItemId());
+                            break;
+                        }
+                    }
+                    
+                    tableModel.removeRow(row);
+                });
+                return c;
+            }
+        });
+    }
+    
+    private void removeAllRows() {
+        while (tableModel.getRowCount() > 0) {
+            tableModel.removeRow(0);
+        }
     }
 
     /**
@@ -116,10 +180,10 @@ public class PurchaseRequisitionNew extends javax.swing.JFrame {
 
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null}
+                {null, null, null, null, null}
             },
             new String [] {
-                "", "Item Code", "Name", "Qty", "Supplier Code", "Name", "Action"
+                "", "Item Code", "Name", "Qty", "Action"
             }
         ));
         jTable2.setShowGrid(true);
@@ -240,112 +304,100 @@ public class PurchaseRequisitionNew extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void cancelBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelBtnActionPerformed
-        PurchaseRequsitionTable second = new PurchaseRequsitionTable();
-        second.setVisible(true);
-        this.dispose();
+        NavigationManager.getInstance().goBack();
     }//GEN-LAST:event_cancelBtnActionPerformed
 
     private void createBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createBtnActionPerformed
-        // File paths for both files
-        Path prFilePath = Paths.get("database/purchaseRequisition.txt");
-        Path prItemFilePath = Paths.get("database/purchaseRequisitionItem.txt");
+        if (codeField.getText().trim().isEmpty() ||
+            requestDateField.getDate() == null ||
+            requiredDateField.getDate() == null||
+            itemList == null) {
 
-        // Step 1: Get input fields
-        String prCode = codeField.getText();
-        String supplierIdText = supplierCodeField.getText(); // User inputs Supplier ID
-        String itemId = itemIdField.getText(); // Item ID should not be editable
-        String quantityText = quantityField.getText();
-
-        // Step 2: Validate Quantity
-        int quantity = 0;
-        try {
-            quantity = Integer.parseInt(quantityText);
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Quantity must be a valid integer.", "Invalid Quantity", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Please fill in all the fields.");
             return;
-        }
-
-        // Step 3: Check for overlaps in Purchase Requisition Code
-        PurchaseRequisitionRepo prRepo = new PurchaseRequisitionRepo();
+        }        
+        
+        // Convert Date to LocalDate
+        LocalDate requestDate = requestDateField.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate requiredDate = requiredDateField.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        
         try {
-            List<PurchaseRequisition> prList = prRepo.getAll();
-            for (PurchaseRequisition pr : prList) {
-                if (pr.getPurchaseRequisitionCode().equals(prCode)) {
-                    JOptionPane.showMessageDialog(this, "Purchase Requisition Code already exists.", "Duplicate Code", JOptionPane.ERROR_MESSAGE);
-                    return;
+            PurchaseRequisition newPR = new PurchaseRequisition(
+                    null,
+                    codeField.getText(),
+                    1L,
+                    requestDate,
+                    requiredDate,
+                    "Pending"
+            );
+            
+            new PurchaseRequisitionRepo().create(newPR);
+                
+            // get new created fr ID
+            Long newPrId = newPR.getId();
+            
+            if(itemList != null){
+                for (PurchaseRequisitionItem i : itemList) {
+                    i.setPurchaseRequisitionId(newPrId);
+                    new PurchaseRequisitionItemRepo().create(i);
                 }
             }
 
-            // Step 4: Check if Item ID exists
-            ItemRepo itemRepo = new ItemRepo();
-            if (itemRepo.getById(Long.parseLong(itemId)) == null) {
-                JOptionPane.showMessageDialog(this, "Item ID does not exist.", "Invalid Item", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            // Step 5: Check if Supplier ID exists
-            SupplierRepo supplierRepo = new SupplierRepo();
-            Long supplierId = Long.parseLong(supplierIdText);  // Convert user input to long
-            if (supplierRepo.getSupplierById(supplierId) == null) {  // Verify if the Supplier ID exists in the database
-                JOptionPane.showMessageDialog(this, "Supplier ID does not exist.", "Invalid Supplier", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            // Step 6: Generate New IDs
-            Long newPrId = IdGenerator.getNewId(prFilePath); // Ensure the new PR ID is generated
-            Long newPrItemId = IdGenerator.getNewId(prItemFilePath); // Ensure the new Item ID is generated
-
-            // Step 7: Create New Purchase Requisition Object
-            PurchaseRequisition newPr = new PurchaseRequisition();
-            newPr.setId(newPrId);  // Set the new PR ID correctly
-            newPr.setPurchaseRequisitionCode(prCode);
-            newPr.setRequestedById(Long.parseLong(requestedUserField.getText())); // Assuming User ID is entered or fetched
-            newPr.setRequestDate(LocalDate.now()); // Use current date or user input
-            newPr.setRequiredDate(requiredDateField.getDate().toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate()); // Use Date Picker value
-            newPr.setStatus("Pending"); // Default status
-
-            // Step 8: Create and Save Purchase Requisition Item
-            PurchaseRequisitionItem prItem = new PurchaseRequisitionItem();
-            prItem.setId(newPrItemId);
-            prItem.setPurchaseRequisitionId(newPr.getId()); // Set the PR ID to the item
-            prItem.setItemId(Long.parseLong(itemId));
-            prItem.setQuantity(quantity);
-            prItem.setSupplierId(supplierId);  // Use the entered Supplier ID
+            JOptionPane.showMessageDialog(null, "New PR added successfully!");
+            AlertManager.savePurchaseRequisition(newPR);
+            NavigationManager.getInstance().goBack();
+        } catch (IOException ex) {
             
-
-            // Save the item to the Purchase Requisition Item file
-            PurchaseRequisitionItemRepo prItemRepo = new PurchaseRequisitionItemRepo();
-            prItemRepo.save(prItem);
-
-            // Now that the item is saved, update the purchaseRequisitionItemId in the PurchaseRequisition object
-            newPr.setPurchaseRequisitionItemId(prItem.getId()); // Set the purchaseRequisitionItemId
-
-            // Save Purchase Requisition to file
-            prRepo.save(newPr);
-
-            // Notify User and Refresh Table
-            JOptionPane.showMessageDialog(this, "Purchase Requisition Created Successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
-
-            // Refresh the table or navigate to the Purchase Requisition Table page
-            PurchaseRequsitionTable tablePage = new PurchaseRequsitionTable();
-            tablePage.setVisible(true);
-            this.dispose();
-
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Error occurred while saving the purchase requisition: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
+        
     }//GEN-LAST:event_createBtnActionPerformed
 
     private void addItemBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addItemBtnActionPerformed
         // TODO add your handling code here:
-        // TODO add your handling code here:
         try {
-            new SupplierItem(this, this).setVisible(true);
+            new RequisitionItem(this, this).setVisible(true);
         } catch (IOException ex) {
             Logger.getLogger(DailySaleNew.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_addItemBtnActionPerformed
 
+    @Override
+    public void onSelected(PurchaseRequisitionItem item) {
+        addToList(item);
+        System.out.println(item.getQuantity());// Or any custom logic
+    }
+    
+    public void addToList(PurchaseRequisitionItem prItem){
+        
+        // check for duplicate items
+        boolean itemExists = false;
+        for (PurchaseRequisitionItem existingItem : itemList) {
+            if (existingItem.getItemId().equals(prItem.getItemId())) {
+                itemExists = true;
+                break;
+            }
+        }
+        
+         if (!itemExists) {
+
+            itemList.add(prItem);
+            
+            System.out.println("Added to list: ");
+            try {
+                updateTable(); 
+            } catch (IOException ex) {
+                Logger.getLogger(SupplierNew.class.getName()).log(Level.SEVERE, "Error updating table after adding item", ex);
+            }
+        } else {
+            System.out.println("Item is already in the list for this supplier.");
+            JOptionPane.showMessageDialog(
+                this,
+                "Item is already added.",
+                "Duplicate Item",
+                JOptionPane.INFORMATION_MESSAGE
+            );
+        }
+    }
     /**
      * @param args the command line arguments
      */

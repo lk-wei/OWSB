@@ -4,20 +4,45 @@
  */
 package gui;
 
+import component.ButtonEditor;
+import component.ButtonRenderer;
 import domain.Item;
 import domain.PurchaseOrder;
 import domain.PurchaseOrderItem;
 import domain.PurchaseRequisition;
+import domain.PurchaseRequisitionItem;
 import domain.Supplier;
 import domain.User;
+import function.IdGenerator;
+import function.NavigationManager;
+import function.UserSession;
 import gui.table.PurchaseOrderTable;
+import gui.table.PurchaseRequsitionTable;
+import java.awt.Component;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 import repository.ItemRepo;
 import repository.PurchaseOrderItemRepo;
 import repository.PurchaseOrderRepo;
+import repository.PurchaseRequisitionItemRepo;
 import repository.PurchaseRequisitionRepo;
 import repository.SupplierRepo;
 import repository.UserRepo;
@@ -26,152 +51,185 @@ import repository.UserRepo;
  *
  * @author Kang Wei
  */
-public class PurchaseOrderEdit extends javax.swing.JFrame {
+public class PurchaseOrderEdit extends javax.swing.JFrame{
     /**
      * Creates new form DashBoardSample
      */
-    private PurchaseOrder purchaseOrder;
-    private PurchaseOrderItem purchaseOrderItem;
     private DefaultTableModel tableModel;
+    private Supplier SelectedSupplier;
+    private PurchaseRequisition SelectedPR;
+    private double totalAmount;
+    private PurchaseOrder toEdit;
+    private Long viewId;
+    private User currentUser; 
     
-    public PurchaseOrderEdit() {
+    public PurchaseOrderEdit(Long viewId) throws IOException {
+        currentUser = UserSession.getInstance().getCurrentUser();
+        
+        this.viewId = viewId;
+        
         initComponents();
+        tableModel = (DefaultTableModel) jTable3.getModel();
         this.setLocationRelativeTo(null); //this will center your frame
         
-        initTableModel();
+         setView();
+         updateTable();
     }
-    public PurchaseOrderEdit(PurchaseOrder po, PurchaseOrderItem poi) {
-        this.purchaseOrder = po;
-        this.purchaseOrderItem = poi;
-        initComponents();
-        this.setLocationRelativeTo(null);
-        setView();
-    }
-
-    
     // Custom Methods
     private void setView() {
-        PurchaseOrderRepo poRepo = new PurchaseOrderRepo();
-        PurchaseOrderItemRepo poiRepo = new PurchaseOrderItemRepo();
-        PurchaseRequisitionRepo prrRepo = new PurchaseRequisitionRepo();
-        UserRepo userRepo = new UserRepo();
-        SupplierRepo supRepo = new SupplierRepo();
-        ItemRepo itemRepo = new ItemRepo();
-
+        PurchaseOrderRepo por = new PurchaseOrderRepo();
+        PurchaseRequisitionRepo prr = new PurchaseRequisitionRepo();
+        
         try {
-            // Load main objects if not already loaded
-            if (purchaseOrder == null) purchaseOrder = poRepo.getById(purchaseOrder.getId());
-            if (purchaseOrderItem == null) {
-                List<PurchaseOrderItem> poiList = poiRepo.getByPurchaseOrderId(purchaseOrder.getId());
-                if (!poiList.isEmpty()) purchaseOrderItem = poiList.get(0);
+            toEdit = por.getById(viewId);
+            PurchaseRequisition pr = prr.getById(toEdit.getPurchaseRequisitionId());
+            User u = new UserRepo().getById(pr.getRequestedById());
+            Supplier s = new SupplierRepo().getById(toEdit.getSupplierId());
+            
+            if (this.toEdit == null) {
+                System.out.println("po not found");
+                return;
             }
-
-            // Load related data
-            PurchaseRequisition prr = prrRepo.getPurchaseRequisitionById(purchaseOrder.getPurchaseRequisitionId());
-            User createdUser = userRepo.getUserById(purchaseOrder.getCreatedById());
-            User approvedUser = userRepo.getUserById(purchaseOrder.getApprovedById());
-            Supplier supplier = supRepo.getSupplierById(purchaseOrder.getSupplierId());
-            Item item = itemRepo.getById(purchaseOrderItem.getItemId());
-
-            // Set fields
-            purchaseOrderCodeField.setText(purchaseOrder.getPurchaseOrderCode());
-            purchaseRequisitionCodeField.setText(prr != null ? prr.getPurchaseRequisitionCode() : "");
-            approvedUserField.setText(approvedUser != null ? approvedUser.getFullName() : "");
-            createdUserField.setText(createdUser != null ? createdUser.getFullName() : "");
-            orderDateField.setText(purchaseOrder.getOrderDate().toString());
-            expectedDateField.setText(purchaseOrder.getExpectedDeliveryDate().toString());
-            statusField.setText(purchaseOrder.getStatus());
-            quantityField.setText(String.valueOf(purchaseOrderItem.getQuantity()));
-            uniCostField.setText(String.valueOf(purchaseOrderItem.getUnitCost()));
-            totalAmountField.setText(String.valueOf(purchaseOrder.getTotalAmount()));
-            supplierCodeField.setText(supplier != null ? supplier.getSupplierCode() : "");
-            itemCodeField.setText(item != null ? item.getItemCode() : "");
-
-            // Set editable state
-            statusField.setEditable(true);
-            quantityField.setEditable(true);
-            totalAmountField.setEditable(true);
-
-            // Other fields readonly
-            purchaseOrderCodeField.setEditable(false);
-            purchaseRequisitionCodeField.setEditable(false);
-            approvedUserField.setEditable(false);
-            createdUserField.setEditable(false);
-            orderDateField.setEditable(false);
-            expectedDateField.setEditable(false);
-            uniCostField.setEditable(false);
-            supplierCodeField.setEditable(false);
-            itemCodeField.setEditable(false);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error loading purchase order: " + e.getMessage());
+            purchaseOrderCodeField.setText(toEdit.getPurchaseOrderCode());
+            orderDateField.setText(toEdit.getOrderDate().toString());
+            
+            Date dateToSet = Date.from(toEdit.getExpectedDeliveryDate().atStartOfDay(ZoneId.systemDefault()).toInstant());
+            expectedDeliveryDateField.setDate(dateToSet);
+            totalAmountField.setValue(toEdit.getTotalAmount());
+            
+            if (pr == null) {
+                System.out.println("pr not found");
+                return;
+            }
+            prCodeField.setText(pr.getPurchaseRequisitionCode());
+            
+            if (u == null) {
+                System.out.println("pr creator not found");
+                return;
+            }
+            reqByField.setText(u.getUserName());
+            
+            if (s == null) {
+                System.out.println("Supplier not found");
+                return;
+            }
+            supplierCodeField.setText(s.getSupplierCode());
+            supplierNamerField.setText(s.getSuppliername());
+            
+            
+            
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Input Error", JOptionPane.ERROR_MESSAGE);
+        } catch (IOException ex) {
+            Logger.getLogger(FinancialReportNew.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
-    
-    private void initTableModel() {
-        tableModel = (DefaultTableModel) jTable2.getModel();
-        tableModel.setRowCount(0);
+    public void updateTable() throws IOException {
+        removeAllRows();
         
-        tableModel.addRow(new Object[]{"", "", "", ""});
-    }
+        List<PurchaseOrderItem> itemList = new PurchaseOrderItemRepo().getByPurchaseOrderId(viewId);
 
-    /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
-     */
+        if(itemList != null){
+            for (PurchaseOrderItem poi : itemList) {
+                Item i = new ItemRepo().getById(poi.getItemId());
+                
+                double totalCost = i.getUnitCost() * poi.getQuantity();
+                
+                tableModel.addRow(new Object[]{
+                    i.getId(),
+                    i.getItemCode(), 
+                    i.getItemName(), 
+                    i.getUnitCost(),
+                    poi.getQuantity(),
+                    totalCost});
+                
+                System.out.println("table updated");
+            }
+        }
+        
+        TableColumn idColumn = jTable3.getColumnModel().getColumn(0);
+        idColumn.setMinWidth(0);
+        idColumn.setMaxWidth(0);
+        idColumn.setPreferredWidth(0);
+        idColumn.setResizable(false);
+        
+    }
+    
+    private void removeAllRows() {
+        while (tableModel.getRowCount() > 0) {
+            tableModel.removeRow(0);
+        }
+    }
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        jPanel2 = new javax.swing.JPanel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        jTable4 = new javax.swing.JTable();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         inputPanel = new javax.swing.JPanel();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        totalAmountField = new javax.swing.JTextField();
-        jLabel21 = new javax.swing.JLabel();
-        jLabel20 = new javax.swing.JLabel();
-        uniCostField = new javax.swing.JTextField();
-        jLabel18 = new javax.swing.JLabel();
-        quantityField = new javax.swing.JTextField();
-        jLabel15 = new javax.swing.JLabel();
-        statusField = new javax.swing.JTextField();
-        jLabel14 = new javax.swing.JLabel();
-        orderDateField = new javax.swing.JTextField();
-        jLabel12 = new javax.swing.JLabel();
-        expectedDateField = new javax.swing.JTextField();
-        jLabel13 = new javax.swing.JLabel();
-        supplierCodeField = new javax.swing.JTextField();
-        jLabel11 = new javax.swing.JLabel();
-        createdUserField = new javax.swing.JTextField();
-        jLabel9 = new javax.swing.JLabel();
-        approvedUserField = new javax.swing.JTextField();
-        itemCodeField = new javax.swing.JTextField();
-        jLabel8 = new javax.swing.JLabel();
-        purchaseRequisitionCodeField = new javax.swing.JTextField();
-        jLabel6 = new javax.swing.JLabel();
-        purchaseOrderCodeField = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        reqByField = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
+        supplierCodeField = new javax.swing.JTextField();
+        purchaseOrderCodeField = new javax.swing.JTextField();
+        jLabel10 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
+        jLabel13 = new javax.swing.JLabel();
+        jLabel14 = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTable3 = new javax.swing.JTable();
+        expectedDeliveryDateField = new com.toedter.calendar.JDateChooser();
+        cancelButton = new javax.swing.JButton();
+        updateBtn = new javax.swing.JButton();
+        totalAmountField = new javax.swing.JSpinner();
+        supplierNamerField = new javax.swing.JTextField();
+        prCodeField = new javax.swing.JTextField();
+        orderDateField = new javax.swing.JTextField();
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        jTable4.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "id", "PO Code", "Created Date", "Created By", "Action"
             }
-        ));
-        jScrollPane2.setViewportView(jTable1);
+        ) {
+            boolean[] canEdit = new boolean [] {
+                true, true, true, true, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane4.setViewportView(jTable4);
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 588, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 488, Short.MAX_VALUE)
+                .addContainerGap())
+        );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(800, 800));
@@ -183,302 +241,253 @@ public class PurchaseOrderEdit extends javax.swing.JFrame {
         jPanel1.setMaximumSize(new java.awt.Dimension(800, 800));
         jPanel1.setMinimumSize(new java.awt.Dimension(800, 800));
         jPanel1.setPreferredSize(new java.awt.Dimension(800, 800));
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Purchase Order Edit");
+        jLabel1.setText("Edit Purchase Order");
         jLabel1.setToolTipText("");
         jLabel1.setMaximumSize(new java.awt.Dimension(800, 100));
         jLabel1.setMinimumSize(new java.awt.Dimension(800, 100));
         jLabel1.setPreferredSize(new java.awt.Dimension(800, 100));
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
+        inputPanel.setEnabled(false);
         inputPanel.setMaximumSize(new java.awt.Dimension(800, 600));
         inputPanel.setMinimumSize(new java.awt.Dimension(800, 600));
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null, null, null, null, null, null, null, null}
-            },
-            new String [] {
-                "PO Code", "PR Code", "Item Code", "Supplier Code", "Order Date", "Expected Delivery Date", "Status", "Created By User", "Approve By User", "Quantity", "Unit Cost", "Total Amount"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Long.class, java.lang.Long.class, java.lang.Long.class, java.lang.Long.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.Long.class, java.lang.Long.class, java.lang.Double.class, java.lang.Double.class
-            };
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel2.setText("Purchase Requsition Code");
 
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-        });
-        jTable2.setShowGrid(true);
-        jScrollPane3.setViewportView(jTable2);
+        jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel6.setText("Requested By User");
 
-        jButton1.setBackground(new java.awt.Color(255, 0, 51));
-        jButton1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("Cancel");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-                cancel(evt);
-            }
-        });
+        reqByField.setEditable(false);
+        reqByField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        reqByField.setEnabled(false);
 
-        jButton2.setBackground(new java.awt.Color(102, 204, 0));
-        jButton2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jButton2.setForeground(new java.awt.Color(255, 255, 255));
-        jButton2.setText("Save");
-        jButton2.setPreferredSize(new java.awt.Dimension(84, 32));
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
+        jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel7.setText("Supplier Code");
 
-        totalAmountField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        totalAmountField.setText("...");
+        supplierCodeField.setEditable(false);
+        supplierCodeField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        supplierCodeField.setEnabled(false);
 
-        jLabel21.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel21.setText("Approve By User");
+        purchaseOrderCodeField.setEditable(false);
+        purchaseOrderCodeField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        purchaseOrderCodeField.setEnabled(false);
 
-        jLabel20.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel20.setText("Total Amount");
+        jLabel10.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel10.setText("Purchase Order Code");
 
-        uniCostField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        uniCostField.setText("...");
-
-        jLabel18.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel18.setText("Unit Cost ");
-
-        quantityField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        quantityField.setText("...");
-
-        jLabel15.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel15.setText("Quantity");
-
-        statusField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        statusField.setText("...");
-
-        jLabel14.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel14.setText("Status");
-
-        orderDateField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        orderDateField.setText("...");
+        jLabel11.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel11.setText("Expected Delivery Date ");
 
         jLabel12.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel12.setText("Order Date");
 
-        expectedDateField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        expectedDateField.setText("...");
-
         jLabel13.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel13.setText("Expected Delivery Date");
+        jLabel13.setText("Supplier Name");
 
-        supplierCodeField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        supplierCodeField.setText("...");
+        jLabel14.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
-        jLabel11.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel11.setText("Supplierd Code");
+        jTable3.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
+            },
+            new String [] {
+                "", "Item Code", "Name", "Unit Cost", "Qty", "Total"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false
+            };
 
-        createdUserField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        createdUserField.setText("...");
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane3.setViewportView(jTable3);
 
-        jLabel9.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel9.setText("Created By User");
+        cancelButton.setBackground(new java.awt.Color(255, 0, 51));
+        cancelButton.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        cancelButton.setForeground(new java.awt.Color(255, 255, 255));
+        cancelButton.setText("Cancel");
+        cancelButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelButtonActionPerformed(evt);
+            }
+        });
 
-        approvedUserField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        approvedUserField.setText("...");
+        updateBtn.setBackground(new java.awt.Color(51, 153, 255));
+        updateBtn.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        updateBtn.setForeground(new java.awt.Color(255, 255, 255));
+        updateBtn.setText("Update");
+        updateBtn.setPreferredSize(new java.awt.Dimension(84, 32));
+        updateBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                updateBtnActionPerformed(evt);
+            }
+        });
 
-        itemCodeField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        itemCodeField.setText("...");
+        totalAmountField.setEnabled(false);
 
-        jLabel8.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel8.setText("Item Code");
+        supplierNamerField.setEditable(false);
+        supplierNamerField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        supplierNamerField.setEnabled(false);
 
-        purchaseRequisitionCodeField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        purchaseRequisitionCodeField.setText("...");
+        prCodeField.setEditable(false);
+        prCodeField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        prCodeField.setEnabled(false);
 
-        jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel6.setText("Purchase Requisition Code");
-
-        purchaseOrderCodeField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        purchaseOrderCodeField.setText("...");
-
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel2.setText("Purchase Order Code");
+        orderDateField.setEditable(false);
+        orderDateField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        orderDateField.setEnabled(false);
 
         javax.swing.GroupLayout inputPanelLayout = new javax.swing.GroupLayout(inputPanel);
         inputPanel.setLayout(inputPanelLayout);
         inputPanelLayout.setHorizontalGroup(
             inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(inputPanelLayout.createSequentialGroup()
-                .addGap(75, 75, 75)
                 .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, inputPanelLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(inputPanelLayout.createSequentialGroup()
+                        .addGap(420, 420, 420)
+                        .addComponent(jLabel11))
+                    .addGroup(inputPanelLayout.createSequentialGroup()
+                        .addGap(420, 420, 420)
+                        .addComponent(expectedDeliveryDateField, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(inputPanelLayout.createSequentialGroup()
+                        .addGap(72, 72, 72)
+                        .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(inputPanelLayout.createSequentialGroup()
+                                .addGap(299, 299, 299)
+                                .addComponent(jLabel14)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(totalAmountField, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 680, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(inputPanelLayout.createSequentialGroup()
+                        .addGap(75, 75, 75)
                         .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(purchaseOrderCodeField, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel2)
-                            .addComponent(jLabel21))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(prCodeField, javax.swing.GroupLayout.PREFERRED_SIZE, 296, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(50, 50, 50)
                         .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel6)
-                            .addComponent(purchaseRequisitionCodeField, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(itemCodeField, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel8)))
-                    .addComponent(approvedUserField, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(createdUserField, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(reqByField, javax.swing.GroupLayout.PREFERRED_SIZE, 331, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(inputPanelLayout.createSequentialGroup()
+                        .addGap(75, 75, 75)
                         .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(orderDateField, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel12)
-                            .addComponent(statusField, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel14)
-                            .addComponent(jLabel18)
-                            .addComponent(uniCostField, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel9))
-                        .addGap(50, 50, 50)
-                        .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(totalAmountField, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel20)
-                            .addComponent(quantityField, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel15)
-                            .addComponent(supplierCodeField, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(expectedDateField, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel13)
-                            .addComponent(jLabel11))))
-                .addGap(75, 75, 75))
+                            .addGroup(inputPanelLayout.createSequentialGroup()
+                                .addComponent(supplierNamerField, javax.swing.GroupLayout.PREFERRED_SIZE, 296, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(50, 50, 50)
+                                .addComponent(supplierCodeField, javax.swing.GroupLayout.PREFERRED_SIZE, 331, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(inputPanelLayout.createSequentialGroup()
+                                .addComponent(jLabel13)
+                                .addGap(261, 261, 261)
+                                .addComponent(jLabel7))))
+                    .addGroup(inputPanelLayout.createSequentialGroup()
+                        .addGap(75, 75, 75)
+                        .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel10)
+                            .addComponent(purchaseOrderCodeField, javax.swing.GroupLayout.PREFERRED_SIZE, 296, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(49, 49, 49)
+                        .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(orderDateField, javax.swing.GroupLayout.PREFERRED_SIZE, 331, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel12))))
+                .addGap(48, 48, 48))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, inputPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(cancelButton)
+                .addGap(18, 18, 18)
+                .addComponent(updateBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(52, 52, 52))
         );
         inputPanelLayout.setVerticalGroup(
             inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, inputPanelLayout.createSequentialGroup()
-                .addContainerGap()
+            .addGroup(inputPanelLayout.createSequentialGroup()
                 .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(jLabel6))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(6, 6, 6)
                 .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(purchaseOrderCodeField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(purchaseRequisitionCodeField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(reqByField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(prCodeField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel13)
+                    .addComponent(jLabel7))
+                .addGap(6, 6, 6)
                 .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(inputPanelLayout.createSequentialGroup()
-                        .addGap(6, 6, 6)
+                        .addComponent(supplierCodeField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel10)
+                            .addGroup(inputPanelLayout.createSequentialGroup()
+                                .addGap(2, 2, 2)
+                                .addComponent(jLabel12)))
+                        .addGap(5, 5, 5)
                         .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel21)
-                            .addComponent(jLabel8))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(approvedUserField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(inputPanelLayout.createSequentialGroup()
-                        .addGap(32, 32, 32)
-                        .addComponent(itemCodeField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(inputPanelLayout.createSequentialGroup()
-                        .addComponent(jLabel9)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(createdUserField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(inputPanelLayout.createSequentialGroup()
+                            .addComponent(purchaseOrderCodeField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(orderDateField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(20, 20, 20)
                         .addComponent(jLabel11)
+                        .addGap(10, 10, 10)
+                        .addComponent(expectedDeliveryDateField, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(40, 40, 40)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(supplierCodeField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(inputPanelLayout.createSequentialGroup()
-                        .addComponent(jLabel13)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(expectedDateField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(inputPanelLayout.createSequentialGroup()
-                        .addComponent(jLabel12)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(orderDateField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(inputPanelLayout.createSequentialGroup()
-                        .addComponent(jLabel15)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(quantityField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(inputPanelLayout.createSequentialGroup()
                         .addComponent(jLabel14)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(statusField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel18)
-                    .addComponent(jLabel20))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(uniCostField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(totalAmountField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18))
+                        .addComponent(totalAmountField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(31, 31, 31)
+                        .addGroup(inputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(updateBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(supplierNamerField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(25, 25, 25))
         );
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 800, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(inputPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(5, 5, 5))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(inputPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(24, Short.MAX_VALUE))
-        );
+        jPanel1.add(inputPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 106, -1, -1));
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+        NavigationManager.getInstance().goBack();
+    }//GEN-LAST:event_cancelButtonActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        try {
-            purchaseOrder.setStatus(statusField.getText());
-            purchaseOrderItem.setQuantity(Integer.parseInt(quantityField.getText()));
-            purchaseOrder.setTotalAmount(Double.parseDouble(totalAmountField.getText()));
-
-            PurchaseOrderRepo poRepo = new PurchaseOrderRepo();
-            PurchaseOrderItemRepo poiRepo = new PurchaseOrderItemRepo();
-
-            poRepo.update(purchaseOrder);
-            poiRepo.update(purchaseOrderItem);
-
-            JOptionPane.showMessageDialog(this, "Purchase order updated successfully.");
-            PurchaseOrderTable tablePage = new PurchaseOrderTable();
-            tablePage.setVisible(true);
-            this.dispose();
-            // Optionally reopen PurchaseOrderView or list
-        } catch (IOException | NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "Error saving: " + ex.getMessage());
+    private void updateBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateBtnActionPerformed
+        // TODO add your handling code here:
+        if (expectedDeliveryDateField.getDate() == null) {
+            JOptionPane.showMessageDialog(null, "Please fill in all the fields.");
+            return;
         }
-    }//GEN-LAST:event_jButton2ActionPerformed
-
-    private void cancel(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancel
-        PurchaseOrderTable second = new PurchaseOrderTable();
-        second.setVisible(true);
-        this.dispose();
-    }//GEN-LAST:event_cancel
+        
+        
+        // Convert Date to LocalDate
+        LocalDate expectedDate = expectedDeliveryDateField.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        
+        toEdit.setExpectedDeliveryDate(expectedDate);
+        
+        try {
+            new PurchaseOrderRepo().update(toEdit);
+            
+            JOptionPane.showMessageDialog(null, "PO Updated successfully!");
+            NavigationManager.getInstance().goBack();
+        } catch (IOException ex) {
+            Logger.getLogger(PurchaseOrderEdit.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+                
+            
+    }//GEN-LAST:event_updateBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -521,48 +530,285 @@ public class PurchaseOrderEdit extends javax.swing.JFrame {
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new PurchaseOrderEdit().setVisible(true);
+                try {
+                    new PurchaseOrderEdit(10L).setVisible(true);
+                } catch (IOException ex) {
+                    Logger.getLogger(PurchaseOrderEdit.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField approvedUserField;
-    private javax.swing.JTextField createdUserField;
-    private javax.swing.JTextField expectedDateField;
+    private javax.swing.JButton cancelButton;
+    private com.toedter.calendar.JDateChooser expectedDeliveryDateField;
     private javax.swing.JPanel inputPanel;
-    private javax.swing.JTextField itemCodeField;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
-    private javax.swing.JLabel jLabel15;
-    private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel20;
-    private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable2;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JTable jTable3;
+    private javax.swing.JTable jTable4;
     private javax.swing.JTextField orderDateField;
+    private javax.swing.JTextField prCodeField;
     private javax.swing.JTextField purchaseOrderCodeField;
-    private javax.swing.JTextField purchaseRequisitionCodeField;
-    private javax.swing.JTextField quantityField;
-    private javax.swing.JTextField statusField;
+    private javax.swing.JTextField reqByField;
     private javax.swing.JTextField supplierCodeField;
-    private javax.swing.JTextField totalAmountField;
-    private javax.swing.JTextField uniCostField;
+    private javax.swing.JTextField supplierNamerField;
+    private javax.swing.JSpinner totalAmountField;
+    private javax.swing.JButton updateBtn;
     // End of variables declaration//GEN-END:variables
 }

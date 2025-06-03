@@ -14,6 +14,8 @@ import gui.PurchaseRequisitionNew;
 import gui.PurchaseRequisitionView;
 import java.awt.Component;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -83,8 +85,12 @@ public class PurchaseRequsitionTable extends javax.swing.JFrame {
                         Object rawId = table.getModel().getValueAt(modelRow, 0);  // Get ID from the table (first column)
                         Long id = Long.valueOf(rawId.toString());
 
-                        // Open PurchaseRequisitionView
-                        NavigationManager.getInstance().openFrame(new PurchaseRequisitionView(id), PurchaseRequsitionTable.this);  // Open the view page
+                        try {
+                            // Open PurchaseRequisitionView
+                            NavigationManager.getInstance().openFrame(new PurchaseRequisitionView(id), PurchaseRequsitionTable.this);  // Open the view page
+                        } catch (IOException ex) {
+                            Logger.getLogger(PurchaseRequsitionTable.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                     });
                     return c;
                 }
@@ -107,6 +113,7 @@ public class PurchaseRequsitionTable extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        navBarSample1 = new component.NavBarSample();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -117,6 +124,7 @@ public class PurchaseRequsitionTable extends javax.swing.JFrame {
         setMinimumSize(new java.awt.Dimension(1000, 800));
         setResizable(false);
         setSize(new java.awt.Dimension(1000, 800));
+        getContentPane().add(navBarSample1, java.awt.BorderLayout.PAGE_START);
 
         jPanel2.setMinimumSize(new java.awt.Dimension(1000, 0));
 
@@ -176,7 +184,7 @@ public class PurchaseRequsitionTable extends javax.swing.JFrame {
                 .addComponent(newButton, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(12, 12, 12)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 550, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 117, Short.MAX_VALUE))
+                .addGap(0, 73, Short.MAX_VALUE))
         );
 
         getContentPane().add(jPanel2, java.awt.BorderLayout.CENTER);
@@ -485,6 +493,7 @@ public class PurchaseRequsitionTable extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
+    private component.NavBarSample navBarSample1;
     private javax.swing.JButton newButton;
     // End of variables declaration//GEN-END:variables
 }

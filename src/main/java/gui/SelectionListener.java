@@ -10,6 +10,6 @@ import domain.Item;
  *
  * @author Kang Wei
  */
-public interface ItemSelectionListener {
-    void onItemSelected(Item item);
+public interface SelectionListener<T> {
+    void onSelected(T selected);
 }

@@ -31,7 +31,7 @@ import repository.SupplierRepo;
  *
  * @author jacks
  */
-public class SupplierEdit extends javax.swing.JFrame implements ItemSelectionListener{
+public class SupplierEdit extends javax.swing.JFrame implements SelectionListener<Item>{
     /**
      * Creates new form DashBoardSample
      */
@@ -64,7 +64,6 @@ public class SupplierEdit extends javax.swing.JFrame implements ItemSelectionLis
     // Custom Methods
     private void setView() {
         SupplierRepo sr = new SupplierRepo();
-        ItemSupplierRepo isr = new ItemSupplierRepo();
         
         try {
             supplier = sr.getById(viewId);
@@ -412,10 +411,10 @@ public class SupplierEdit extends javax.swing.JFrame implements ItemSelectionLis
             Logger.getLogger(DailySaleNew.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_addItemBtnActionPerformed
-
+    
     @Override
-    public void onItemSelected(Item item) {
-        addToList(item); // Or any custom logic
+    public void onSelected(Item Item) {
+        addToList(Item); // Or any custom logic
     }
     
     public void addToList(Item item){
