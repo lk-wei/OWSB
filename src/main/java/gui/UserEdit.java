@@ -55,7 +55,7 @@ public class UserEdit extends javax.swing.JFrame {
         } catch (IllegalArgumentException e) {
             JOptionPane.showMessageDialog(this, e.getMessage(), "Input Error", JOptionPane.ERROR_MESSAGE);
         } catch (IOException ex) {
-            Logger.getLogger(FinancialReportNew.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(UserNew.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -229,7 +229,6 @@ public class UserEdit extends javax.swing.JFrame {
     }//GEN-LAST:event_backButtonActionPerformed
 
     private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateButtonActionPerformed
-        // TODO add your handling code here:
         // Get the selected role from the combo box
         String selectedRole = (String) roleComboBox.getSelectedItem();
         // Get the role code using the getRoleCode method
@@ -263,7 +262,7 @@ public class UserEdit extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "User Updated successfully!");
             NavigationManager.getInstance().goBack();
         } catch (IOException ex) {
-            Logger.getLogger(FinancialReportEdit.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(UserEdit.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_updateButtonActionPerformed
 

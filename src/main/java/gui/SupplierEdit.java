@@ -79,7 +79,7 @@ public class SupplierEdit extends javax.swing.JFrame implements SelectionListene
         } catch (IllegalArgumentException e) {
             JOptionPane.showMessageDialog(this, e.getMessage(), "Input Error", JOptionPane.ERROR_MESSAGE);
         } catch (IOException ex) {
-            Logger.getLogger(FinancialReportNew.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SupplierNew.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -408,7 +408,7 @@ public class SupplierEdit extends javax.swing.JFrame implements SelectionListene
         try {
             new SupplierItem(this, this).setVisible(true);
         } catch (IOException ex) {
-            Logger.getLogger(DailySaleNew.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SupplierNew.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_addItemBtnActionPerformed
     
