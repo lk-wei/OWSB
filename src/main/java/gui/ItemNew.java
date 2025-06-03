@@ -209,26 +209,63 @@ public class ItemNew extends javax.swing.JFrame {
         ItemRepo itemRepo = new ItemRepo();
 
         try {
+            // Validate text fields are not empty
+            String itemCode = itemCodeField.getText();
+            String itemName = itemNameField.getText();
+            String currentStockText = currentStockField.getText();
+            String minStockText = minStockField.getText();
+            String unitCostText = unitCostField.getText();
+
+            if (itemCode.isBlank() || itemName.isBlank() || currentStockText.isBlank()
+                    || minStockText.isBlank() || unitCostText.isBlank()) {
+                JOptionPane.showMessageDialog(null, "Please fill in all fields.");
+                return;
+            }
+
+            int currentStock;
+            int minStock;
+            double unitCost;
+
+            try {
+                currentStock = Integer.parseInt(currentStockText);
+                minStock = Integer.parseInt(minStockText);
+                unitCost = Double.parseDouble(unitCostText);
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(null, "Please enter valid numeric values for stock and unit cost.");
+                return;
+            }
+
+            // Create item and persist
             Item newItem = new Item(
                     null,
-                    itemCodeField.getText(),
-                    itemNameField.getText(),
-                    Integer.parseInt(currentStockField.getText()),
-                    Integer.parseInt(minStockField.getText()),
-                    Double.parseDouble(unitCostField.getText())
+                    itemCode,
+                    itemName,
+                    currentStock,
+                    minStock,
+                    unitCost
             );
-            itemRepo.create(newItem);
-            JOptionPane.showMessageDialog(null, "Item added successfully!");
-            NavigationManager.getInstance().goBack();
-            itemCodeField.setText("");
-            itemNameField.setText("");
-            currentStockField.setText("");
-            minStockField.setText("");
-            unitCostField.setText("");
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(null, "Please enter valid numbers for stock and unit cost.");
-        } catch (IOException ex) {
-            Logger.getLogger(ItemNew.class.getName()).log(Level.SEVERE, null, ex);
+
+            try {
+                itemRepo.create(newItem);
+                JOptionPane.showMessageDialog(null, "Item added successfully!");
+
+                // Clear fields
+                itemCodeField.setText("");
+                itemNameField.setText("");
+                currentStockField.setText("");
+                minStockField.setText("");
+                unitCostField.setText("");
+
+                NavigationManager.getInstance().goBack();
+
+            } catch (IOException ioEx) {
+                Logger.getLogger(ItemNew.class.getName()).log(Level.SEVERE, "Failed to save item", ioEx);
+                JOptionPane.showMessageDialog(null, "Error while saving item. Please try again.");
+            }
+
+        } catch (Exception ex) {
+            Logger.getLogger(ItemNew.class.getName()).log(Level.SEVERE, "Unexpected error", ex);
+            JOptionPane.showMessageDialog(null, "An unexpected error occurred. Please try again.");
         }
 
 
