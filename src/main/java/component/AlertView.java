@@ -159,6 +159,8 @@ public class AlertView extends javax.swing.JDialog {
     private void readBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_readBtnActionPerformed
         try {
             // TODO add your handling code here:
+            message.setStatus("read");
+            
             new AlertRepo().update(message);
             this.dispose();
             

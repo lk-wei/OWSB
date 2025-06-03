@@ -74,6 +74,8 @@ public class AlertFrame extends javax.swing.JDialog {
                     } catch (IOException ex) {
                         Logger.getLogger(AlertFrame.class.getName()).log(Level.SEVERE, null, ex);
                     }
+                    
+                    updateTable();
                 });
                 return c;
             }

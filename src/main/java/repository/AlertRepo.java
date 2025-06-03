@@ -46,11 +46,15 @@ public class AlertRepo extends MasterRepo<Alert>{
         List<Alert> list = new ArrayList<>();
 
         for (Alert a : getAll()) {
+            if ("read".equals(a.getStatus())){
+                continue;
+            }
+            
             if ("AD".equals(role) || a.getReciverRole().equals(role)) {
                 list.add(a);
             }
         }
-        System.out.println("Role: " + role + " | Matching alerts: " + list.size());
+//        System.out.println("Role: " + role + " | Matching alerts: " + list.size());
 
         return list;
     }
@@ -71,7 +75,7 @@ public class AlertRepo extends MasterRepo<Alert>{
     @Override
     protected Alert stringToObject(String line) {
         String[] parts = line.split("\\|", -1);
-        System.out.println(line);
+//        System.out.println(line);
         
         return new Alert(
                 Long.valueOf(parts[0]),
