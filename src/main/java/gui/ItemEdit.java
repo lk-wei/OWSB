@@ -238,22 +238,48 @@ public class ItemEdit extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
-        int currentStock = Integer.parseInt(CurrentStockField.getText());
-        int minStock = Integer.parseInt(MinStockField.getText());
-        double unitCost = Double.parseDouble(UnitCostField.getText());
-
-        toEdit.setCurrentStock(currentStock);
-        toEdit.setMinStock(minStock);
-        toEdit.setUnitCost(unitCost);
-
         try {
-            new ItemRepo().update(toEdit);
+            String currentStockText = CurrentStockField.getText();
+            String minStockText = MinStockField.getText();
+            String unitCostText = UnitCostField.getText();
 
-            JOptionPane.showMessageDialog(null, "Item Updated successfully!");
-            NavigationManager.getInstance().goBack();
-        } catch (IOException ex) {
-            Logger.getLogger(FinancialReportEdit.class.getName()).log(Level.SEVERE, null, ex);
+            if (currentStockText.isBlank() || minStockText.isBlank() || unitCostText.isBlank()) {
+                JOptionPane.showMessageDialog(null, "Please fill in all fields.");
+                return;
+            }
+
+            int currentStock;
+            int minStock;
+            double unitCost;
+
+            try {
+                currentStock = Integer.parseInt(currentStockText);
+                minStock = Integer.parseInt(minStockText);
+                unitCost = Double.parseDouble(unitCostText);
+            } catch (NumberFormatException nfe) {
+                JOptionPane.showMessageDialog(null, "Please enter valid numeric values for stock and unit cost.");
+                return;
+            }
+
+            // Update the item
+            toEdit.setCurrentStock(currentStock);
+            toEdit.setMinStock(minStock);
+            toEdit.setUnitCost(unitCost);
+
+            try {
+                new ItemRepo().update(toEdit);
+                JOptionPane.showMessageDialog(null, "Item updated successfully!");
+                NavigationManager.getInstance().goBack();
+            } catch (IOException ioEx) {
+                Logger.getLogger(FinancialReportEdit.class.getName()).log(Level.SEVERE, "Failed to update item", ioEx);
+                JOptionPane.showMessageDialog(null, "Error while updating item. Please try again.");
+            }
+
+        } catch (Exception ex) {
+            Logger.getLogger(FinancialReportEdit.class.getName()).log(Level.SEVERE, "Unexpected error", ex);
+            JOptionPane.showMessageDialog(null, "An unexpected error occurred. Please try again.");
         }
+
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -261,23 +287,23 @@ public class ItemEdit extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
-            // TODO add your handling code here:
-            try {
-                for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                    if ("Nimbus".equals(info.getName())) {
-                        javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                        break;
-                    }
+        // TODO add your handling code here:
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
                 }
-            } catch (ClassNotFoundException ex) {
-                java.util.logging.Logger.getLogger(ItemEdit.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-            } catch (InstantiationException ex) {
-                java.util.logging.Logger.getLogger(ItemEdit.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-            } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ItemEdit.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-                } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ItemEdit.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
             }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(ItemEdit.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(ItemEdit.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(ItemEdit.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(ItemEdit.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_formWindowActivated
 
     /**

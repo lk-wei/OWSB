@@ -31,12 +31,12 @@ public class PaymentEdit extends javax.swing.JFrame {
      */
     private DefaultTableModel tableModel;
     private List<PurchaseOrder> selectedPO = new ArrayList<>();
-    private Payment toEdit; 
+    private Payment toEdit;
     private Long viewId;
 
     public PaymentEdit(Long viewId) throws IOException {
         this.viewId = viewId;
-        
+
         initComponents();
         setView();
         this.setLocationRelativeTo(null); //this will center your frame
@@ -49,34 +49,34 @@ public class PaymentEdit extends javax.swing.JFrame {
         PaymentRepo pr = new PaymentRepo();
         PaymentItemRepo pir = new PaymentItemRepo();
         String SupplierCode = "";
-        
+
         try {
             toEdit = pr.getById(viewId);
             System.out.println(toEdit.getPaymentCode());
-            Supplier sup =  new SupplierRepo().getById(toEdit.getSupplierId());
-            
+            Supplier sup = new SupplierRepo().getById(toEdit.getSupplierId());
+
             if (sup != null) {
                 SupplierCode = sup.getSupplierCode();
             }
-            
+
             if (this.toEdit == null) {
                 return;
             }
-            
+
             codeField.setText(toEdit.getPaymentCode());
             dateField.setText(String.valueOf(toEdit.getPaymentDate()));
             supplierField.setText(toEdit.getSupplierName());
             supplierCodeField.setText(SupplierCode);
             totalAmiuntField.setValue(toEdit.getTotalAmount());
             paymentAmountField.setValue(toEdit.getPaymentAmount());
-            
+
             jTable2.setModel(pir.getTableModel(viewId));
         } catch (IllegalArgumentException e) {
             JOptionPane.showMessageDialog(this, e.getMessage(), "Input Error", JOptionPane.ERROR_MESSAGE);
         } catch (IOException ex) {
             Logger.getLogger(FinancialReportNew.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         // Hide the ID column
         TableColumn idColumn = jTable2.getColumnModel().getColumn(0);
         idColumn.setMinWidth(0);
@@ -322,20 +322,34 @@ public class PaymentEdit extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void editBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editBtnActionPerformed
+
+        Object payAmtObj = paymentAmountField.getValue();
+
+        if (payAmtObj == null) {
+            JOptionPane.showMessageDialog(null, "Payment Amount fields are required.");
+            return;
+        }
+
         double totalAmt = ((Number) totalAmiuntField.getValue()).doubleValue();
         double payAmt = ((Number) paymentAmountField.getValue()).doubleValue();
 
-        if (payAmt > totalAmt) {
-            JOptionPane.showMessageDialog(null, "Payment Amount cannot be More than Totak Amount");
+        try {           
+            payAmt = ((Number) payAmtObj).doubleValue();
+        } catch (ClassCastException ex) {
+            JOptionPane.showMessageDialog(null, "Please enter valid numeric values.");
             return;
         }
-        
+
+        if (payAmt > totalAmt) {
+            JOptionPane.showMessageDialog(null, "Payment Amount cannot be more than Total Amount.");
+            return;
+        }
+
         toEdit.setPaymentAmount(payAmt);
-        
-        
+
         try {
             new PaymentRepo().update(toEdit);
-            
+
             JOptionPane.showMessageDialog(null, "Payment Record Updated successfully!");
             NavigationManager.getInstance().goBack();
         } catch (IOException ex) {

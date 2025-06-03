@@ -428,28 +428,49 @@ public class PaymentNew extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+        NavigationManager.getInstance().goBack();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         try {
             // add pyment
             Supplier selectedSupplier = (Supplier) supplierField.getSelectedItem();
-
             Date selectedDate = dateField.getDate();
             // When merge, this field will automatically get the current user id
-
             // Check for null to avoid NullPointerException
+            String codeText = codeField.getText();
+            Object payAmtObj = paymentAmountField.getValue();
+
+            if (codeText.isBlank()) {
+                JOptionPane.showMessageDialog(null, "Please fill in Payment Code.");
+                return;
+            }
+
+            if (selectedSupplier == null) {
+                JOptionPane.showMessageDialog(null, "Please select a supplier.");
+                return;
+            }
             if (selectedDate == null) {
                 JOptionPane.showMessageDialog(null, "Please select a date.");
+                return;
+            }
+            if (payAmtObj == null) {
+                JOptionPane.showMessageDialog(null, "Payment Amount fields are required.");
                 return;
             }
             
             double totalAmt = ((Number) totalAmiuntField.getValue()).doubleValue();
             double payAmt = ((Number) paymentAmountField.getValue()).doubleValue();
             
+            try {
+                payAmt = ((Number) payAmtObj).doubleValue();
+            } catch (ClassCastException ex) {
+                JOptionPane.showMessageDialog(null, "Please enter valid numeric values.");
+                return;
+            } 
+            
             if (payAmt > totalAmt) {
-                JOptionPane.showMessageDialog(null, "Payment Amount cannot be More than Totak Amount");
+                JOptionPane.showMessageDialog(null, "Payment Amount cannot be More than Total Amount");
                 return;
             }
 
@@ -458,18 +479,18 @@ public class PaymentNew extends javax.swing.JFrame {
 
             Payment newPayment = new Payment(
                     null,
-                    codeField.getText(), 
-                    selectedSupplier.getId(), 
-                    selectedSupplier.getSuppliername(), 
-                    saleDate, 
-                    totalAmt, 
+                    codeField.getText(),
+                    selectedSupplier.getId(),
+                    selectedSupplier.getSuppliername(),
+                    saleDate,
+                    totalAmt,
                     payAmt
             );
             new PaymentRepo().create(newPayment);
-                
-                // get new created fr ID
+
+            // get new created fr ID
             Long newlyCreatedPaymentId = newPayment.getId();
-   
+
             // add payment item
             // Iterate through all rows in the table model
             for (int modelRow = 0; modelRow < tableModel.getRowCount(); modelRow++) {
@@ -498,7 +519,7 @@ public class PaymentNew extends javax.swing.JFrame {
 
                 }
             }
-            
+
             JOptionPane.showMessageDialog(null, "Payment Record Created successfully!");
             NavigationManager.getInstance().goBack();
         } catch (IOException ex) {
